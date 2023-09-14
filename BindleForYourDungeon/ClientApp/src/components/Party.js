@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 
-export class FetchData extends Component {
-  static displayName = FetchData.name;
+export class Party extends Component {
+  static displayName = Party.name;
 
   constructor(props) {
     super(props);
@@ -12,21 +12,20 @@ export class FetchData extends Component {
     this.populateCharacterData();
   }
 
-  static renderCharacterTable(characters) {
+  static renderPartyTable(characters) {
     return (
       <table className="table table-striped" aria-labelledby="tableLabel">
         <thead>
           <tr>
             <th>Name</th>
-            <th>Id</th>
             <th>Level</th>
             <th>Description</th>
           </tr>
         </thead>
         <tbody>
           {characters.map(character =>
-            <tr key={character.name}>
-              <td>{character.id}</td>
+            <tr key={character.id}>
+              <td>{character.name}</td>
               <td>{character.level}</td>
               <td>{character.description}</td>
             </tr>
@@ -39,11 +38,11 @@ export class FetchData extends Component {
   render() {
     let contents = this.state.loading
       ? <p><em>Loading...</em></p>
-      : FetchData.renderCharacterTable(this.state.characters);
+      : Party.renderPartyTable(this.state.characters);
 
     return (
       <div>
-        <h1 id="tableLabel">Characters</h1>
+        <h1 id="tableLabel">Party Members</h1>
         <p>Characters in your party</p>
         {contents}
       </div>
@@ -53,6 +52,6 @@ export class FetchData extends Component {
   async populateCharacterData() {
     const response = await fetch('character');
     const data = await response.json();
-    this.setState({ character: data, loading: false });
+    this.setState({ characters: data, loading: false });
   }
 }
