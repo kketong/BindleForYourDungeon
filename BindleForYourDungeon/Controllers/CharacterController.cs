@@ -19,13 +19,7 @@ namespace BindleForYourDungeon.Controllers
 		{
 			var characterList = new List<Character>
 			{
-				new Character()
-				{
-					Id = 123,
-					Description = "Dummy description",
-					Level = 1,
-					Name = "Tavern Keeper"
-				}
+				new Character("Tavern Keeper", "A burly dwarf with a surprising floral aroma.", 2, null)
 			};
 
 			return characterList;
