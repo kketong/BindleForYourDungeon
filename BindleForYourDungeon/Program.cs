@@ -1,15 +1,23 @@
 using BindleForYourDungeon;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
+using MongoFramework;
 using System.Configuration;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+var connectionString = builder.Configuration.GetConnectionString("MongoDbConnectionString");
+var mongoConnection = MongoDbConnection.FromConnectionString(connectionString);
+builder.Services.AddSingleton(new ApplicationContext(mongoConnection));
+
+builder.Services.AddSingleton<ICharacterRepository, CharacterRepository>();
 
 builder.Services.AddControllersWithViews();
-builder.Services.AddDbContext<ApplicationDbContext>(options =>
-	options.UseSqlServer(builder.Configuration.GetConnectionString("SqlDbConnectionString"))
-);
+//builder.Services.AddDbContext<ApplicationDbContext>(options =>
+//	options.UseSqlServer(builder.Configuration.GetConnectionString("SqlDbConnectionString"))
+//);
+
 
 var app = builder.Build();
 
