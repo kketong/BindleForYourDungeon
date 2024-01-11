@@ -27,18 +27,26 @@ namespace BindleForYourDungeon.Controllers
 			return characters;
 		}
 
-		[HttpGet("{name}")]		
-		public async Task<Character> GetCharacter(string name)
+		[HttpGet("{characterId}")]		
+		public async Task<Character> GetCharacter(int characterId)
 		{
-			var character = await characterRepository.GetCharacterAsync(name);
+			var character = await characterRepository.GetCharacterAsync(characterId);
 
 			return character;
 		}
 
-		[HttpPost]
-		public void CreateAsync(Character character)
+		[HttpGet("characters/search/{searchTerm}")]
+		public async Task<IQueryable<Character>> SearchCharacters(string searchTerm)
 		{
-			characterRepository.CreateCharacterAsync(character);
+			var characters = await characterRepository.SearchCharactersAsync(searchTerm);
+
+			return characters;
+		}
+
+		[HttpPost]
+		public async Task CreateAsync(Character character)
+		{
+			await characterRepository.CreateCharacterAsync(character);
 		}
 	}
 }

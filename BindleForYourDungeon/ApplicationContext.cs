@@ -14,7 +14,11 @@ namespace BindleForYourDungeon
 			//  mappingBuilder.Entity<Character>()
 			//	.HasProperty(m => m.Name, b => b.HasElementName("MappedName"))
 			//  .ToCollection("Characters");
-			// Then add "[Column("MappedName")]" attribute to the corresponding models property.
+			// Then add "[Column("MappedName")]" attribute to the model property.
+
+			mappingBuilder.Entity<Character>()
+				.HasProperty(m => m.CharacterId, b => b.HasElementName("Id"))
+				.ToCollection("Characters");
 		}
 	}
 }

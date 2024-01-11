@@ -4,8 +4,9 @@ namespace BindleForYourDungeon
 {
 	public interface ICharacterRepository
 	{
-		void CreateCharacterAsync(Character character);
-		Task<Character> GetCharacterAsync(string name);
+		Task CreateCharacterAsync(Character character);
+		Task<Character> GetCharacterAsync(int characterId);
 		IEnumerable<Character> GetCharacters();
+		Task<IQueryable<Character>> SearchCharactersAsync(string searchTerm);
 	}
 }

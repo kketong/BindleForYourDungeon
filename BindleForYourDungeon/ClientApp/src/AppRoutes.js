@@ -1,4 +1,4 @@
-import { Party } from "./components/Party";
+import { Characters } from "./components/Characters/Characters";
 import { Home } from "./components/Home";
 
 const AppRoutes = [
@@ -7,8 +7,8 @@ const AppRoutes = [
     element: <Home />
   },
   {
-    path: '/party',
-    element: <Party />
+    path: '/Characters',
+    element: <Characters />
   }
 ];
 
