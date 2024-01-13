@@ -4,17 +4,18 @@ using MongoFramework;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddCors(options =>
-{
-	options.AddDefaultPolicy(
-		builder =>
-		{
-			builder.AllowAnyOrigin();
-			builder.WithOrigins("https://localhost:44405")
-								.AllowAnyHeader()
-								.AllowAnyMethod();
-		});
-});
+// For axios?
+//builder.Services.AddCors(options =>
+//{
+//	options.AddDefaultPolicy(
+//		builder =>
+//		{
+//			builder.AllowAnyOrigin();
+//			builder.WithOrigins("https://localhost:44405")
+//								.AllowAnyHeader()
+//								.AllowAnyMethod();
+//		});
+//});
 
 // Add services to the container.
 var connectionString = builder.Configuration.GetConnectionString("MongoDbConnectionString");
