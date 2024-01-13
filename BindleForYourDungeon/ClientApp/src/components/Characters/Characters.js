@@ -37,19 +37,14 @@ export class Characters extends Component {
         );
     }
 
-    handleCallback = (data) => {
-        this.setState({ newCharacterData: data });
-    };
-
     render() {
         let contents = this.state.loading
             ? <p><em>Loading...</em></p>
             : Characters.renderCharactersTable(this.state.characters);
-        //let createCharacterButton = CreateCharacter();
         return (
             <div>
-                <CreateCharacterModal />
-                <h1 id="tableLabel">Characters </h1>
+                <CreateCharacterModal/>
+                <h1 id="tableLabel">Characters</h1>
                 {contents}
             </div>
         );
@@ -59,8 +54,5 @@ export class Characters extends Component {
         const response = await fetch('character');
         const data = await response.json();
         this.setState({ characters: data, loading: false });
-    }
-
-    async postCharacter() {
-    }
+    }    
 }

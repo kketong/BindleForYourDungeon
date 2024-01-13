@@ -1,39 +1,54 @@
 import React, { useState } from 'react';
 import { Button, Form, Modal } from 'react-bootstrap';
 
-const CreateCharacterModal = (props) => {
+function CreateCharacterModal({ requiresRefresh }) {
     const [show, setShow] = useState(false);
-    const [submit, setSubmit] = useState(false);
-    const [newCharacterData, setNewCharacterData] = useState({
-        name: "",
-        description: "",
-        level: 0,
-        characterClass: []
+    const [character, setCharacter] = useState({
+        Name: '',
+        Description: '',
+        Level: -1,
+        CharacterClass: []
     });
 
     const handleClose = () => setShow(false);
-    const handleShow = () => setShow(true);    
+    const handleShow = () => setShow(true);
 
     function handleChange(event) {
-        const { name, value } = event.target;
-        setNewCharacterData((prevState) => ({ ...prevState, [name]: value }));
-        console.log(`eventTarget: ${event.target.id} name: ${name}, value: ${value}`);
+        const { id, value } = event.target;
+        setCharacter(prevState => ({ ...prevState, [id]: value }));
+        console.log(`id: ${id}, value: ${value}`);
+        console.log(JSON.stringify(character));
     };
 
     function handleClassChange(event) {
-        const { id, value } = event.target;
-        if (value === 'on') {
-            newCharacterData.characterClass.push(id);
+        const { id, checked } = event.target;
+        if (checked === true) {
+            character.CharacterClass.push(id);
         } else {
-            newCharacterData.characterClass.pop(id);
+            const indexToRemove = character.CharacterClass.indexOf(id);
+            if (indexToRemove !== -1) {
+                character.CharacterClass.splice(indexToRemove, 1);
+            }
         }
-        newCharacterData.characterClass.forEach((val) => console.log(val));
-    }
+    }    
 
-    function onSubmit(event) {
-        setSubmit(true);
-        handleClose();
-        event.preventDefault();
+    async function handleSubmit() {
+        
+        const rawResponse = await fetch('character', {
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(character)
+        });
+        const content = await rawResponse.json();
+
+        console.log(content);
+        //let result = await PostCharacter(newCharacterData);
+        //if (result) {
+
+        //}
     }
 
     return (
@@ -46,7 +61,7 @@ const CreateCharacterModal = (props) => {
                     <Modal.Title>Create new character</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
-                    <Form onSubmit={onSubmit}>
+                    <Form>
                         <Form.Group className="mb-3" controlId="name" >
                             <Form.Control type="text" placeholder="Character name" onChange={handleChange} />
                         </Form.Group>
@@ -59,26 +74,26 @@ const CreateCharacterModal = (props) => {
                         <Form.Group className="mb-3" controlId="characterClass">
                             <Form.Label className="mb-3">Character Classes</Form.Label>
                             <div>
-                            {['None', 'Barbarian', 'Cleric', 'Druid', 'Fighter', 'Monk', 'Paladin',
-                                'Ranger', 'Rogue', 'Sorcerer', 'Warlock', 'Wizard']
-                                .map((className) => (
-                                        <Form.Check
-                                            inline 
-                                            type='checkbox'
-                                            id={`${className}`}
-                                            label={className} onChange={handleClassChange}
-                                        />
-                                ))}
+                                {['None', 'Barbarian', 'Cleric', 'Druid', 'Fighter', 'Monk', 'Paladin',
+                                    'Ranger', 'Rogue', 'Sorcerer', 'Warlock', 'Wizard']
+                                    .map((className) => (
+                                            <Form.Check
+                                                inline 
+                                                type='checkbox'
+                                                id={`${className}`}
+                                                label={className} onChange={handleClassChange}
+                                            />
+                                    ))}
                             </div>
                         </Form.Group>
-                        <Button type="submit">Submit</Button>
+                        <Button onClick={handleSubmit}>Submit</Button>
                     </Form>
                 </Modal.Body>
                 <Modal.Footer>
                 </Modal.Footer>
             </Modal>
         </>
-        );    
+     );    
 }
 
 export default CreateCharacterModal;

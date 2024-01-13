@@ -1,5 +1,8 @@
-﻿namespace BindleForYourDungeon.Models
+﻿using System.Text.Json.Serialization;
+
+namespace BindleForYourDungeon.Models
 {
+	[JsonConverter(typeof(JsonStringEnumConverter<CharacterClass>))]
 	public enum CharacterClass
 	{
 		None,
