@@ -1,6 +1,4 @@
 
-import Characters from "./components/Characters/Characters";
-import CharacterDetails from "./components/Characters/CharacterDetails";
 import { Home } from "./components/Home";
 import withRouter from "./WithRouter";
 //const CharacterRouter = () => {
