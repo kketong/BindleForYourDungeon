@@ -1,4 +1,6 @@
 ﻿import axios from 'axios';
+
+// To use axios at some stage
 const getBaseUrl = () => {
     let url;
     switch (process.env.NODE_ENV) {

@@ -1,35 +1,53 @@
 import React, { Component } from 'react';
+import {
+    Button,
+    Table,
+} from 'reactstrap';
+
 import CreateCharacterModal from './CreateCharacterModal';
-import Table from 'react-bootstrap/Table';
+import CharacterDropdownButton from './CharacterDropdownButton';
 
-export class Characters extends Component {
-    static displayName = Characters.name;
-
+class Characters extends Component {
     constructor(props) {
         super(props);
-        this.state = { characters: [], loading: true };
+        console.log('im in characters!');
+        this.state = { characters: [], loading: true , showCreateCharacter: false};
     }
-
+    static propTypes = {
+        
+    };
     componentDidMount() {
+
         this.populateCharacterData();
     }
-
+    
     static renderCharactersTable(characters) {
         return (
             <Table className="table table-striped" aria-labelledby="tableLabel">
                 <thead>
                     <tr>
                         <th>Name</th>
+                        <th>Class</th>
                         <th>Level</th>
                         <th>Description</th>
+                        <th>Inventory weight</th>
                     </tr>
                 </thead>
                 <tbody>
                     {characters.map(character =>
-                        <tr key={character.id}>
+                        <tr key={character.characterId}>
                             <td>{character.name}</td>
+                            <td>{character.characterClass}</td>
                             <td>{character.level}</td>
                             <td>{character.description}</td>
+                            {character.inventory !== null ?
+                                <td>{character.inventory}</td> :
+                                <td>TODO</td>
+                            }
+                            <CharacterDropdownButton
+                                direction="down"
+                                character={character}
+                            />
                         </tr>
                     )}
                 </tbody>
@@ -43,7 +61,10 @@ export class Characters extends Component {
             : Characters.renderCharactersTable(this.state.characters);
         return (
             <div>
-                <CreateCharacterModal/>
+                <Button variant="primary" onClick={()=>this.setState({ showCreateCharacter: true })}>
+                Create new character
+            </Button>
+                {this.state.showCreateCharacter && <CreateCharacterModal />}
                 <h1 id="tableLabel">Characters</h1>
                 {contents}
             </div>
@@ -54,5 +75,7 @@ export class Characters extends Component {
         const response = await fetch('character');
         const data = await response.json();
         this.setState({ characters: data, loading: false });
-    }    
+    }
 }
+
+export default Characters;

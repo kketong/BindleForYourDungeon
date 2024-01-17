@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
-import { Button, Form, Modal } from 'react-bootstrap';
+import { Alert, Button, Form, Modal, Spinner } from 'react-bootstrap';
 
-function CreateCharacterModal({ requiresRefresh }) {
+function CreateCharacterModal() {
     const [show, setShow] = useState(false);
+    const [loading, setLoading] = useState(false);
+    const [requestFailed, setRequestFailed] = useState(false);
     const [character, setCharacter] = useState({
         Name: '',
         Description: '',
@@ -11,7 +13,6 @@ function CreateCharacterModal({ requiresRefresh }) {
     });
 
     const handleClose = () => setShow(false);
-    const handleShow = () => setShow(true);
 
     function handleChange(event) {
         const { id, value } = event.target;
@@ -33,29 +34,31 @@ function CreateCharacterModal({ requiresRefresh }) {
     }    
 
     async function handleSubmit() {
-        
-        const rawResponse = await fetch('character', {
+        setLoading(true);
+        setRequestFailed(false);
+        await fetch('character', {
             method: 'POST',
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify(character)
+        })
+        .then((response) => {
+            if (!response.ok) throw new Error(response.status);
+            else return response.json();
+        })
+        .then(() => {
+            setLoading(false);            
+        })
+        .catch((error) => {
+            setLoading(false);
+            setRequestFailed(true);
         });
-        const content = await rawResponse.json();
-
-        console.log(content);
-        //let result = await PostCharacter(newCharacterData);
-        //if (result) {
-
-        //}
     }
 
     return (
         <>
-            <Button variant="primary" onClick={handleShow}>
-                Create new character
-            </Button>
             <Modal show={show} onHide={handleClose} className='mb-3'>
                 <Modal.Header closeButton>
                     <Modal.Title>Create new character</Modal.Title>
@@ -78,7 +81,7 @@ function CreateCharacterModal({ requiresRefresh }) {
                                     'Ranger', 'Rogue', 'Sorcerer', 'Warlock', 'Wizard']
                                     .map((className) => (
                                             <Form.Check
-                                                inline 
+                                            inline 
                                                 type='checkbox'
                                                 id={`${className}`}
                                                 label={className} onChange={handleClassChange}
@@ -86,14 +89,27 @@ function CreateCharacterModal({ requiresRefresh }) {
                                     ))}
                             </div>
                         </Form.Group>
-                        <Button onClick={handleSubmit}>Submit</Button>
+                        {loading ?
+                            <Button color="primary" disabled>
+                                <Spinner size="sm"/>
+                                <span>
+                                    {`  `}Saving
+                                </span>
+                            </Button> :
+                            <Button onClick={handleSubmit}>Submit</Button>
+                        }
                     </Form>
                 </Modal.Body>
                 <Modal.Footer>
+                    {requestFailed &&
+                        <Alert color="warning">
+                        Submission failed. Please try again later.
+                        </Alert>
+                    }
                 </Modal.Footer>
             </Modal>
         </>
-     );    
+     );
 }
 
 export default CreateCharacterModal;

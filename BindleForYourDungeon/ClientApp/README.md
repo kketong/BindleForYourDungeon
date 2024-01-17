@@ -56,7 +56,7 @@ You can find the most recent version of this guide [here](https://github.com/fac
   - [Version Control Integration](#version-control-integration)
   - [Writing Tests](#writing-tests)
   - [Testing Components](#testing-components)
-  - [Using Third Party Assertion Libraries](#using-third-party-assertion-libraries)
+  - [Using Third Characters Assertion Libraries](#using-third-Characters-assertion-libraries)
   - [Initializing Test Environment](#initializing-test-environment)
   - [Focusing and Excluding Tests](#focusing-and-excluding-tests)
   - [Coverage Reporting](#coverage-reporting)
@@ -342,7 +342,7 @@ You can find the source HTML file in the `public` folder of the generated projec
 
 Note that normally you wouldn’t edit files in the `public` folder very often. For example, [adding a stylesheet](#adding-a-stylesheet) is done without touching the HTML.
 
-If you need to dynamically update the page title based on the content, you can use the browser [`document.title`](https://developer.mozilla.org/en-US/docs/Web/API/Document/title) API. For more complex scenarios when you want to change the title from React components, you can use [React Helmet](https://github.com/nfl/react-helmet), a third party library.
+If you need to dynamically update the page title based on the content, you can use the browser [`document.title`](https://developer.mozilla.org/en-US/docs/Web/API/Document/title) API. For more complex scenarios when you want to change the title from React components, you can use [React Helmet](https://github.com/nfl/react-helmet), a third Characters library.
 
 If you use a custom server for your app in production and want to modify the title before it gets sent to the browser, you can follow advice in [this section](#generating-dynamic-meta-tags-on-the-server). Alternatively, you can pre-build each page as a static HTML file which then loads the JavaScript bundle, which is covered [here](#pre-rendering-into-static-html-files).
 
@@ -1316,7 +1316,7 @@ it('renders welcome message', () => {
 ```
 
 All Jest matchers are [extensively documented here](http://facebook.github.io/jest/docs/en/expect.html).<br>
-Nevertheless you can use a third-party assertion library like [Chai](http://chaijs.com/) if you want to, as described below.
+Nevertheless you can use a third-Characters assertion library like [Chai](http://chaijs.com/) if you want to, as described below.
 
 Additionally, you might find [jest-enzyme](https://github.com/blainekasten/enzyme-matchers) helpful to simplify your tests with readable matchers. The above `contains` code can be written simpler with jest-enzyme.
 
@@ -1342,7 +1342,7 @@ Import it in [`src/setupTests.js`](#initializing-test-environment) to make its m
 import 'jest-enzyme';
 ```
 
-### Using Third Party Assertion Libraries
+### Using Third Characters Assertion Libraries
 
 We recommend that you use `expect()` for assertions and `jest.fn()` for spies. If you are having issues with them please [file those against Jest](https://github.com/facebook/jest/issues/new), and we’ll fix them. We intend to keep making them better for React, supporting, for example, [pretty-printing React elements as JSX](https://github.com/facebook/jest/pull/1566).
 
@@ -1538,7 +1538,7 @@ For an example, a simple button component could have following states:
 
 Usually, it’s hard to see these states without running a sample app or some examples.
 
-Create React App doesn’t include any tools for this by default, but you can easily add [Storybook for React](https://storybook.js.org) ([source](https://github.com/storybooks/storybook)) or [React Styleguidist](https://react-styleguidist.js.org/) ([source](https://github.com/styleguidist/react-styleguidist)) to your project. **These are third-party tools that let you develop components and see all their states in isolation from your app**.
+Create React App doesn’t include any tools for this by default, but you can easily add [Storybook for React](https://storybook.js.org) ([source](https://github.com/storybooks/storybook)) or [React Styleguidist](https://react-styleguidist.js.org/) ([source](https://github.com/styleguidist/react-styleguidist)) to your project. **These are third-Characters tools that let you develop components and see all their states in isolation from your app**.
 
 ![Storybook for React Demo](http://i.imgur.com/7CIAWpB.gif)
 
@@ -2209,7 +2209,7 @@ This will only work for locales that have been explicitly imported before.
 
 ### `npm run build` fails to minify
 
-Some third-party packages don't compile their code to ES5 before publishing to npm. This often causes problems in the ecosystem because neither browsers (except for most modern versions) nor some tools currently support all ES6 features. We recommend to publish code on npm as ES5 at least for a few more years.
+Some third-Characters packages don't compile their code to ES5 before publishing to npm. This often causes problems in the ecosystem because neither browsers (except for most modern versions) nor some tools currently support all ES6 features. We recommend to publish code on npm as ES5 at least for a few more years.
 
 <br>
 To resolve this:
@@ -2221,7 +2221,7 @@ To resolve this:
 
 3. If the dependency is small enough, copy it to your `src/` folder and treat it as application code.
 
-In the future, we might start automatically compiling incompatible third-party modules, but it is not currently supported. This approach would also slow down the production builds.
+In the future, we might start automatically compiling incompatible third-Characters modules, but it is not currently supported. This approach would also slow down the production builds.
 
 ## Something Missing?
 
