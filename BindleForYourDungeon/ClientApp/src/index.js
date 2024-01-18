@@ -5,27 +5,31 @@ import {
     createBrowserRouter,
     RouterProvider,
 } from "react-router-dom";
-import Root from "./components/root";
+import Layout from "./Layout";
 import ErrorPage from "./components/errorPage";
 import Characters from "./components/Characters/Characters";
 import CharacterDetails, { loader as characterDetailsLoader } from "./components/Characters/CharacterDetails";
 
-
 const router = createBrowserRouter([
     {
         path: "/",
-        element: <Root />,
+        element: <Layout />,
         errorElement: <ErrorPage />,
         children: [
             {
                 path: 'Characters',
-                element: <Characters />
+                children: [
+                    {
+                        index: true,
+                        element: <Characters />,
+                    },
+                    {
+                        path: ':characterId',
+                        element: <CharacterDetails />,
+                        loader: characterDetailsLoader,
+                    }
+                ]
             },
-            {
-                path: 'Characters/details/:characterId',
-                element: <CharacterDetails />,
-                loader: characterDetailsLoader,
-            }
         ]
     },
 ]);

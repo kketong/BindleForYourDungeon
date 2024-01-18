@@ -1,75 +1,94 @@
-﻿import React, { Component } from 'react';
+﻿import React, { useState } from 'react';
 import {
     Card,
-    CardBody,
-    CardTitle,
-    CardText,
     ListGroup,
     ListGroupItem,
-    CardLink,
-} from 'reactstrap';
-import { useLocation } from "react-router-dom";
+    Accordion,
+    Form
+} from 'react-bootstrap';
+import { useLoaderData } from "react-router-dom";
 
 export async function loader({ params }) {
-    console.log(params);
-    //const response = await fetch(`character/${params.characterId}`);
-    //const character = await response.json();
-
-    return null;
-}
-export default async function CharacterDetails(props) {
-    const { characterId } = useLocation();
-    console.log(characterId);
+    const characterId =  params.characterId;
+    console.log({ characterId });
     const response = await fetch(`character/${characterId}`);
     const character = await response.json();
-    //async populateCharacterData() {
-    //    const params = this.props.params;
-    //    console.log(params);
-    //    const response = await fetch(`character/${params}`);
-    //    const data = await response.json();
 
-    //    this.setState({
-    //        character: data,
-    //        inventory: data.character.inventory,
-    //        spells: data.character.spells,
-    //        loading: false
-    //    });
-    //}
-    
-    console.log(character);
-        return <>
-            <Card
-                style={{
-                    width: '18rem'
-                }}
-            >                
-                <CardBody>
-                    <CardTitle tag="h5">
-                       
-                    </CardTitle>
-                    <CardText>
-                        This is some text within a card body.
-                    </CardText>
-                </CardBody>
-                <ListGroup flush>
-                    <ListGroupItem>
-                        An item
-                    </ListGroupItem>
-                    <ListGroupItem>
-                        A second item
-                    </ListGroupItem>
-                    <ListGroupItem>
-                        And a third item
-                    </ListGroupItem>
-                </ListGroup>
-                <CardBody>
-                    <CardLink href="#">
-                        Card Link
-                    </CardLink>
-                    <CardLink href="#">
-                        Another Card Link
-                    </CardLink>
-                </CardBody>
-            </Card>
-        </>;
+    return { character };
+}
+
+export default function CharacterDetails(props) {
+    const { character } = useLoaderData();
+
+    const [openBackground, setOpen] = useState('1');
+    const toggle = (id) => {
+        if (openBackground === id) {
+            setOpen();
+        } else {
+            setOpen(id);
+        }
+    };
+
+    return <>
+        <Card>
+            <img
+                alt="Card"
+                src="https://picsum.photos/300/200"
+            />
+            <Card.Body>
+                <Card.Title tag="h5">
+                    {character.name}
+                </Card.Title>
+                <Accordion open={openBackground} toggle={toggle}>
+                    <Accordion.Item>
+                        <Accordion.Header targetId="1">Character Background</Accordion.Header>
+                        <Accordion.Body tag='Form' accordionId="1">
+                            <Form.Group className="mb-3" controlId="description">
+                                <Form.Control type="text" placeholder="Character description"  />
+                            </Form.Group>
+                        </Accordion.Body>
+                    </Accordion.Item>
+                    <Accordion.Item>
+                        <Accordion.Header targetId="2">Spells</Accordion.Header>
+                        <Accordion.Body accordionId="2">
+                            <strong>This is the second item&#39;s accordion body.</strong>
+                            You can modify any of this with custom CSS or overriding our default
+                            variables. It&#39;s also worth noting that just about any HTML can
+                            go within the <code>.accordion-body</code>, though the transition
+                            does limit overflow.
+                        </Accordion.Body>
+                    </Accordion.Item>
+                    <Accordion.Item>
+                        <Accordion.Header targetId="3">Inventory</Accordion.Header>
+                        <Accordion.Body accordionId="3">
+                            <strong>This is the third item&#39;s accordion body.</strong>
+                            You can modify any of this with custom CSS or overriding our default
+                            variables. It&#39;s also worth noting that just about any HTML can
+                            go within the <code>.accordion-body</code>, though the transition
+                            does limit overflow.
+                        </Accordion.Body>
+                    </Accordion.Item>
+                </Accordion>
+            </Card.Body>
+            <ListGroup flush>
+                <ListGroupItem>
+                    An item
+                </ListGroupItem>
+                <ListGroupItem>
+                    A second item
+                </ListGroupItem>
+                <ListGroupItem>
+                    And a third item
+                </ListGroupItem>
+            </ListGroup>
+            <Card.Body>
+                <Card.Link href="#">
+                    Card Link
+                </Card.Link>
+                <Card.Link href="#">
+                    Another Card Link
+                </Card.Link>
+            </Card.Body>
+        </Card>
+    </>;
 };
