@@ -12,7 +12,7 @@ namespace BindleForYourDungeon.Models
 		[BsonId(IdGenerator = typeof(CombGuidGenerator))]
 		public Guid CharacterId { get; set; }
 		public required string Name { get; set; }
-		public CharacterClass[] CharacterClass { get; set; }
+		public required CharacterClass[] CharacterClass { get; set; }
 		public required string Description { get; set; }
 		public int Level { get; set; }
 		public Inventory? Inventory { get; set; }
