@@ -1,5 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using BindleForYourDungeon.Models;
+﻿using BindleForYourDungeon.Models;
+using BindleForYourDungeon.Repositories;
+using Microsoft.AspNetCore.Mvc;
 
 namespace BindleForYourDungeon.Controllers
 {
@@ -13,7 +14,7 @@ namespace BindleForYourDungeon.Controllers
 		private readonly ICharacterRepository characterRepository = characterRepository ?? throw new ArgumentNullException(nameof(characterRepository));
 
 		[HttpGet]
-		public IEnumerable<Character> GetCharacters()
+		public IQueryable<Character> GetCharacters()
 		{
 			//var newchar = new Character()
 			//{
@@ -27,15 +28,15 @@ namespace BindleForYourDungeon.Controllers
 			return characters;
 		}
 
-		[HttpGet("{characterId}")]		
-		public async Task<Character> GetCharacter(int characterId)
+		[HttpGet("{characterId}")]
+		public async Task<Character> GetCharacter(Guid characterId)
 		{
 			var character = await characterRepository.GetCharacterAsync(characterId);
 
 			return character;
 		}
 
-		[HttpGet("characters/search/{searchTerm}")]
+		[HttpGet("search/{searchTerm}")]
 		public async Task<IQueryable<Character>> SearchCharacters(string searchTerm)
 		{
 			var characters = await characterRepository.SearchCharactersAsync(searchTerm);
@@ -44,9 +45,18 @@ namespace BindleForYourDungeon.Controllers
 		}
 
 		[HttpPost]
-		public async Task CreateAsync(Character character)
+		public async Task<IActionResult> CreateAsync(Character character)
 		{
 			await characterRepository.CreateCharacterAsync(character);
+			return Created(new Uri("www.todo.com"), character);
+		}
+
+		[HttpDelete]
+		public async Task<IActionResult> DeleteAsync(Guid characterId)
+		{
+			await characterRepository.DeleteCharacterAsync(characterId);
+
+			return NoContent();
 		}
 	}
 }

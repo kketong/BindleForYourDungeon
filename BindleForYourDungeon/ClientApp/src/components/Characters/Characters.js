@@ -1,58 +1,70 @@
-import React, { Component } from 'react';
+import React, { useState } from 'react';
+import {
+	Button,
+	Table
+} from 'react-bootstrap';
+import { useLoaderData } from 'react-router-dom';
 import CreateCharacterModal from './CreateCharacterModal';
-import Table from 'react-bootstrap/Table';
+import CharacterDropdownButton from './CharacterDropdownButton';
 
-export class Characters extends Component {
-    static displayName = Characters.name;
+export async function loader() {
+	const response = await fetch('character');
+	const data = await response.json();
 
-    constructor(props) {
-        super(props);
-        this.state = { characters: [], loading: true };
-    }
+	return { characters: data };
+}
 
-    componentDidMount() {
-        this.populateCharacterData();
-    }
+export default function Characters() {
+	const { characters } = useLoaderData();
+	const [showCreateCharacter, setShowCreateCharacter] = useState(false);
 
-    static renderCharactersTable(characters) {
-        return (
-            <Table className="table table-striped" aria-labelledby="tableLabel">
-                <thead>
-                    <tr>
-                        <th>Name</th>
-                        <th>Level</th>
-                        <th>Description</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {characters.map(character =>
-                        <tr key={character.id}>
-                            <td>{character.name}</td>
-                            <td>{character.level}</td>
-                            <td>{character.description}</td>
-                        </tr>
-                    )}
-                </tbody>
-            </Table>
-        );
-    }
+	function handleClick() {
+		setShowCreateCharacter(true);
+	}
+	return (
+		<div>
+			<Button variant="primary" onClick={handleClick}>
+				Create new character
+			</Button>
+			{showCreateCharacter &&
+				<CreateCharacterModal
+					show={showCreateCharacter}
+					onHide={() => setShowCreateCharacter(false)} />
+			}
 
-    render() {
-        let contents = this.state.loading
-            ? <p><em>Loading...</em></p>
-            : Characters.renderCharactersTable(this.state.characters);
-        return (
-            <div>
-                <CreateCharacterModal/>
-                <h1 id="tableLabel">Characters</h1>
-                {contents}
-            </div>
-        );
-    }
-
-    async populateCharacterData() {
-        const response = await fetch('character');
-        const data = await response.json();
-        this.setState({ characters: data, loading: false });
-    }    
+			<h1 id="tableLabel">Characters</h1>
+			<Table className="table table-striped" aria-labelledby="tableLabel">
+				<thead>
+					<tr>
+						<th>Name</th>
+						<th>Class</th>
+						<th>Level</th>
+						<th>Description</th>
+						<th>Inventory weight</th>
+						<th></th>
+					</tr>
+				</thead>
+				<tbody>
+					{characters.map(character =>
+						<tr key={character.characterId}>
+							<td>{character.name}</td>
+							<td>{character.characterClass}</td>
+							<td>{character.level}</td>
+							<td>{character.description}</td>
+							{character.inventory !== null ?
+								<td>{character.inventory}</td> :
+								<td>TODO</td>
+							}
+							<td>
+								<CharacterDropdownButton
+									direction="down"
+									character={character}
+								/>
+							</td>
+						</tr>
+					)}
+				</tbody>
+			</Table>
+		</div>
+	);
 }

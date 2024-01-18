@@ -1,6 +1,6 @@
 ﻿using BindleForYourDungeon.Models;
 
-namespace BindleForYourDungeon
+namespace BindleForYourDungeon.Repositories
 {
 	public class CharacterRepository(ApplicationContext context) : ICharacterRepository
 	{
@@ -13,7 +13,7 @@ namespace BindleForYourDungeon
 			await _context.SaveChangesAsync();
 		}
 
-		public async Task<Character> GetCharacterAsync(int characterId)
+		public async Task<Character> GetCharacterAsync(Guid characterId)
 		{
 			var character = await _context.Characters.FindAsync(characterId);
 
@@ -26,14 +26,21 @@ namespace BindleForYourDungeon
 			characters.Name.Contains(searchTerm) ||
 			characters.Description.Contains(searchTerm));
 
-			return (Task<IQueryable<Character>>) characters;
+			return (Task<IQueryable<Character>>)characters;
 		}
 
-		public IEnumerable<Character> GetCharacters()
+		public IQueryable<Character> GetCharacters()
 		{
 			var character = _context.Characters;
 
 			return character;
+		}
+
+		public async Task DeleteCharacterAsync(Guid characterId)
+		{
+			_context.Characters.RemoveById(characterId);
+
+			await _context.SaveChangesAsync();
 		}
 	}
 }
