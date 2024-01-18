@@ -8,10 +8,20 @@ import {
     ListGroupItem,
     CardLink,
 } from 'reactstrap';
-import { useLoaderData } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 
-export function CharacterDetails() {
+export async function loader({ params }) {
+    console.log(params);
+    //const response = await fetch(`character/${params.characterId}`);
+    //const character = await response.json();
 
+    return null;
+}
+export default async function CharacterDetails(props) {
+    const { characterId } = useLocation();
+    console.log(characterId);
+    const response = await fetch(`character/${characterId}`);
+    const character = await response.json();
     //async populateCharacterData() {
     //    const params = this.props.params;
     //    console.log(params);
@@ -25,9 +35,8 @@ export function CharacterDetails() {
     //        loading: false
     //    });
     //}
-
-    const data = useLoaderData();
-    console.log(data);
+    
+    console.log(character);
         return <>
             <Card
                 style={{
@@ -64,5 +73,3 @@ export function CharacterDetails() {
             </Card>
         </>;
 };
-
-export default CharacterDetails;
