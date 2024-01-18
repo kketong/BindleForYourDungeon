@@ -10,7 +10,7 @@ namespace BindleForYourDungeon.Models
 		//Use "[Column("mappedname")]" to map a different name to the field.
 		[Column("Id")]
 		[BsonId(IdGenerator = typeof(CombGuidGenerator))]
-		public Guid CharacterId { get; set; }	
+		public Guid CharacterId { get; set; }
 		public required string Name { get; set; }
 		public CharacterClass[] CharacterClass { get; set; }
 		public required string Description { get; set; }

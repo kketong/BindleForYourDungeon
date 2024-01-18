@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import {
     Button,
     Table,
-} from 'reactstrap';
+} from 'react-bootstrap';
 
 import CreateCharacterModal from './CreateCharacterModal';
 import CharacterDropdownButton from './CharacterDropdownButton';
@@ -11,16 +11,16 @@ class Characters extends Component {
     constructor(props) {
         super(props);
         console.log('im in characters!');
-        this.state = { characters: [], loading: true , showCreateCharacter: false};
+        this.state = { characters: [], loading: true, showCreateCharacter: false };
     }
     static propTypes = {
-        
+
     };
     componentDidMount() {
 
         this.populateCharacterData();
     }
-    
+
     static renderCharactersTable(characters) {
         return (
             <Table className="table table-striped" aria-labelledby="tableLabel">
@@ -61,9 +61,9 @@ class Characters extends Component {
             : Characters.renderCharactersTable(this.state.characters);
         return (
             <div>
-                <Button variant="primary" onClick={()=>this.setState({ showCreateCharacter: true })}>
-                Create new character
-            </Button>
+                <Button variant="primary" onClick={() => this.setState({ showCreateCharacter: true })}>
+                    Create new character
+                </Button>
                 {this.state.showCreateCharacter && <CreateCharacterModal />}
                 <h1 id="tableLabel">Characters</h1>
                 {contents}

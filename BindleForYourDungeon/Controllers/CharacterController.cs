@@ -1,14 +1,10 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using BindleForYourDungeon.Models;
-using System.Net;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
-using System.Threading.Tasks;
-using SharpCompress.Common;
+﻿using BindleForYourDungeon.Models;
 using BindleForYourDungeon.Repositories;
+using Microsoft.AspNetCore.Mvc;
 
 namespace BindleForYourDungeon.Controllers
 {
-    [ApiController]
+	[ApiController]
 	[Route("character")]
 	public class CharacterController(
 		ILogger<CharacterController> logger,
@@ -32,7 +28,7 @@ namespace BindleForYourDungeon.Controllers
 			return characters;
 		}
 
-		[HttpGet("{characterId}")]		
+		[HttpGet("{characterId}")]
 		public async Task<Character> GetCharacter(Guid characterId)
 		{
 			var character = await characterRepository.GetCharacterAsync(characterId);
