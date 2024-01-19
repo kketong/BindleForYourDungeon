@@ -50,21 +50,13 @@ export default function CharacterDetails() {
 					<Accordion.Item>
 						<Accordion.Header targetId="2">Spells</Accordion.Header>
 						<Accordion.Body accordionId="2">
-							<strong>This is the second item&#39;s accordion body.</strong>
-							You can modify any of this with custom CSS or overriding our default
-							variables. It&#39;s also worth noting that just about any HTML can
-							go within the <code>.accordion-body</code>, though the transition
-							does limit overflow.
+							
 						</Accordion.Body>
 					</Accordion.Item>
 					<Accordion.Item>
 						<Accordion.Header targetId="3">Inventory</Accordion.Header>
 						<Accordion.Body accordionId="3">
-							<strong>This is the third item&#39;s accordion body.</strong>
-							You can modify any of this with custom CSS or overriding our default
-							variables. It&#39;s also worth noting that just about any HTML can
-							go within the <code>.accordion-body</code>, though the transition
-							does limit overflow.
+							
 						</Accordion.Body>
 					</Accordion.Item>
 				</Accordion>

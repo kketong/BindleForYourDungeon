@@ -7,9 +7,9 @@ import {
 } from 'react-router-dom';
 import Layout from './Layout';
 import Home from './components/Home';
-import ErrorPage from './components/errorPage';
-import Characters, { loader as charactersLoader } from './components/Characters/Characters';
-import CharacterDetails, { loader as characterDetailsLoader } from './components/Characters/CharacterDetails';
+import ErrorPage from './components/ErrorPage';
+import Characters, { loader as charactersLoader } from './components/characters/Characters';
+import CharacterDetails, { loader as characterDetailsLoader } from './components/characters/CharacterDetails';
 
 const router = createBrowserRouter([
 	{
