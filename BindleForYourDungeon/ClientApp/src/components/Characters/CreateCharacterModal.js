@@ -8,6 +8,7 @@ import {
 	Row,
 	Spinner,
 } from 'react-bootstrap';
+import { characterClasses } from '../../Constants';
 
 export default function CreateCharacterModal(props) {
 	const [loading, setLoading] = useState(false);
@@ -22,8 +23,6 @@ export default function CreateCharacterModal(props) {
 	function handleChange(event) {
 		const { id, value } = event.target;
 		setCharacter(prevState => ({ ...prevState, [id]: value }));
-		console.log(`id: ${id}, value: ${value}`);
-		console.log(JSON.stringify(character));
 	};
 
 	function handleClassChange(event) {
@@ -59,24 +58,8 @@ export default function CreateCharacterModal(props) {
 			.catch((error) => {
 				setLoading(false);
 				setRequestFailed(true);
+				console.log(error);
 			});
-	}
-
-	function renderClassRows(classArray) {
-		let columns = classArray.map((className) => (
-			<Col>
-				<Form.Check
-					type='checkbox'
-					id={`${className}`}
-					label={className} onChange={handleClassChange}
-				/>
-			</Col>
-		));
-		return (
-			<Row>
-				{columns}
-			</Row>
-		);
 	}
 
 	return (
@@ -98,10 +81,34 @@ export default function CreateCharacterModal(props) {
 						</Form.Group>
 						<Form.Group className="mb-3" controlId="classes">
 							<Form.Label className="mb-3">Character Classes</Form.Label>
-							{renderClassRows(['None', 'Barbarian', 'Cleric'])}
-							{renderClassRows(['Druid', 'Fighter', 'Monk'])}
-							{renderClassRows(['Paladin', 'Warlock', 'Wizard'])}
-							{renderClassRows(['Ranger', 'Rogue', 'Sorcerer'])}
+							{characterClasses.map((_, index) => {
+								if (index % 3 === 0)
+									return (
+										<Row>
+											<Col>
+												<Form.Check
+												type='checkbox'
+													id={`${characterClasses[index]}`}
+													label={characterClasses[index]} onChange={handleClassChange}
+												/>
+											</Col>
+											<Col>
+												<Form.Check
+													type='checkbox'
+													id={`${characterClasses[index+1]}`}
+													label={characterClasses[index+1]} onChange={handleClassChange}
+												/>
+											</Col>
+											<Col>
+												<Form.Check
+													type='checkbox'
+													id={`${characterClasses[index+2]}`}
+													label={characterClasses[index+2]} onChange={handleClassChange}
+												/>
+											</Col>
+										</Row>
+									);
+							})}
 						</Form.Group>
 						{loading ?
 							<Button color="primary" disabled>

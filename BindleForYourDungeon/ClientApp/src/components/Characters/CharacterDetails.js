@@ -1,5 +1,6 @@
 ﻿import React, { useState } from 'react';
 import {
+	Button,
 	Card,
 	ListGroup,
 	ListGroupItem,
@@ -7,7 +8,7 @@ import {
 	Form
 } from 'react-bootstrap';
 import { useLoaderData } from 'react-router-dom';
-
+import SearchSpellModal from './spells/SearchSpellModal';
 export async function loader({ params }) {
 	const characterId = params.characterId;
 	const response = await fetch(`character/${characterId}`);
@@ -20,6 +21,7 @@ export default function CharacterDetails() {
 	const { character } = useLoaderData();
 
 	const [openBackground, setOpen] = useState('1');
+	const [showSearchSpellModal, setShowSearchSpellModal] = useState(false);
 	const toggle = (id) => {
 		if (openBackground === id) {
 			setOpen();
@@ -38,47 +40,30 @@ export default function CharacterDetails() {
 				<Card.Title tag="h5">
 					{character.name}
 				</Card.Title>
-				<Accordion open={openBackground} toggle={toggle}>
+				<Accordion>
 					<Accordion.Item>
-						<Accordion.Header targetId="1">Character Background</Accordion.Header>
-						<Accordion.Body tag='Form' accordionId="1">
+						<Accordion.Header >Character Background</Accordion.Header>
+						<Accordion.Body tag='Form' >
 							<Form.Group className="mb-3" controlId="description">
 								<Form.Control type="text" placeholder="Character description" />
 							</Form.Group>
 						</Accordion.Body>
 					</Accordion.Item>
 					<Accordion.Item>
-						<Accordion.Header targetId="2">Spells</Accordion.Header>
-						<Accordion.Body accordionId="2">
+						<Accordion.Header >Spells</Accordion.Header>
+						<Accordion.Body>
+							<Button onClick={() => setShowSearchSpellModal(true)}>Add a spell</Button>
+							{showSearchSpellModal && <SearchSpellModal show={showSearchSpellModal} />}
 							
 						</Accordion.Body>
 					</Accordion.Item>
 					<Accordion.Item>
-						<Accordion.Header targetId="3">Inventory</Accordion.Header>
-						<Accordion.Body accordionId="3">
+						<Accordion.Header>Inventory</Accordion.Header>
+						<Accordion.Body>
 							
 						</Accordion.Body>
 					</Accordion.Item>
 				</Accordion>
-			</Card.Body>
-			<ListGroup flush>
-				<ListGroupItem>
-					An item
-				</ListGroupItem>
-				<ListGroupItem>
-					A second item
-				</ListGroupItem>
-				<ListGroupItem>
-					And a third item
-				</ListGroupItem>
-			</ListGroup>
-			<Card.Body>
-				<Card.Link href="#">
-					Card Link
-				</Card.Link>
-				<Card.Link href="#">
-					Another Card Link
-				</Card.Link>
 			</Card.Body>
 		</Card>
 	</>;
