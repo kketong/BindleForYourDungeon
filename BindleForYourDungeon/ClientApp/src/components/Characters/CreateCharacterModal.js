@@ -9,6 +9,7 @@ import {
 	Spinner,
 } from 'react-bootstrap';
 import { characterClasses } from '../../Constants';
+import { postCharacter } from '../../apis/api';
 
 export default function CreateCharacterModal(props) {
 	const [loading, setLoading] = useState(false);
@@ -40,18 +41,7 @@ export default function CreateCharacterModal(props) {
 	async function handleSubmit() {
 		setLoading(true);
 		setRequestFailed(false);
-		await fetch('character', {
-			method: 'POST',
-			headers: {
-				'Accept': 'application/json',
-				'Content-Type': 'application/json'
-			},
-			body: JSON.stringify(character)
-		})
-			.then((response) => {
-				if (!response.ok) throw new Error(response.status);
-				else return response.json();
-			})
+		postCharacter(character)
 			.then(() => {
 				setLoading(false);
 			})
@@ -87,7 +77,7 @@ export default function CreateCharacterModal(props) {
 										<Row>
 											<Col>
 												<Form.Check
-												type='checkbox'
+													type='checkbox'
 													id={`${characterClasses[index]}`}
 													label={characterClasses[index]} onChange={handleClassChange}
 												/>
@@ -95,15 +85,15 @@ export default function CreateCharacterModal(props) {
 											<Col>
 												<Form.Check
 													type='checkbox'
-													id={`${characterClasses[index+1]}`}
-													label={characterClasses[index+1]} onChange={handleClassChange}
+													id={`${characterClasses[index + 1]}`}
+													label={characterClasses[index + 1]} onChange={handleClassChange}
 												/>
 											</Col>
 											<Col>
 												<Form.Check
 													type='checkbox'
-													id={`${characterClasses[index+2]}`}
-													label={characterClasses[index+2]} onChange={handleClassChange}
+													id={`${characterClasses[index + 2]}`}
+													label={characterClasses[index + 2]} onChange={handleClassChange}
 												/>
 											</Col>
 										</Row>

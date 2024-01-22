@@ -2,8 +2,6 @@
 import {
 	Button,
 	Card,
-	ListGroup,
-	ListGroupItem,
 	Accordion,
 	Form
 } from 'react-bootstrap';
@@ -17,18 +15,10 @@ export async function loader({ params }) {
 	return { character };
 }
 
-export default function CharacterDetails() {
+export default function CharacterSheet() {
 	const { character } = useLoaderData();
 
-	const [openBackground, setOpen] = useState('1');
 	const [showSearchSpellModal, setShowSearchSpellModal] = useState(false);
-	const toggle = (id) => {
-		if (openBackground === id) {
-			setOpen();
-		} else {
-			setOpen(id);
-		}
-	};
 
 	return <>
 		<Card>
@@ -42,25 +32,28 @@ export default function CharacterDetails() {
 				</Card.Title>
 				<Accordion>
 					<Accordion.Item>
-						<Accordion.Header >Character Background</Accordion.Header>
+						<Accordion.Header >Character Info</Accordion.Header>
 						<Accordion.Body tag='Form' >
 							<Form.Group className="mb-3" controlId="description">
-								<Form.Control type="text" placeholder="Character description" />
+							<Form.Label>Description</Form.Label>
+								<Form.Control type="text" placeholder={character.description}></Form.Control>
 							</Form.Group>
 						</Accordion.Body>
 					</Accordion.Item>
 					<Accordion.Item>
-						<Accordion.Header >Spells</Accordion.Header>
+						<Accordion.Header >Spellbook</Accordion.Header>
 						<Accordion.Body>
-							<Button onClick={() => setShowSearchSpellModal(true)}>Add a spell</Button>
-							{showSearchSpellModal && <SearchSpellModal show={showSearchSpellModal} />}
-							
+							<Button onClick={() => setShowSearchSpellModal(true)}>Add Spells</Button>
+							{showSearchSpellModal &&
+								<SearchSpellModal
+									show={showSearchSpellModal}
+									onHide={() => setShowSearchSpellModal(false)} />}
 						</Accordion.Body>
 					</Accordion.Item>
 					<Accordion.Item>
 						<Accordion.Header>Inventory</Accordion.Header>
 						<Accordion.Body>
-							
+
 						</Accordion.Body>
 					</Accordion.Item>
 				</Accordion>

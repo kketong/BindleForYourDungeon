@@ -9,7 +9,7 @@ import Layout from './Layout';
 import Home from './components/Home';
 import ErrorPage from './components/ErrorPage';
 import Characters, { loader as charactersLoader } from './components/characters/Characters';
-import CharacterDetails, { loader as characterDetailsLoader } from './components/characters/CharacterDetails';
+import CharacterSheet, { loader as characterSheetLoader } from './components/characters/CharacterSheet';
 
 const router = createBrowserRouter([
 	{
@@ -31,8 +31,8 @@ const router = createBrowserRouter([
 					},
 					{
 						path: ':characterId',
-						element: <CharacterDetails />,
-						loader: characterDetailsLoader,
+						element: <CharacterSheet />,
+						loader: characterSheetLoader,
 					}
 				]
 			},

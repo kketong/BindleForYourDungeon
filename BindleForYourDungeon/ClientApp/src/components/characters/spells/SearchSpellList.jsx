@@ -15,7 +15,7 @@ import {
 	characterClasses
 } from '../../../Constants';
 
-export const SearchSpellList = ({ spells, handleShowDetails, onToggleAddSpell }) => {
+export const SearchSpellList = ({ spells, handleShowDetails }) => {
 	const [filteredSpells, setFilteredSpells] = useState([]);
 	const [currentPage, setCurrentPage] = useState(1);
 	const [classFilter, setClassFilter] = useState('');
@@ -67,7 +67,7 @@ export const SearchSpellList = ({ spells, handleShowDetails, onToggleAddSpell })
 				<Row>
 					<Col>
 						<Form.Group className="mb-3" controlId="searchSpellForm.ClassFilterSelect">
-							<Form.Label>Filter by Character Class</Form.Label>
+							<Form.Label>Character Class</Form.Label>
 							<Form.Select onChange={handleClassFilterChange}>
 								<option value="">None</option>
 								{characterClasses.map((characterClass) =>
@@ -78,7 +78,7 @@ export const SearchSpellList = ({ spells, handleShowDetails, onToggleAddSpell })
 					</Col>
 					<Col>
 						<Form.Group className="mb-3" controlId="searchSpellForm.ClassFilterSelect">
-							<Form.Label>Filter by Magic School</Form.Label>
+							<Form.Label>Magic School</Form.Label>
 							<Form.Select onChange={handleSchoolFilterChange}>
 								<option value="">None</option>
 								{magicSchools.map((school) =>
@@ -103,14 +103,14 @@ export const SearchSpellList = ({ spells, handleShowDetails, onToggleAddSpell })
 				</Form.Group>
 			</Form>
 			{filteredSpells
-					.slice(((currentPage - 1) * pageSize), currentPage * pageSize)
-					.map((spell) => (
-						<SpellCard
-							key={spell.index}
-							spell={spell}
-							showSpellDetailsClicked={handleShowDetails}
-						/>
-					))
+				.slice(((currentPage - 1) * pageSize), currentPage * pageSize)
+				.map((spell) => (
+					<SpellCard
+						key={spell.index}
+						spell={spell}
+						showAddSpellButton={true}
+					/>
+				))
 			}
 			<Pagination
 				itemsCount={filteredSpells.length}
