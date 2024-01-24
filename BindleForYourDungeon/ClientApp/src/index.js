@@ -3,10 +3,10 @@ import * as React from 'react';
 import * as ReactDOM from 'react-dom/client';
 import {
 	createBrowserRouter,
-	RouterProvider,
-} from 'react-router-dom';
+	RouterProvider} from 'react-router-dom';
 import Layout from './Layout';
 import Home from './components/Home';
+import AdminPage from './components/Admin/AdminPage';
 import ErrorPage from './components/ErrorPage';
 import Characters, { loader as charactersLoader } from './components/characters/Characters';
 import CharacterSheet, { loader as characterSheetLoader } from './components/characters/CharacterSheet';
@@ -36,6 +36,10 @@ const router = createBrowserRouter([
 					}
 				]
 			},
+			{
+				path: 'Admin',
+				element: <AdminPage />
+			}
 		]
 	},
 ]);

@@ -17,7 +17,7 @@ export const SpellCard = ({
 	}
 
 	function addSpell() {
-		//TODO
+		
 	}
 
 	return (

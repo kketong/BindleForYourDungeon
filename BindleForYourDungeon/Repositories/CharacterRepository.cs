@@ -1,4 +1,7 @@
 ﻿using BindleForYourDungeon.Models;
+using DnsClient.Protocol;
+using Microsoft.AspNetCore.Http.HttpResults;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace BindleForYourDungeon.Repositories
 {
@@ -36,10 +39,17 @@ namespace BindleForYourDungeon.Repositories
 			return character;
 		}
 
-		public async Task DeleteCharacterAsync(Guid characterId)
+		public async Task PatchCharacter(Character character, CancellationToken cancellationToken)
 		{
-			_context.Characters.RemoveById(characterId);
+			_context.Characters.Update(character);
 
+			await _context.SaveChangesAsync(cancellationToken);
+		}
+
+		public async Task DeleteCharacterAsync(Character character)
+		{
+			_context.Characters.Remove(character);
+			
 			await _context.SaveChangesAsync();
 		}
 	}
