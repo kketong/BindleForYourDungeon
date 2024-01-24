@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace BindleForYourDungeon.Controllers
 {
 	[ApiController]
-	[Route("character")]
+	[Route("characters")]
 	public class CharacterController(
 		ILogger<CharacterController> logger,
 		ICharacterRepository characterRepository) : ControllerBase
@@ -16,13 +16,6 @@ namespace BindleForYourDungeon.Controllers
 		[HttpGet]
 		public IQueryable<Character> GetCharacters()
 		{
-			//var newchar = new Character()
-			//{
-			//	Description = "Dummy description",
-			//	Level = 1,
-			//	Name = "Tavern Keeper"
-			//};
-			//characterRepository.CreateCharacterAsync(newchar);
 			var characters = characterRepository.GetCharacters();
 
 			return characters;
@@ -48,13 +41,27 @@ namespace BindleForYourDungeon.Controllers
 		public async Task<IActionResult> CreateAsync(Character character)
 		{
 			await characterRepository.CreateCharacterAsync(character);
-			return Created(new Uri("www.todo.com"), character);
+			return Created(Url.Content("~/") + character.Id, character);
 		}
 
-		[HttpDelete]
+		[HttpPatch("{characterId}")]
+		public async Task<IActionResult> PatchCharacterAsync(Character character, CancellationToken cancellationToken)
+		{
+			await characterRepository.PatchCharacter(character, cancellationToken);
+
+			return Ok(character);
+		}
+
+		[HttpDelete("{characterId}")]
 		public async Task<IActionResult> DeleteAsync(Guid characterId)
 		{
-			await characterRepository.DeleteCharacterAsync(characterId);
+			var characterToDelete = await characterRepository.GetCharacterAsync(characterId);
+			if (characterToDelete == null)
+			{
+				return NotFound($"character with id {characterId} not found");
+			}
+
+			await characterRepository.DeleteCharacterAsync(characterToDelete);
 
 			return NoContent();
 		}
