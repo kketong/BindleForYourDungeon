@@ -16,16 +16,39 @@ import CharacterDropdownButton from './CharacterDropdownButton';
 import { getCharacters, deleteCharacter } from '../../apis/api'
 import { DeleteCharacterConfirmModal } from './DeleteCharacterConfirmModal';
 
-export async function loader() {
+export async function loader({ request }) {
 	const data = await getCharacters();
 	return { characters: data };
 }
+
+export async function destroyLoader({ params }) {
+	const response = deleteCharacter(params.characterId)
+	return redirect('/Characters', await response.status);
+}
+
 
 export default function Characters() {
 	const { characters } = useLoaderData();
 	const [showCreateCharacter, setShowCreateCharacter] = useState(false);
 	const [characterToDelete, setCharacterToDelete] = useState('');
 	const [showDeleteCharacterModal, setShowDeleteCharacterModal] = useState(false);
+
+	function charactersReducer(characters, action) {
+		switch (action.type) {
+			case 'added': {
+				return [
+					...characters,
+					, action.character
+				];
+			}
+			case 'deleted': {
+				return characters.filter((t) => t.id !== action.id);
+			}
+			default: {
+				throw Error('Unknown action: ' + action.type);
+			}
+		}
+	}
 
 	function handleClick() {
 		setShowCreateCharacter(true);
@@ -38,13 +61,10 @@ export default function Characters() {
 
 	function closeDeleteCharacterConfirmModal() {
 		setShowDeleteCharacterModal(false);
-		setCharacterToDelete(null);
 	}
 
-	async function handleDeleteCharacterConfirm() {
-		await deleteCharacter(characterToDelete.id);
+	function handleCloseCreateCharacterModal) {
 
-		setShowDeleteCharacterModal(false);
 	}
 
 	return (
@@ -54,8 +74,8 @@ export default function Characters() {
 			</Button>
 			{showCreateCharacter &&
 				<CreateCharacterModal
-					show={showCreateCharacter}
-					onHide={() => setShowCreateCharacter(false)} />
+				show={showCreateCharacter}
+				handleClose={handleCloseCreateCharacterModal}/>
 			}
 			<h1 id="tableLabel">Characters</h1>
 			<Table className="table table-striped" aria-labelledby="tableLabel">
@@ -93,8 +113,8 @@ export default function Characters() {
 				</tbody>
 			</Table>
 			<DeleteCharacterConfirmModal characterName={characterToDelete.name}
+				characterId={characterToDelete.id}
 				show={showDeleteCharacterModal}
-				handleDeleteCharacter={handleDeleteCharacterConfirm}
 				handleClose={closeDeleteCharacterConfirmModal}
 				/>
 		</>

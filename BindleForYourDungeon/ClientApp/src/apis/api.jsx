@@ -24,7 +24,7 @@ export async function getCharacter(characterId) {
 }
 
 export async function deleteCharacter(characterId) {
-	await fetch(`characters/${characterId}`, {
+	const response = await fetch(`characters/${characterId}`, {
 		method: 'DELETE',
 		body: JSON.stringify(characterId)
 	})
@@ -32,6 +32,7 @@ export async function deleteCharacter(characterId) {
 			if (!response.ok) throw new Error(response.status);
 			else return response;
 		});
+	return response;
 }
 
 export async function postDnd5eSpell(spell) {

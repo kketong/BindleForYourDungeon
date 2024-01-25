@@ -8,7 +8,10 @@ import Layout from './Layout';
 import Home from './components/Home';
 import AdminPage from './components/Admin/AdminPage';
 import ErrorPage from './components/ErrorPage';
-import Characters, { loader as charactersLoader } from './components/characters/Characters';
+import Characters, {
+	loader as charactersLoader,
+	destroyLoader as destroyCharacterLoader
+} from './components/characters/Characters';
 import CharacterSheet, { loader as characterSheetLoader } from './components/characters/CharacterSheet';
 
 const router = createBrowserRouter([
@@ -33,6 +36,10 @@ const router = createBrowserRouter([
 						path: ':characterId',
 						element: <CharacterSheet />,
 						loader: characterSheetLoader,
+					},
+					{
+						path: ':characterId/destroy',
+						loader: destroyCharacterLoader,
 					}
 				]
 			},

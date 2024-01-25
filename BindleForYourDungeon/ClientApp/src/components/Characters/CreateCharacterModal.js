@@ -8,10 +8,11 @@ import {
 	Row,
 	Spinner,
 } from 'react-bootstrap';
+import { redirect } from 'react-router-dom';
 import { characterClasses } from '../../Constants';
 import { postCharacter } from '../../apis/api';
 
-export default function CreateCharacterModal(props) {
+export default function CreateCharacterModal({ show, handleClose, props }) {
 	const [loading, setLoading] = useState(false);
 	const [requestFailed, setRequestFailed] = useState(false);
 	const [character, setCharacter] = useState({
@@ -41,9 +42,10 @@ export default function CreateCharacterModal(props) {
 	async function handleSubmit() {
 		setLoading(true);
 		setRequestFailed(false);
-		postCharacter(character)
+		const response = postCharacter(character)
 			.then(() => {
 				setLoading(false);
+				return redirect('./Characters', response.status);
 			})
 			.catch((error) => {
 				setLoading(false);
@@ -54,7 +56,7 @@ export default function CreateCharacterModal(props) {
 
 	return (
 		<>
-			<Modal {...props} className='mb-3'>
+			<Modal show={show} onHide={handleClose} {...props} className='mb-3'>
 				<Modal.Header closeButton>
 					<Modal.Title>Create new character</Modal.Title>
 				</Modal.Header>

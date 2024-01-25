@@ -2,8 +2,11 @@
 	Button,
 	Modal,
 } from 'react-bootstrap';
+import {
+	Link
+} from 'react-router-dom';
 
-export function DeleteCharacterConfirmModal({ characterName, show, props, handleDeleteCharacter, handleClose }) {
+export function DeleteCharacterConfirmModal({ characterName, characterId, show, props, handleClose }) {
 	
 	return (
 		<Modal show={show} {...props} >
@@ -16,7 +19,12 @@ export function DeleteCharacterConfirmModal({ characterName, show, props, handle
 				Are you sure you wish to delete this character?
 			</Modal.Body>
 			<Modal.Footer>
-				<Button variant='primary' onClick={handleDeleteCharacter}>Delete {characterName}</Button>
+				<Button
+					variant='primary'
+					as={Link}
+					to={`${characterId}/destroy`}
+					onClick={handleClose}
+				>Delete {characterName}</Button>
 				<Button variant='secondary' onClick={handleClose}>Cancel</Button>
 			</Modal.Footer>
 		</Modal>
