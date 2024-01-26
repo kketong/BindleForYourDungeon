@@ -15,6 +15,6 @@ namespace BindleForYourDungeon.Models
 		public required string Description { get; set; }
 		public int Level { get; set; }
 		public Guid? Inventory { get; set; }
-		public Guid[]? LearntSpells { get; set; }
+		public ICollection<string>? LearntSpells { get; set; }
 	}
 }

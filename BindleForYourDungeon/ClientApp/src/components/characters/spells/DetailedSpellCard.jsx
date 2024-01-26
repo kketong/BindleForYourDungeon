@@ -30,6 +30,7 @@ export default function DetailedSpellCard({ spell, props }) {
 					<Col>Duration</Col>
 					<Col>{spell.duration}</Col>
 				</Row>
+				{ }
 			</Modal.Body>
 		</Modal>
 	);

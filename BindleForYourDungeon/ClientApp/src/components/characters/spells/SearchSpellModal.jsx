@@ -7,14 +7,14 @@ import {
 	Modal,
 	Spinner
 } from 'react-bootstrap';
-import { getAllSpells } from '../../../apis/dnd5eapi';
+import { getSpells } from '../../../apis/api';
 import SearchSpellList from './SearchSpellList';
 
 export default function SearchSpellModal(props) {
 	const [spells, setSpells] = useState([]);
 
 	useEffect(() => {
-		getAllSpells()
+		getSpells()
 			.then(setSpells);
 	}, []);
 	

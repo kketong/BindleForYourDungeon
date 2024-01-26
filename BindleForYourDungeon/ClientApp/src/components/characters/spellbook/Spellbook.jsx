@@ -1,21 +1,28 @@
-import { getCharacter } from '../../../apis';
+import {
+	Row,
+	Col,
+} from 'react-bootstrap';
 import SpellCard from '../spells/SpellCard';
-
-export async function loader({ params }) {
-	const character = getCharacter(params.characterId);
-	const spellIds = character.spellbook;
-	GetSpell
-}
-
-export function Spellbook() {
-	const spells = useLoaderData();
-
+export function Spellbook({ spells }) {
+	if (spells !== null)
 	return (
-		{
-			spells.map((spell, index) => {
-		
-			<SpellCard spell=
-
-		}}
+		<>
+			{spells.map((_, index) => {
+				if (index % 3 === 0)
+					return (
+						<Row>
+							<Col>
+								<SpellCard spell={spells[index]} />
+							</Col>
+							<Col>
+								<SpellCard spell={spells[index+1]} />
+							</Col>
+							<Col>
+								<SpellCard spell={spells[index+2]} />
+							</Col>
+						</Row>
+					)
+			})}
+		</>
 	)
 }

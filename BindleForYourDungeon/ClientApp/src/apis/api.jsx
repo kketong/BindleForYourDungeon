@@ -1,4 +1,11 @@
-﻿export async function postCharacter(character) {
+﻿
+//#region Characters
+export async function getCharacters() {
+	const response = await fetch('characters');
+
+	return await response.json();
+}
+export async function postCharacter(character) {
 	await fetch('characters', {
 		method: 'POST',
 		headers: {
@@ -9,32 +16,50 @@
 	})
 		.then((response) => {
 			if (!response.ok) throw new Error(response.status);
+
 			else return response.json();
 		});
 }
 
-export async function getCharacters() {
-	const response = await fetch('characters');
-	return await response.json();
-}
-
 export async function getCharacter(characterId) {
 	const response = await fetch(`characters/${characterId}`);
+
 	return await response.json();
 }
 
 export async function deleteCharacter(characterId) {
 	const response = await fetch(`characters/${characterId}`, {
-		method: 'DELETE',
-		body: JSON.stringify(characterId)
+		method: 'DELETE'
 	})
 		.then((response) => {
 			if (!response.ok) throw new Error(response.status);
 			else return response;
 		});
+
 	return response;
 }
 
+export async function addSpellToCharacter(characterId, spellId) {
+	const response = await fetch(`characters/${characterId}/addspell`, {
+		method: 'POST',
+		headers: {
+			'Accept': 'application/json',
+			'Content-Type': 'application/json'
+		},
+		body: JSON.stringify(spellId)
+	})
+		.then((response) => {
+			if (!response.ok) throw new Error(response.status);
+			else return response;
+		});
+
+	return await response.json();
+}
+
+
+//#endregion
+
+//#region Spells
 export async function postDnD5eSpells(spells) {
 	await fetch('spells/dnd5e', {
 		method: 'PUT',
@@ -49,3 +74,17 @@ export async function postDnD5eSpells(spells) {
 			else return response.json();
 		});
 }
+
+export async function getSpells() {
+	const response = await fetch('spells');
+
+	return await response.json();
+}
+
+export async function getSpell(spellId) {
+	const response = await fetch(`spells/${spellId}`);
+
+	return await response.json();
+}
+
+//#endregion

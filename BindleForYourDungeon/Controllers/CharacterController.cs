@@ -1,6 +1,8 @@
 ﻿using BindleForYourDungeon.Models;
 using BindleForYourDungeon.Repositories;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
+using System.Threading;
 
 namespace BindleForYourDungeon.Controllers
 {
@@ -42,6 +44,30 @@ namespace BindleForYourDungeon.Controllers
 		{
 			await characterRepository.CreateCharacterAsync(character);
 			return Created(Url.Content("~/") + character.Id, character);
+		}
+
+		[HttpPost("{characterId}/addspell")]
+		public async Task<IActionResult> AddSpell(Guid characterId, [FromBody]string spellId, CancellationToken cancellationToken)
+		{
+			var character = await characterRepository.GetCharacterAsync(characterId);
+			if (character == null)
+			{
+				return NotFound();
+			}
+			else
+			{
+				if (!character.LearntSpells.IsNullOrEmpty())
+				{
+					character.LearntSpells.Add(spellId);
+				}
+                else
+                {
+					character.LearntSpells = [spellId];
+				}
+			}
+			await characterRepository.PatchCharacter(character, cancellationToken);
+
+			return Ok(character);
 		}
 
 		[HttpPatch("{characterId}")]

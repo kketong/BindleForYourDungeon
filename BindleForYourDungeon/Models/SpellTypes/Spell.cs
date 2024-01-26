@@ -1,17 +1,11 @@
-﻿using BindleForYourDungeon.Models.Enums;
-using BindleForYourDungeon.Models.Spell;
-using MongoDB.Bson.Serialization.Attributes;
-using MongoDB.Bson.Serialization.IdGenerators;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.Text.Json.Serialization;
+﻿using System.ComponentModel.DataAnnotations.Schema;
 
 namespace BindleForYourDungeon.Models.SpellTypes
 {
 	[Table("Spells")]
 	public class Spell
 	{
-		[JsonPropertyName("index")]
-		public string? Id { get; set; }
+		public string Id { get; set; }
 		public required string Name { get; set; }
 		public required List<string> Desc { get; set; }
 		public List<string>? HigherLevel { get; set; }

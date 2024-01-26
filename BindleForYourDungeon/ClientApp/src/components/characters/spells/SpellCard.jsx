@@ -7,17 +7,47 @@ import {
 	Col
 } from 'react-bootstrap';
 
+import {
+	useCharacter,
+	useCharacterDispatch
+} from '../../../contexts/CharacterContext.jsx';
+
+import { addSpellToCharacter } from '../../../apis/api.jsx';
+import ToastContext from '../../../contexts/ToastContext.jsx';
+
 export const SpellCard = ({
 	spell,
 	showAddSpellButton
 }) => {
 	const [open, setOpen] = useState(false);
+	const characterDispatch = useCharacterDispatch();
+	const toastContext = ToastContext;
+	const character = useCharacter();
+
 	function toggleCollapse() {
 		setOpen(!open);
 	}
 
-	function addSpell() {
-		
+	async function addSpell() {
+		const response = await addSpellToCharacter(character.id, spell.id);
+		if (response.ok) {
+			characterDispatch({
+				type: 'addSpell',
+				id: spell.id
+			});
+			toastContext({
+				variant: 'success',
+				header: 'Add spell to character',
+				message: 'Success!'
+			})
+		}
+		else {
+			toastContext({
+				variant: 'danger',
+				header: 'Add spell to character',
+				message: `${response.statusCode} ${response.statusText}: ${response.body}`
+			})
+		}
 	}
 
 	return (
@@ -29,7 +59,7 @@ export const SpellCard = ({
 				<Card.Title>{spell.name}</Card.Title>
 				<Card.Subtitle>
 					{spell.level > 0 && `Level ${spell.level} `}
-					{spell.school.name}
+					{spell.school}
 					{spell.level === 0 && " cantrip"}
 				</Card.Subtitle>
 				<Collapse in={open}>
@@ -56,7 +86,6 @@ export const SpellCard = ({
 								variant="primary"
 								onClick={addSpell}
 								aria-label="addSpell"
-								disabled
 							>Add to Spellbook</Button>
 						}
 					</Card.Body>
