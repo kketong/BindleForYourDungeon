@@ -49,3 +49,14 @@ export async function postDnd5eSpell(spell) {
 			else return response.json();
 		});
 }
+
+export async function getSpells(spellIds) {
+	await fetch('Spells/GetSpells', {
+		method: 'POST',
+		headers: {
+			'Accept': 'application/json',
+			'Content-Type': 'application/json'
+		},
+		body: JSON.stringify(spellIds)
+	});
+}

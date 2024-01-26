@@ -6,7 +6,7 @@ import {
 	RouterProvider} from 'react-router-dom';
 import Layout from './Layout';
 import Home from './components/Home';
-import AdminPage from './components/Admin/AdminPage';
+import AdminPage from './components/admin/AdminPage';
 import ErrorPage from './components/ErrorPage';
 import Characters, {
 	loader as charactersLoader,

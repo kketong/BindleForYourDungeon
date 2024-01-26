@@ -26,29 +26,11 @@ export async function destroyLoader({ params }) {
 	return redirect('/Characters', await response.status);
 }
 
-
 export default function Characters() {
 	const { characters } = useLoaderData();
 	const [showCreateCharacter, setShowCreateCharacter] = useState(false);
 	const [characterToDelete, setCharacterToDelete] = useState('');
 	const [showDeleteCharacterModal, setShowDeleteCharacterModal] = useState(false);
-
-	function charactersReducer(characters, action) {
-		switch (action.type) {
-			case 'added': {
-				return [
-					...characters,
-					, action.character
-				];
-			}
-			case 'deleted': {
-				return characters.filter((t) => t.id !== action.id);
-			}
-			default: {
-				throw Error('Unknown action: ' + action.type);
-			}
-		}
-	}
 
 	function handleClick() {
 		setShowCreateCharacter(true);
@@ -63,8 +45,8 @@ export default function Characters() {
 		setShowDeleteCharacterModal(false);
 	}
 
-	function handleCloseCreateCharacterModal) {
-
+	function handleCloseCreateCharacterModal() {
+		setShowCreateCharacter(false);
 	}
 
 	return (

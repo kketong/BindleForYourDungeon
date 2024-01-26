@@ -43,6 +43,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="ClientApp\src\components\characters\spellbook\" />
     <Folder Include="Models\Converters\" />
   </ItemGroup>
 
