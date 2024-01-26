@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using BindleForYourDungeon.Models.Dnd5E;
+using BindleForYourDungeon.Models.DnD5e;
 using BindleForYourDungeon.Models.SpellTypes;
 using BindleForYourDungeon.Repositories;
 using Microsoft.AspNetCore.Mvc;
@@ -62,17 +62,17 @@ namespace BindleForYourDungeon.Controllers
 		}
 
 
-		[HttpPost("dnd5e")]
-		public async Task<IActionResult> PostDnd5eSpellsAsync(Dnd5ESpell[] spells)
+		[HttpPut("dnd5e")]
+		public async Task<IActionResult> PutDnD5eSpellsAsync(DnD5eSpell[] spells)
 		{
 			var mappedSpells = new List<Spell>();
 			foreach (var spell in spells)
 			{
-				var mappedSpell = mapper.Map<Dnd5ESpell, Spell>(spell);
+				var mappedSpell = mapper.Map<DnD5eSpell, Spell>(spell);
 				mappedSpells.Add(mappedSpell);
 			}
 
-			await spellRepository.CreateSpellsAsync(mappedSpells);
+			await spellRepository.PutSpellsAsync(mappedSpells);
 
 			return Created(string.Empty, mappedSpells);
 		}

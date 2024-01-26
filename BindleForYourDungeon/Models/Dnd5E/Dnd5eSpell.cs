@@ -1,9 +1,9 @@
 ﻿using System.Text.Json.Serialization;
 using BindleForYourDungeon.Models.SpellTypes;
 
-namespace BindleForYourDungeon.Models.Dnd5E
+namespace BindleForYourDungeon.Models.DnD5e
 {
-	public class Dnd5ESpell
+	public class DnD5eSpell
 	{
 		[JsonPropertyName("index")]
 		public string Index { get; set; }
@@ -45,16 +45,16 @@ namespace BindleForYourDungeon.Models.Dnd5E
 		public string? AttackType { get; set; }
 
 		[JsonPropertyName("damage")]
-		public Dnd5EDamage? Damage { get; set; }
+		public DnD5eDamage? Damage { get; set; }
 
 		[JsonPropertyName("school")]
-		public Dnd5ESchool School { get; set; }
+		public DnD5eSchool School { get; set; }
 
 		[JsonPropertyName("classes")]
-		public List<Dnd5EClass> Classes { get; set; }
+		public List<DnD5eClass> Classes { get; set; }
 
 		[JsonPropertyName("subclasses")]
-		public List<Dnd5ESubclass> Subclasses { get; set; }
+		public List<DnD5eSubclass> Subclasses { get; set; }
 
 		[JsonPropertyName("url")]
 		public string Url { get; set; }
@@ -64,10 +64,10 @@ namespace BindleForYourDungeon.Models.Dnd5E
 
 	}
 
-	public class Dnd5EDamage
+	public class DnD5eDamage
 	{
 		[JsonPropertyName("damage_type")]
-		public Dnd5EDamageType? DamageType { get; set; }
+		public DnD5eDamageType? DamageType { get; set; }
 
 		[JsonPropertyName("damage_at_slot_level")]
 		public Dictionary<string, string>? DamageAtSlotLevel { get; set; }
@@ -76,34 +76,7 @@ namespace BindleForYourDungeon.Models.Dnd5E
 		public Dictionary<string, string>? DamageAtCharacterLevel { get; set; }
 	}
 
-	public class Dnd5EDamageAtSlotLevel
-	{
-		[JsonPropertyName("2")]
-		public string? _2 { get; set; }
-
-		[JsonPropertyName("3")]
-		public string? _3 { get; set; }
-
-		[JsonPropertyName("4")]
-		public string? _4 { get; set; }
-
-		[JsonPropertyName("5")]
-		public string? _5 { get; set; }
-
-		[JsonPropertyName("6")]
-		public string? _6 { get; set; }
-
-		[JsonPropertyName("7")]
-		public string? _7 { get; set; }
-
-		[JsonPropertyName("8")]
-		public string? _8 { get; set; }
-
-		[JsonPropertyName("9")]
-		public string? _9 { get; set; }
-	}
-
-	public class Dnd5EDamageType
+	public class DnD5eDamageType
 	{
 		[JsonPropertyName("index")]
 		public string Index { get; set; }
@@ -115,7 +88,7 @@ namespace BindleForYourDungeon.Models.Dnd5E
 		public string Url { get; set; }
 	}
 
-	public class Dnd5ESchool
+	public class DnD5eSchool
 	{
 		//	[JsonPropertyName("index")]
 		//	public string Index { get; set; }
@@ -126,7 +99,7 @@ namespace BindleForYourDungeon.Models.Dnd5E
 		//[JsonPropertyName("url")]
 		//public string Url { get; set; }
 	}
-	public class Dnd5EClass
+	public class DnD5eClass
 	{
 		//[JsonPropertyName("index")]
 		//public string Index { get; set; }
@@ -138,7 +111,7 @@ namespace BindleForYourDungeon.Models.Dnd5E
 		//public string Url { get; set; }
 	}
 
-	public class Dnd5ESubclass
+	public class DnD5eSubclass
 	{
 		//	[JsonPropertyName("index")]
 		//	public string Index { get; set; }

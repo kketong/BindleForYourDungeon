@@ -1,6 +1,5 @@
-﻿using BindleForYourDungeon.Models;
-using BindleForYourDungeon.Models.SpellTypes;
-using NuGet.Versioning;
+﻿using BindleForYourDungeon.Models.SpellTypes;
+using MongoFramework.Linq;
 
 namespace BindleForYourDungeon.Repositories
 {
@@ -14,9 +13,15 @@ namespace BindleForYourDungeon.Repositories
 
 			await _context.SaveChangesAsync();
 		}
-		public async Task CreateSpellsAsync(IEnumerable<Spell> spells)
+
+		public async Task PutSpellsAsync(IEnumerable<Spell> spells)
 		{
-			_context.Spells.AddRange(spells);
+			var existingIds = _context.Spells.WhereIdMatches(spells.Select(x => x.Id)).Select(x=> x.Id).ToList();
+			var spellsToUpdate = spells.Where(x => existingIds.Contains(x.Id));
+			var spellsToAdd = spells.Except(spellsToUpdate);
+
+			_context.Spells.UpdateRange(spellsToUpdate);
+			_context.Spells.AddRange(spellsToAdd);
 
 			await _context.SaveChangesAsync();
 		}

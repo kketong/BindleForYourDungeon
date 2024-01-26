@@ -7,7 +7,7 @@ namespace BindleForYourDungeon.Repositories
 		Task CreateSpellAsync(Spell spell);
 		Task DeleteSpellAsync(Guid spellId);
 		Task<Spell> GetSpellAsync(string spellId);
-		Task CreateSpellsAsync(IEnumerable<Spell> spells);
+		Task PutSpellsAsync(IEnumerable<Spell> spells);
 		IQueryable<Spell> GetSpells();
 		Task UpdateSpellAsync(Spell spell);
 		Task<IQueryable<Spell>> SearchSpellsAsync(string searchTerm);

@@ -5,12 +5,12 @@
 	Col
 } from 'react-bootstrap';
 import { getAllSpells } from '../../apis/dnd5eapi';
-import { postDnd5eSpells } from '../../apis/api';
+import { postDnD5eSpells } from '../../apis/api';
 
 export default function AdminPage() {	
 	async function updateSpells() {
 		const spells = await getAllSpells();
-		postDnd5eSpells(spells);
+		postDnD5eSpells(spells);
 	}
 
 	return (

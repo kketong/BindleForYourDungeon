@@ -18,7 +18,7 @@ builder.Services.AddSingleton<ICharacterRepository, CharacterRepository>();
 builder.Services.AddSingleton<ISpellRepository, SpellRepository>();
 
 // Mappers
-builder.Services.AddAutoMapper(typeof(DnD5EProfile));
+builder.Services.AddAutoMapper(typeof(DnD5eProfile));
 builder.Services.AddControllersWithViews();
 
 builder.Services.AddEndpointsApiExplorer();

@@ -35,9 +35,9 @@ export async function deleteCharacter(characterId) {
 	return response;
 }
 
-export async function postDnd5eSpells(spells) {
+export async function postDnD5eSpells(spells) {
 	await fetch('spells/dnd5e', {
-		method: 'POST',
+		method: 'PUT',
 		headers: {
 			'Accept': 'application/json',
 			'Content-Type': 'application/json'
