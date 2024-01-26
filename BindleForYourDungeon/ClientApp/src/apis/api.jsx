@@ -35,28 +35,17 @@ export async function deleteCharacter(characterId) {
 	return response;
 }
 
-export async function postDnd5eSpell(spell) {
-	await fetch('spells', {
+export async function postDnd5eSpells(spells) {
+	await fetch('spells/dnd5e', {
 		method: 'POST',
 		headers: {
 			'Accept': 'application/json',
 			'Content-Type': 'application/json'
 		},
-		body: JSON.stringify(spell)
+		body: JSON.stringify(spells)
 	})
 		.then((response) => {
 			if (!response.ok) throw new Error(response.status);
 			else return response.json();
 		});
-}
-
-export async function getSpells(spellIds) {
-	await fetch('Spells/GetSpells', {
-		method: 'POST',
-		headers: {
-			'Accept': 'application/json',
-			'Content-Type': 'application/json'
-		},
-		body: JSON.stringify(spellIds)
-	});
 }

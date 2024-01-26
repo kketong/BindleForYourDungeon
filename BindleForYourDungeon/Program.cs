@@ -1,6 +1,9 @@
+using AutoMapper;
 using BindleForYourDungeon;
+using BindleForYourDungeon.Mapping;
 using BindleForYourDungeon.Repositories;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using MongoFramework;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -10,9 +13,12 @@ var connectionString = builder.Configuration.GetConnectionString("MongoDbConnect
 var mongoConnection = MongoDbConnection.FromConnectionString(connectionString);
 builder.Services.AddSingleton(new ApplicationContext(mongoConnection));
 
+// Services
 builder.Services.AddSingleton<ICharacterRepository, CharacterRepository>();
 builder.Services.AddSingleton<ISpellRepository, SpellRepository>();
 
+// Mappers
+builder.Services.AddAutoMapper(typeof(DnD5EProfile));
 builder.Services.AddControllersWithViews();
 
 builder.Services.AddEndpointsApiExplorer();

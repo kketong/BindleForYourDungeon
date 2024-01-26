@@ -1,5 +1,6 @@
 ﻿using BindleForYourDungeon.Models;
 using BindleForYourDungeon.Models.SpellTypes;
+using NuGet.Versioning;
 
 namespace BindleForYourDungeon.Repositories
 {
@@ -10,6 +11,12 @@ namespace BindleForYourDungeon.Repositories
 		public async Task CreateSpellAsync(Spell spell)
 		{
 			_context.Spells.Add(spell);
+
+			await _context.SaveChangesAsync();
+		}
+		public async Task CreateSpellsAsync(IEnumerable<Spell> spells)
+		{
+			_context.Spells.AddRange(spells);
 
 			await _context.SaveChangesAsync();
 		}
@@ -37,7 +44,7 @@ namespace BindleForYourDungeon.Repositories
 			return spells;
 		}
 
-		public async Task PatchSpell(Spell spell)
+		public async Task UpdateSpellAsync(Spell spell)
 		{
 			_context.Spells.Update(spell);
 

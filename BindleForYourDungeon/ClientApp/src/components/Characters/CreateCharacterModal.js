@@ -45,13 +45,13 @@ export default function CreateCharacterModal({ show, handleClose, props }) {
 		const response = postCharacter(character)
 			.then(() => {
 				setLoading(false);
-				return redirect('./Characters', response.status);
 			})
 			.catch((error) => {
 				setLoading(false);
 				setRequestFailed(true);
 				console.log(error);
 			});
+		return redirect('/Characters', response);
 	}
 
 	return (
