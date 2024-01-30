@@ -1,13 +1,13 @@
 import React, { useState } from 'react';
-import {
-	Alert,
-	Button,
-	Col,
-	Form,
-	Modal,
-	Row,
-	Spinner,
-} from 'react-bootstrap';
+
+import Alert from 'react-bootstrap/Alert';
+import Button from 'react-bootstrap/Button';
+import Col from 'react-bootstrap/Col';
+import Form from 'react-bootstrap/Form';
+import Modal from 'react-bootstrap/Modal';
+import Row from 'react-bootstrap/Row';
+import Spinner from 'react-bootstrap/Spinner';
+
 import { redirect } from 'react-router-dom';
 import { characterClasses } from '../../Constants';
 import { postCharacter } from '../../apis/api';

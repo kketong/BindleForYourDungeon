@@ -1,17 +1,18 @@
 import 'bootstrap/dist/css/bootstrap.css';
+import './custom.css';
+
 import * as React from 'react';
 import * as ReactDOM from 'react-dom/client';
 import {
 	createBrowserRouter,
-	RouterProvider} from 'react-router-dom';
+	RouterProvider
+} from 'react-router-dom';
+
 import Layout from './Layout';
 import Home from './components/Home';
 import AdminPage from './components/admin/AdminPage';
 import ErrorPage from './components/ErrorPage';
-import Characters, {
-	loader as charactersLoader,
-	destroyLoader as destroyCharacterLoader
-} from './components/characters/Characters';
+import Characters, { loader as charactersLoader } from './components/characters/Characters';
 import CharacterSheet, { loader as characterSheetLoader } from './components/characters/CharacterSheet';
 
 const router = createBrowserRouter([
@@ -29,17 +30,13 @@ const router = createBrowserRouter([
 				children: [
 					{
 						index: true,
+						loader: charactersLoader,
 						element: <Characters />,
-						loader: charactersLoader
 					},
 					{
 						path: ':characterId',
-						element: <CharacterSheet />,
 						loader: characterSheetLoader,
-					},
-					{
-						path: ':characterId/destroy',
-						loader: destroyCharacterLoader,
+						element: <CharacterSheet />						
 					}
 				]
 			},
@@ -53,6 +50,6 @@ const router = createBrowserRouter([
 
 ReactDOM.createRoot(document.getElementById("root")).render(
 	<React.StrictMode>
-		<RouterProvider router={router} />
+			<RouterProvider router={router} />
 	</React.StrictMode>
 );

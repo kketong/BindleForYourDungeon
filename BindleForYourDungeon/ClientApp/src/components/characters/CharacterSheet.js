@@ -1,77 +1,77 @@
-﻿import React, { useState } from 'react';
-import {
-	Button,
-	Card,
-	Accordion,
-	Form
-} from 'react-bootstrap';
+﻿import React from 'react';
+import Accordion from 'react-bootstrap/Accordion';
+import Form from 'react-bootstrap/Form';
 import { useLoaderData } from 'react-router-dom';
-import SearchSpellModal from './spells/SearchSpellModal';
-import { getCharacter, getSpell } from '../../apis/api';
 import { Spellbook } from './spellbook/Spellbook';
 import {
-	CharacterProvider,
-	useCharacterDispatch
-} from './../../contexts/CharacterContext.jsx';
-import { ToastContextProvider } from './../../contexts/ToastContext';
+	getCharacter,
+	getSpell
+} from '../../apis/api';
+import {
+	characterClasses,
+	characterSubclasses
+} from '../../Constants';
+
+
+
 
 export async function loader({ params }) {
-	const characterId = params.characterId;
-	const character = await getCharacter(characterId);
-	const learntSpells = [];
-	character.LearntSpells?.forEach(spellId => getSpell(spellId), spell => learntSpells.add(spell));
+	const spellsData = [];
+	let characterData = {};
 
-	return { character, learntSpells };
+	await getCharacter(params.characterId)
+		.then(async (characterPayload) => {
+			characterData = characterPayload;
+			for (const spellId of await characterPayload.learntSpells) {
+				await getSpell(spellId)
+					.then((spellPayload) => {
+						spellsData.push(spellPayload);
+					});
+			}
+		});
+
+	return { characterData, spellsData };
 }
 
 export default function CharacterSheet() {
-	const { character, learntSpells } = useLoaderData();
-	const [showSearchSpellModal, setShowSearchSpellModal] = useState(false);
-
+	const { characterData, spellsData } = useLoaderData();
+	const [character, setCharacter] = React.useState(characterData);
+	const [spells, setSpells] = React.useState(spellsData);
 
 	return <>
-		<ToastContextProvider>		
-		<CharacterProvider loadedCharacter={character}>
-			<Card>
-				<img
-					alt="Card"
-					src="https://picsum.photos/300/200"
-				/>
-				<Card.Body>
-					<Card.Title tag="h5">
-						{character.name}
-					</Card.Title>
-					<Accordion>
-						<Accordion.Item>
-							<Accordion.Header >Character Info</Accordion.Header>
-							<Accordion.Body tag='Form' >
-								<Form.Group className="mb-3" controlId="description">
-									<Form.Label>Description</Form.Label>
-									<Form.Control type="text" placeholder={character.description}></Form.Control>
-								</Form.Group>
-							</Accordion.Body>
-						</Accordion.Item>
-						<Accordion.Item>
-							<Accordion.Header>Spellbook</Accordion.Header>
-							<Accordion.Body>
-								{learntSpells.length > 0 ? (<Spellbook spells={learntSpells} />) : <p>No spells learnt.</p>}
-								<Button onClick={() => setShowSearchSpellModal(true)}>Add Spells</Button>
-								{showSearchSpellModal &&
-									<SearchSpellModal
-										show={showSearchSpellModal}
-										onHide={() => setShowSearchSpellModal(false)} />}
-							</Accordion.Body>
-						</Accordion.Item>
-						<Accordion.Item>
-							<Accordion.Header>Inventory</Accordion.Header>
-							<Accordion.Body>
+		<h1>{character.name} - Level {character.level} {character.characterClass}</h1>
+		<Accordion defaultActiveKey='character-info'>
+			<Accordion.Item eventKey='character-info'>
+				<Accordion.Header >Character Info</Accordion.Header>
+				<Accordion.Body tag='Form' >
+					<Form.Group className="mb-3" controlId="character-sheet-form-name">
+						<Form.Label>Name</Form.Label>
+						<Form.Control type="text" placeholder={character.name}></Form.Control>
+					</Form.Group>
+					<Form.Group className="mb-3" controlId="character-sheet-form-description">
+						<Form.Label>Description</Form.Label>
+						<Form.Control type="text" placeholder={character.description}></Form.Control>
+					</Form.Group>
+					<Form.Group className="mb-3" controlId="search-spell-select-class">
+					</Form.Group>
+				</Accordion.Body>
+			</Accordion.Item>
+			<Accordion.Item eventKey='spellbook'>
+				<Accordion.Header>Spellbook</Accordion.Header>
+				<Accordion.Body>
+					<Spellbook
+						character={character}
+						spells={spells}
+						setSpells={setSpells}
+					/>
+				</Accordion.Body>
+			</Accordion.Item>
+			<Accordion.Item eventKey='inventory'>
+				<Accordion.Header>Inventory</Accordion.Header>
+				<Accordion.Body>
 
-							</Accordion.Body>
-						</Accordion.Item>
-					</Accordion>
-				</Card.Body>
-			</Card>
-			</CharacterProvider>
-		</ToastContextProvider>
+				</Accordion.Body>
+			</Accordion.Item>
+		</Accordion>
 	</>;
 };

@@ -1,28 +1,41 @@
 import {
-	Row,
-	Col,
-} from 'react-bootstrap';
-import SpellCard from '../spells/SpellCard';
-export function Spellbook({ spells }) {
-	if (spells !== null)
+	useState
+} from 'react';
+import Button from 'react-bootstrap/Button';
+import SearchSpellModal from '../spells/SearchSpellModal';
+import SearchSpellList from '../spells/SearchSpellList';
+
+export function Spellbook({
+	character,
+	spells,
+	setSpells
+}) {
+	const [showSearchSpellModal, setShowSearchSpellModal] = useState(false);
+	function toggleSpellSearchModal() {
+		setShowSearchSpellModal(!showSearchSpellModal);
+	}
+
 	return (
 		<>
-			{spells.map((_, index) => {
-				if (index % 3 === 0)
-					return (
-						<Row>
-							<Col>
-								<SpellCard spell={spells[index]} />
-							</Col>
-							<Col>
-								<SpellCard spell={spells[index+1]} />
-							</Col>
-							<Col>
-								<SpellCard spell={spells[index+2]} />
-							</Col>
-						</Row>
-					)
-			})}
+			<Button onClick={toggleSpellSearchModal}>Add Spells</Button>
+			<SearchSpellList
+				character={character}
+				spells={spells}
+				pageSize={7}
+				showAddSpellButton={false}
+				showRemoveSpellButton={true}
+				showClassBadges={false}
+				setSpells={setSpells}
+			/>
+			{showSearchSpellModal &&
+				<SearchSpellModal
+					character={character}
+					show={showSearchSpellModal}
+					onHide={toggleSpellSearchModal}
+					size='lg'
+					setSpells={setSpells}
+				/>
+			}
 		</>
 	)
 }

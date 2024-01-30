@@ -1,9 +1,8 @@
-﻿import {
-	Container,
-	Button,
-	Row,
-	Col
-} from 'react-bootstrap';
+﻿import Button from 'react-bootstrap/Button';
+import Col from 'react-bootstrap/Col';
+import Container from 'react-bootstrap/Container';
+import Row from 'react-bootstrap/Row';
+
 import { getAllSpells } from '../../apis/dnd5eapi';
 import { postDnD5eSpells } from '../../apis/api';
 

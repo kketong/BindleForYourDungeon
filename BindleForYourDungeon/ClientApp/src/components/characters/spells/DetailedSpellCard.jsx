@@ -1,8 +1,7 @@
-﻿import {
-	Modal,
-	Row,
-	Col
-} from 'react-bootstrap';
+﻿import Col from 'react-bootstrap/Col';
+import Modal from 'react-bootstrap/Modal';
+import Row from 'react-bootstrap/Row';
+
 export default function DetailedSpellCard({ spell, props }) {
 
 	return (

@@ -1,5 +1,4 @@
-﻿using BindleForYourDungeon.Models.Enums;
-using MongoDB.Bson.Serialization.Attributes;
+﻿using MongoDB.Bson.Serialization.Attributes;
 using MongoDB.Bson.Serialization.IdGenerators;
 using System.ComponentModel.DataAnnotations.Schema;
 

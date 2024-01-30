@@ -20,7 +20,7 @@ namespace BindleForYourDungeon.Controllers
 		[HttpGet]
 		public IQueryable<Spell> GetSpells()
 		{
-			var spells = spellRepository.GetSpells();
+			var spells = spellRepository.GetSpells().OrderBy(spell => spell.Name);
 
 			return spells;
 		}

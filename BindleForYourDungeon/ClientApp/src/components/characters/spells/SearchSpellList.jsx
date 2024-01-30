@@ -2,92 +2,142 @@
 	useState,
 	useEffect
 } from 'react';
-import {
-	Col,
-	FloatingLabel,
-	Form,
-	Row,
-} from 'react-bootstrap';
-import SpellCard from './SpellCard';
+
+import Accordion from 'react-bootstrap/Accordion';
+import FloatingLabel from 'react-bootstrap/FloatingLabel';
+import Form from 'react-bootstrap/Form';
+import Stack from 'react-bootstrap/Stack';
+
+import SpellAccordionItem from './SpellAccordionItem';
 import Pagination from '../../Pagination';
 import {
 	magicSchools,
-	characterClasses
+	characterClasses,
+	characterSubclasses
 } from '../../../Constants';
 
-export const SearchSpellList = ({ spells, handleShowDetails }) => {
+export const SearchSpellList = ({
+	character,
+	spells,
+	pageSize,
+	showAddSpellButton,
+	showRemoveSpellButton,
+	showClassBadges,
+	setSpells
+}) => {
 	const [filteredSpells, setFilteredSpells] = useState([]);
 	const [currentPage, setCurrentPage] = useState(1);
 	const [classFilter, setClassFilter] = useState('');
+	const [subclassFilter, setSubclassFilter] = useState('');
 	const [schoolFilter, setSchoolFilter] = useState('');
 	const [nameFilter, setNameFilter] = useState('');
-	const pageSize = 10;
+	const [maxLevelFilter, setMaxLevelFilter] = useState(0);
+	const [minLevelFilter, setMinLevelFilter] = useState(0);
 
 	useEffect(() => {
 		setFilteredSpells(spells);
 	}, [spells]);
 
 	useEffect(() => {
-		let spellArray = spells;
-		spellArray = nameFilter.length !== 0 ?
-			spellArray.filter(spell => spell.name.includes(nameFilter)) :
-			spellArray;
-		spellArray = classFilter.length !== 0 ?
-			spellArray.filter(spell => spell.classes.some((classObj) => classObj.name === classFilter)) :
-			spellArray;
-		spellArray = schoolFilter.length !== 0 ?
-			spellArray.filter(spell => spell.school.name === schoolFilter) :
-			spellArray;
-
-		setFilteredSpells(spellArray);
-		console.log("filter hit");
+		let spellsToFilter = spells;
+		if (nameFilter.length !== 0) {
+			spellsToFilter = spellsToFilter.filter(spell => spell.name.toLowerCase().includes(nameFilter));
+		}
+		if (classFilter.length !== 0) {
+			spellsToFilter = spellsToFilter.filter(spell => spell.classes.some(characterClass => characterClass === classFilter));
+		}
+		if (subclassFilter.length !== 0) {
+			spellsToFilter = spellsToFilter.filter(spell => spell.subclasses.some(subclass => subclass === subclassFilter));
+		}
+		if (schoolFilter.length !== 0) {
+			spellsToFilter = spellsToFilter.filter(spell => spell.school === schoolFilter);
+		}
+		if (maxLevelFilter > 0) {
+			spellsToFilter = spellsToFilter.filter(spell => spell.level <= maxLevelFilter);
+		}
+		if (minLevelFilter > 0) {
+			spellsToFilter = spellsToFilter.filter(spell => spell.level >= minLevelFilter);
+		}
+		setFilteredSpells(spellsToFilter);
 		setCurrentPage(1);
 	}, [
 		spells,
 		classFilter,
+		subclassFilter,
 		schoolFilter,
 		nameFilter,
+		maxLevelFilter,
+		minLevelFilter
 	])
 
 	function handleSchoolFilterChange(event) {
 		setSchoolFilter(event.target.value);
 	}
-
+	function handleMaxLevelFilterChange(event) {
+		setMaxLevelFilter(event.target.value);
+	}
+	function handleMinLevelFilterChange(event) {
+		setMinLevelFilter(event.target.value);
+	}
 	function handleClassFilterChange(event) {
 		setClassFilter(event.target.value);
 	}
-
-	function handleNameChange(event) {
-		setNameFilter(event.target.value);
+	function handleSubclassFilterChange(event) {
+		setSubclassFilter(event.target.value);
 	}
+	function handleNameChange(event) {
+		setNameFilter(event.target.value.toLowerCase());
+	}
+
 
 	return (
 		<>
 			<Form>
-				<Row>
-					<Col>
-						<Form.Group className="mb-3" controlId="searchSpellForm.ClassFilterSelect">
-							<Form.Label>Character Class</Form.Label>
-							<Form.Select onChange={handleClassFilterChange}>
-								<option value="">None</option>
-								{characterClasses.map((characterClass) =>
-									<option value={characterClass}>{characterClass}</option>
-								)}
-							</Form.Select>
-						</Form.Group>
-					</Col>
-					<Col>
-						<Form.Group className="mb-3" controlId="searchSpellForm.ClassFilterSelect">
-							<Form.Label>Magic School</Form.Label>
-							<Form.Select onChange={handleSchoolFilterChange}>
-								<option value="">None</option>
-								{magicSchools.map((school) =>
-									<option value={school}>{school}</option>
-								)}
-							</Form.Select>
-						</Form.Group>
-					</Col>
-				</Row>
+				<Stack direction="horizontal" gap={3}>
+					<Form.Group className="mb-3" controlId="search-spell-select-class">
+						<Form.Label>Character Class</Form.Label>
+						<Form.Select onChange={handleClassFilterChange}>
+							<option value="">None</option>
+							{characterClasses.map((characterClass) =>
+								<option value={characterClass}>{characterClass}</option>
+							)}
+						</Form.Select>
+					</Form.Group>
+					<Form.Group className="mb-3" controlId="search-spell-select-subclass">
+						<Form.Label>Subclass</Form.Label>
+						<Form.Select onChange={handleSubclassFilterChange}>
+							<option value="">None</option>
+							{characterSubclasses.map((subclass) =>
+								<option value={subclass}>{subclass}</option>
+							)}
+						</Form.Select>
+					</Form.Group>
+					<Form.Group className="mb-3" controlId="search-spell-select-school">
+						<Form.Label>Magic School</Form.Label>
+						<Form.Select onChange={handleSchoolFilterChange}>
+							<option value="">None</option>
+							{magicSchools.map((school) =>
+								<option value={school}>{school}</option>
+							)}
+						</Form.Select>
+					</Form.Group>
+					<Form.Group className="mb-3" controlId="search-spell-select-min-level">
+						<Form.Label>Min level</Form.Label>
+						<Form.Select onChange={handleMinLevelFilterChange}>
+							{[0, 1, 2, 3, 4, 5, 6, 7, 8, 9].map((level) =>
+								<option value={level}>{level}</option>)
+							}
+						</Form.Select>
+					</Form.Group>
+					<Form.Group className="mb-3" controlId="search-spell-select-max-level">
+						<Form.Label>Max level</Form.Label>
+						<Form.Select onChange={handleMaxLevelFilterChange}>
+							{[0, 1, 2, 3, 4, 5, 6, 7, 8, 9].map((level) =>
+								<option value={level}>{level}</option>)
+							}
+						</Form.Select>
+					</Form.Group>
+				</Stack>
 				<Form.Group className="mb-3" controlId="searchSpellForm.SearchField">
 					<FloatingLabel
 						controlId="searchFloatingInput"
@@ -102,16 +152,22 @@ export const SearchSpellList = ({ spells, handleShowDetails }) => {
 					</FloatingLabel>
 				</Form.Group>
 			</Form>
-			{filteredSpells
-				.slice(((currentPage - 1) * pageSize), currentPage * pageSize)
-				.map((spell) => (
-					<SpellCard
-						key={spell.index}
-						spell={spell}
-						showAddSpellButton={true}
-					/>
-				))
-			}
+			<Accordion>
+				{filteredSpells
+					.slice(((currentPage - 1) * pageSize), currentPage * pageSize)
+					.map((spell) => (
+						<SpellAccordionItem
+							key={`search-spell-list-spell-${spell.id}`}
+							character={character}
+							spell={spell}
+							showAddSpellButton={showAddSpellButton}
+							showRemoveSpellButton={showRemoveSpellButton}
+							showClassBadges={showClassBadges}
+							setSpells={setSpells}
+						/>
+					))
+				}
+			</Accordion>
 			<Pagination
 				itemsCount={filteredSpells.length}
 				itemsPerPage={pageSize}

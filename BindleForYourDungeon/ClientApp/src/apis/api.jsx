@@ -24,7 +24,7 @@ export async function postCharacter(character) {
 export async function getCharacter(characterId) {
 	const response = await fetch(`characters/${characterId}`);
 
-	return await response.json();
+	return response.json();
 }
 
 export async function deleteCharacter(characterId) {
@@ -39,7 +39,7 @@ export async function deleteCharacter(characterId) {
 	return response;
 }
 
-export async function addSpellToCharacter(characterId, spellId) {
+export async function addCharacterSpell(characterId, spellId) {
 	const response = await fetch(`characters/${characterId}/addspell`, {
 		method: 'POST',
 		headers: {
@@ -48,20 +48,43 @@ export async function addSpellToCharacter(characterId, spellId) {
 		},
 		body: JSON.stringify(spellId)
 	})
-		.then((response) => {
-			if (!response.ok) throw new Error(response.status);
+		.then(async (response) => {
+			if (!response.ok) {
+				const body = await response.text();
+				throw new Error(`${response.status}: ${body}`);
+			}
 			else return response;
 		});
 
 	return await response.json();
 }
 
+export async function removeCharacterSpell(characterId, spellId) {
+	const response = await fetch(`characters/${characterId}/removespell`, {
+		method: 'POST',
+		headers: {
+			'Accept': 'application/json',
+			'Content-Type': 'application/json'
+		},
+		body: JSON.stringify(spellId)
+	})
+		.then(async (response) => {
+
+			if (!response.ok) {
+				const body = await response.text();
+				throw new Error(`${response.status}: ${body}`);
+			}
+			else return response;
+		});
+
+	return await response.json();
+}
 
 //#endregion
 
 //#region Spells
 export async function postDnD5eSpells(spells) {
-	await fetch('spells/dnd5e', {
+	const response = await fetch('spells/dnd5e', {
 		method: 'PUT',
 		headers: {
 			'Accept': 'application/json',
@@ -69,10 +92,9 @@ export async function postDnD5eSpells(spells) {
 		},
 		body: JSON.stringify(spells)
 	})
-		.then((response) => {
-			if (!response.ok) throw new Error(response.status);
-			else return response.json();
-		});
+	if (!response.ok) throw new Error(response.status);
+
+	return response.json();
 }
 
 export async function getSpells() {

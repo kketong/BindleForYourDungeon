@@ -58,11 +58,43 @@ namespace BindleForYourDungeon.Controllers
 			{
 				if (!character.LearntSpells.IsNullOrEmpty())
 				{
+					if (character.LearntSpells.Contains(spellId))
+					{
+						return BadRequest($"{spellId} already learnt.");
+					}
 					character.LearntSpells.Add(spellId);
 				}
                 else
                 {
 					character.LearntSpells = [spellId];
+				}
+			}
+			await characterRepository.PatchCharacter(character, cancellationToken);
+
+			return Ok(character);
+		}
+
+		[HttpPost("{characterId}/removespell")]
+		public async Task<IActionResult> RemoveSpell(Guid characterId, [FromBody] string spellId, CancellationToken cancellationToken)
+		{
+			var character = await characterRepository.GetCharacterAsync(characterId);
+			if (character == null)
+			{
+				return NotFound(characterId);
+			}
+			else
+			{
+				if (!character.LearntSpells.IsNullOrEmpty())
+				{
+					if (!character.LearntSpells.Contains(spellId))
+					{
+						return BadRequest($"Target character has not learnt the spell.");
+					}
+					character.LearntSpells.Remove(spellId);
+				}
+				else
+				{
+					return BadRequest($"Target character has no learnt spells.");
 				}
 			}
 			await characterRepository.PatchCharacter(character, cancellationToken);

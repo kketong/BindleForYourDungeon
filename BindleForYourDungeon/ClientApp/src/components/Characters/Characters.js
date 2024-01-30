@@ -2,28 +2,21 @@ import React, {
 	useState,
 	useCallback,
 } from 'react';
-import {
-	Button,
-	Table
-} from 'react-bootstrap';
+import Button from 'react-bootstrap/Button';
+import Table from 'react-bootstrap/Table';
+
 import {
 	useLoaderData,
-	redirect
 } from 'react-router-dom';
 
 import CreateCharacterModal from './CreateCharacterModal';
 import CharacterDropdownButton from './CharacterDropdownButton';
-import { getCharacters, deleteCharacter } from '../../apis/api'
+import { getCharacters } from '../../apis/api'
 import { DeleteCharacterConfirmModal } from './DeleteCharacterConfirmModal';
 
-export async function loader({ request }) {
+export async function loader() {
 	const data = await getCharacters();
 	return { characters: data };
-}
-
-export async function destroyLoader({ params }) {
-	const response = deleteCharacter(params.characterId)
-	return redirect('/Characters', await response.status);
 }
 
 export default function Characters() {
@@ -31,24 +24,7 @@ export default function Characters() {
 	const [showCreateCharacter, setShowCreateCharacter] = useState(false);
 	const [characterToDelete, setCharacterToDelete] = useState('');
 	const [showDeleteCharacterModal, setShowDeleteCharacterModal] = useState(false);
-
-	function charactersReducer(characters, action) {
-		switch (action.type) {
-			case 'added': {
-				return [
-					...characters,
-					 action.character
-				];
-			}
-			case 'deleted': {
-				return characters.filter((t) => t.id !== action.id);
-			}
-			default: {
-				throw Error('Unknown action: ' + action.type);
-			}
-		}
-	}
-
+	
 	function handleClick() {
 		setShowCreateCharacter(true);
 	}

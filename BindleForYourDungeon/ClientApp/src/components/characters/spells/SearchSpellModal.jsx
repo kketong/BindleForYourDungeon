@@ -2,38 +2,38 @@
 	useState,
 	useEffect
 } from 'react';
-import {
-	Container,
-	Modal,
-	Spinner
-} from 'react-bootstrap';
+
+import Modal from 'react-bootstrap/Modal';
+import Spinner from 'react-bootstrap/Spinner';
+
 import { getSpells } from '../../../apis/api';
 import SearchSpellList from './SearchSpellList';
 
-export default function SearchSpellModal(props) {
+export default function SearchSpellModal({ character, ...props }) {
 	const [spells, setSpells] = useState([]);
 
 	useEffect(() => {
 		getSpells()
 			.then(setSpells);
 	}, []);
-	
+
 	return (
-		<Modal {...props} >
+		<Modal {...props}>
 			<Modal.Header closeButton>
 				<Modal.Title>Spell Search</Modal.Title>
 			</Modal.Header>
 			<Modal.Body>
-				<Container>
-					{spells.length < 1 ?
-						<Spinner className='align-center' animation='border' /> :
-							<>
-								<SearchSpellList
-									spells={spells}
-								/>
-							</>
-					}
-				</Container>
+				{spells.length < 1 ?
+					<Spinner className='align-center' animation='border' /> :
+					<SearchSpellList
+						character={character}
+						spells={spells}
+						pageSize={7}
+						showAddSpellButton={true}
+						showRemoveSpellButton={false}
+						showClassBadges={true}
+					/>
+				}
 			</Modal.Body>
 		</Modal>
 	);
