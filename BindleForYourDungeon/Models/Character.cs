@@ -15,5 +15,10 @@ namespace BindleForYourDungeon.Models
 		public int Level { get; set; }
 		public Guid? Inventory { get; set; }
 		public ICollection<string>? LearntSpells { get; set; }
+		public AbilityScore AbilityScore { get; set; }
+		public Proficiency Proficiency { get; set; }
+		public int CurrentHitPoints { get; set; }
+		public int MaxHitPoints { get; set; }
+
 	}
 }

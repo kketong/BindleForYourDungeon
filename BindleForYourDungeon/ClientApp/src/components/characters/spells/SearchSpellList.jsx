@@ -4,16 +4,19 @@
 } from 'react';
 
 import Accordion from 'react-bootstrap/Accordion';
+import Container from 'react-bootstrap/Container';
 import FloatingLabel from 'react-bootstrap/FloatingLabel';
+import Col from 'react-bootstrap/Col';
 import Form from 'react-bootstrap/Form';
+import Row from 'react-bootstrap/Row';
 import Stack from 'react-bootstrap/Stack';
 
-import SpellAccordionItem from './SpellAccordionItem';
 import Pagination from '../../Pagination';
+import SpellAccordionItem from './SpellAccordionItem';
 import {
-	magicSchools,
 	characterClasses,
-	characterSubclasses
+	characterSubclasses,
+	magicSchools
 } from '../../../Constants';
 
 export const SearchSpellList = ({
@@ -89,55 +92,71 @@ export const SearchSpellList = ({
 		setNameFilter(event.target.value.toLowerCase());
 	}
 
-
 	return (
 		<>
-			<Form>
-				<Stack direction="horizontal" gap={3}>
-					<Form.Group className="mb-3" controlId="search-spell-select-class">
-						<Form.Label>Character Class</Form.Label>
-						<Form.Select onChange={handleClassFilterChange}>
-							<option value="">None</option>
-							{characterClasses.map((characterClass) =>
-								<option value={characterClass}>{characterClass}</option>
-							)}
-						</Form.Select>
-					</Form.Group>
-					<Form.Group className="mb-3" controlId="search-spell-select-subclass">
-						<Form.Label>Subclass</Form.Label>
-						<Form.Select onChange={handleSubclassFilterChange}>
-							<option value="">None</option>
-							{characterSubclasses.map((subclass) =>
-								<option value={subclass}>{subclass}</option>
-							)}
-						</Form.Select>
-					</Form.Group>
-					<Form.Group className="mb-3" controlId="search-spell-select-school">
-						<Form.Label>Magic School</Form.Label>
-						<Form.Select onChange={handleSchoolFilterChange}>
-							<option value="">None</option>
-							{magicSchools.map((school) =>
-								<option value={school}>{school}</option>
-							)}
-						</Form.Select>
-					</Form.Group>
-					<Form.Group className="mb-3" controlId="search-spell-select-min-level">
-						<Form.Label>Min level</Form.Label>
-						<Form.Select onChange={handleMinLevelFilterChange}>
-							{[0, 1, 2, 3, 4, 5, 6, 7, 8, 9].map((level) =>
-								<option value={level}>{level}</option>)
-							}
-						</Form.Select>
-					</Form.Group>
-					<Form.Group className="mb-3" controlId="search-spell-select-max-level">
-						<Form.Label>Max level</Form.Label>
-						<Form.Select onChange={handleMaxLevelFilterChange}>
-							{[0, 1, 2, 3, 4, 5, 6, 7, 8, 9].map((level) =>
-								<option value={level}>{level}</option>)
-							}
-						</Form.Select>
-					</Form.Group>
-				</Stack>
+			<Form as={Container} >
+				{/*<Stack direction="horizontal" gap={3}>*/}
+				<Row>
+					<Col>
+						<Form.Group className="mb-3" controlId="search-spell-select-class">
+							<FloatingLabel controlId="search-spell-select-class-label" label="Filter by class">
+								<Form.Select onChange={handleClassFilterChange}>
+									<option value="">None</option>
+									{characterClasses.map((characterClass) =>
+										<option value={characterClass}>{characterClass}</option>
+									)}
+								</Form.Select>
+							</FloatingLabel>
+						</Form.Group>
+					</Col>
+					<Col>
+						<Form.Group className="mb-3" controlId="search-spell-select-subclass">
+							<FloatingLabel controlId="search-spell-select-subclass-label" label="Filter by subclass">
+								<Form.Select onChange={handleSubclassFilterChange}>
+									<option value="">None</option>
+									{characterSubclasses.map((subclass) =>
+										<option value={subclass}>{subclass}</option>
+									)}
+								</Form.Select>
+							</FloatingLabel>
+						</Form.Group>
+					</Col>
+					<Col>
+						<Form.Group className="mb-3" controlId="search-spell-select-school">
+							<FloatingLabel controlId="search-spell-select-school-label" label="Filter by school">
+								<Form.Select onChange={handleSchoolFilterChange}>
+									<option value="">None</option>
+									{magicSchools.map((school) =>
+										<option value={school}>{school}</option>
+									)}
+								</Form.Select>
+							</FloatingLabel>
+						</Form.Group>
+					</Col>
+					<Col>
+						<Form.Group className="mb-3" controlId="search-spell-select-min-level">
+							<FloatingLabel controlId="search-spell-select-min-level-label" label="Minimum level">
+								<Form.Select onChange={handleMinLevelFilterChange}>
+									{[0, 1, 2, 3, 4, 5, 6, 7, 8, 9].map((level) =>
+										<option value={level}>{level}</option>)
+									}
+								</Form.Select>
+							</FloatingLabel>
+						</Form.Group>
+					</Col>
+					<Col>
+						<Form.Group className="mb-3" controlId="search-spell-select-max-level">
+							<FloatingLabel controlId="search-spell-select-max-level-label" label="Maximum level">
+								<Form.Select onChange={handleMaxLevelFilterChange}>
+									{[0, 1, 2, 3, 4, 5, 6, 7, 8, 9].map((level) =>
+										<option value={level}>{level}</option>)
+									}
+								</Form.Select>
+							</FloatingLabel>
+						</Form.Group>
+					</Col>
+				</Row>
+				{/*</Stack>*/}
 				<Form.Group className="mb-3" controlId="searchSpellForm.SearchField">
 					<FloatingLabel
 						controlId="searchFloatingInput"

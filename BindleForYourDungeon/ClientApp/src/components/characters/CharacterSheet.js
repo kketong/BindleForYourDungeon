@@ -1,6 +1,7 @@
 ﻿import React from 'react';
 import Accordion from 'react-bootstrap/Accordion';
 import Form from 'react-bootstrap/Form';
+import FloatingLabel from 'react-bootstrap/FloatingLabel';
 import { useLoaderData } from 'react-router-dom';
 import { Spellbook } from './spellbook/Spellbook';
 import {
@@ -11,9 +12,6 @@ import {
 	characterClasses,
 	characterSubclasses
 } from '../../Constants';
-
-
-
 
 export async function loader({ params }) {
 	const spellsData = [];
@@ -43,14 +41,21 @@ export default function CharacterSheet() {
 		<Accordion defaultActiveKey='character-info'>
 			<Accordion.Item eventKey='character-info'>
 				<Accordion.Header >Character Info</Accordion.Header>
-				<Accordion.Body tag='Form' >
+				<Accordion.Body as='Form' >
 					<Form.Group className="mb-3" controlId="character-sheet-form-name">
-						<Form.Label>Name</Form.Label>
-						<Form.Control type="text" placeholder={character.name}></Form.Control>
+						<FloatingLabel controlId="character-sheet-form-name-label" label="Name">
+							<Form.Control type="text" placeholder={character.name} />
+						</FloatingLabel>
 					</Form.Group>
 					<Form.Group className="mb-3" controlId="character-sheet-form-description">
-						<Form.Label>Description</Form.Label>
-						<Form.Control type="text" placeholder={character.description}></Form.Control>
+						<FloatingLabel controlId="character-sheet-form-desc-label" label="Description/Background">
+							<Form.Control
+								as="textarea"
+								rows={3}
+							>
+								{character.description}
+							</Form.Control>
+						</FloatingLabel>
 					</Form.Group>
 					<Form.Group className="mb-3" controlId="search-spell-select-class">
 					</Form.Group>
