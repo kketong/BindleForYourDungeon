@@ -9,7 +9,6 @@ import FloatingLabel from 'react-bootstrap/FloatingLabel';
 import Col from 'react-bootstrap/Col';
 import Form from 'react-bootstrap/Form';
 import Row from 'react-bootstrap/Row';
-import Stack from 'react-bootstrap/Stack';
 
 import Pagination from '../../Pagination';
 import SpellAccordionItem from './SpellAccordionItem';
@@ -156,10 +155,10 @@ export const SearchSpellList = ({
 						</Form.Group>
 					</Col>
 				</Row>
-				{/*</Stack>*/}
 				<Form.Group className="mb-3" controlId="searchSpellForm.SearchField">
 					<FloatingLabel
-						controlId="searchFloatingInput"
+						controlId="searchFloating
+						"
 						label="Search by spell name, e.g. Acid Arrow"
 						className="mb-3"
 					>

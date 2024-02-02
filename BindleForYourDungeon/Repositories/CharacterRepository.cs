@@ -1,16 +1,16 @@
 ﻿using BindleForYourDungeon.Models;
-using DnsClient.Protocol;
-using Microsoft.AspNetCore.Http.HttpResults;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
+using MongoFramework;
 
 namespace BindleForYourDungeon.Repositories
 {
-	public class CharacterRepository(ApplicationContext context) : ICharacterRepository
+	public class CharacterRepository(IMongoDbContext context) : ICharacterRepository
 	{
-		private readonly ApplicationContext _context = context ?? throw new ArgumentNullException(nameof(context));
+
+		private readonly ApplicationContext _context = (ApplicationContext) context ?? throw new ArgumentNullException(nameof(context));
 
 		public async Task CreateCharacterAsync(Character character)
 		{
+			context.
 			_context.Characters.Add(character);
 
 			await _context.SaveChangesAsync();

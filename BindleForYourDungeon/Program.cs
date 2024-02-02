@@ -1,21 +1,21 @@
-using AutoMapper;
 using BindleForYourDungeon;
 using BindleForYourDungeon.Mapping;
 using BindleForYourDungeon.Repositories;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
 using MongoFramework;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 var connectionString = builder.Configuration.GetConnectionString("MongoDbConnectionString");
-var mongoConnection = MongoDbConnection.FromConnectionString(connectionString);
-builder.Services.AddSingleton(new ApplicationContext(mongoConnection));
 
 // Services
+builder.Services.AddMongoC
+builder.Services.AddTransient<IMongoDbConnection>(s => MongoDbConnection.FromConnectionString(connectionString));
+builder.Services.AddTransient<IMongoDbContext, ApplicationContext>();
 builder.Services.AddSingleton<ICharacterRepository, CharacterRepository>();
 builder.Services.AddSingleton<ISpellRepository, SpellRepository>();
+builder.Services.AddSingleton<IFeatRepository, FeatRepository>();
 
 // Mappers
 builder.Services.AddAutoMapper(typeof(DnD5eProfile));

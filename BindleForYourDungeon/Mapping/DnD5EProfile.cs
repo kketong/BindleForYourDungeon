@@ -21,6 +21,7 @@ namespace BindleForYourDungeon.Mapping
 				.ForMember(x => x.DamageAtCharacterLevel, opts => opts.AllowNull())
 				.ForMember(x => x.DamageAtSlotLevel, opts => opts.PreCondition((src) => src.DamageAtSlotLevel != null))
 				.ForMember(x => x.DamageAtSlotLevel, opts => opts.AllowNull());
+
 		}
 	}
 }

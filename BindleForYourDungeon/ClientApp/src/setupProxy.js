@@ -8,6 +8,7 @@ const context = [
     "/characters",
     "/characters/details",
     "/spells",
+    "/feats"
 ];
 
 const onError = (err, req, resp, target) => {

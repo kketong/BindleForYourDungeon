@@ -2,8 +2,8 @@ import {
 	useState
 } from 'react';
 import Button from 'react-bootstrap/Button';
-import SearchSpellModal from '../spells/SearchSpellModal';
-import SearchSpellList from '../spells/SearchSpellList';
+import SearchSpellModal from './SearchSpellModal';
+import SearchSpellList from './SearchSpellList';
 
 export function Spellbook({
 	character,

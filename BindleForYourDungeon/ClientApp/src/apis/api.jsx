@@ -77,7 +77,7 @@ export async function removeCharacterSpell(characterId, spellId) {
 //#endregion
 
 //#region Spells
-export async function postDnD5eSpells(spells) {
+export async function putDnd5eSpells(spells) {
   const response = await fetch("spells/dnd5e", {
     method: "PUT",
     headers: {
@@ -102,5 +102,20 @@ export async function getSpell(spellId) {
 
   return await response.json();
 }
+//#endregion
+//#region Feats
 
+export async function putFeat(feat) {
+  const response = await fetch("feats", {
+    method: "PUT",
+    headers: {
+      Accept: "application/json",
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(feat),
+  });
+  if (!response.ok) throw new Error(response.status);
+
+  return response.json();
+}
 //#endregion
