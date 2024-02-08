@@ -16,15 +16,16 @@ import { DeleteCharacterConfirmModal } from './DeleteCharacterConfirmModal';
 
 export async function loader() {
 	const data = await getCharacters();
-	return { characters: data };
+	return { loaderData: data };
 }
 
 export default function Characters() {
-	const { characters } = useLoaderData();
+	const { loaderData } = useLoaderData();
+	const [characters, setCharacters] = useState(loaderData);
 	const [showCreateCharacter, setShowCreateCharacter] = useState(false);
 	const [characterToDelete, setCharacterToDelete] = useState('');
 	const [showDeleteCharacterModal, setShowDeleteCharacterModal] = useState(false);
-	
+
 	function handleClick() {
 		setShowCreateCharacter(true);
 	}
@@ -49,8 +50,8 @@ export default function Characters() {
 			</Button>
 			{showCreateCharacter &&
 				<CreateCharacterModal
-				show={showCreateCharacter}
-				handleClose={handleCloseCreateCharacterModal}/>
+					show={showCreateCharacter}
+					handleClose={handleCloseCreateCharacterModal} />
 			}
 			<h1 id="tableLabel">Characters</h1>
 			<Table className="table table-striped" aria-labelledby="tableLabel">
@@ -91,7 +92,7 @@ export default function Characters() {
 				characterId={characterToDelete.id}
 				show={showDeleteCharacterModal}
 				handleClose={closeDeleteCharacterConfirmModal}
-				/>
+			/>
 		</>
 	);
 }

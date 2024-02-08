@@ -1,17 +1,19 @@
-﻿
-using BindleForYourDungeon.Models.Enums;
+﻿using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 using MongoDB.Bson.Serialization.Options;
-using System.Text.Json.Serialization;
+using MongoDB.EntityFrameworkCore;
 
 namespace BindleForYourDungeon.Models.SpellTypes
 {
 	public class Damage
 	{
 		public string? DamageType { get; set; }
+		[BsonDictionaryOptions(DictionaryRepresentation.ArrayOfDocuments)]
+		public Dictionary<string, object> DamageAtSlotLevel { get; set; }
 
-		public Dictionary<string, string>? DamageAtSlotLevel { get; set; }
+		[BsonDictionaryOptions(DictionaryRepresentation.ArrayOfDocuments)]
+		public Dictionary<string, object> DamageAtCharacterLevel { get; set; } 
 
-		public Dictionary<string, string>? DamageAtCharacterLevel { get; set; } 
+
 	}
 }

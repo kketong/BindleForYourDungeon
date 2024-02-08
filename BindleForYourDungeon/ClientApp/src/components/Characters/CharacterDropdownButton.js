@@ -15,7 +15,7 @@ export default function CharacterDropdownButton({ direction, character, deleteCh
 				<Dropdown.Item disabled>Edit Inventory</Dropdown.Item>
 				<Dropdown.Item disabled>Edit Spells</Dropdown.Item>
 				<Dropdown.Divider />
-				<Dropdown.Item as={Link} to={`${character.id}`}>Edit Character</Dropdown.Item>
+				<Dropdown.Item as={Link} to={`${character.id.toString()}`}>Edit Character</Dropdown.Item>
 				<Dropdown.Item onClick={onDeleteCharacter}>Delete Character</Dropdown.Item>
 			</Dropdown.Menu>
 		</Dropdown>

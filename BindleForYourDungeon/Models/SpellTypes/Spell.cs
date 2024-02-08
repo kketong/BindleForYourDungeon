@@ -1,11 +1,15 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using MongoDB.Bson.Serialization.Attributes;
+using MongoDB.Bson;
+using MongoDB.EntityFrameworkCore;
+using MongoDB.Bson.Serialization.IdGenerators;
 
 namespace BindleForYourDungeon.Models.SpellTypes
 {
-	[Table("Spells")]
+	[Collection("spells")]
 	public class Spell
 	{
-		public string Id { get; set; }
+		[BsonId(IdGenerator = typeof(CombGuidGenerator))]
+		public ObjectId Id { get; set; }
 		public required string Name { get; set; }
 		public required List<string> Desc { get; set; }
 		public List<string>? HigherLevel { get; set; }
@@ -18,7 +22,12 @@ namespace BindleForYourDungeon.Models.SpellTypes
 		public string? CastingTime { get; set; }
 		public int Level { get; set; }
 		public string? AttackType { get; set; }
-		public Damage? Damage { get; set; }
+
+		public string? DamageType { get; set; }
+
+		public Dictionary<string, object>? DamageAtSlotLevel { get; set; }
+
+		public Dictionary<string, object>? DamageAtCharacterLevel { get; set; }
 		public string? School { get; set; }
 		public List<string>? Classes { get; set; }
 		public List<string>? Subclasses { get; set; }

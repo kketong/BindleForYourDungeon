@@ -1,13 +1,14 @@
 ﻿using BindleForYourDungeon.Models;
+using MongoDB.Bson;
 
 namespace BindleForYourDungeon.Repositories
 {
 	public interface IFeatRepository
 	{
-		void CreateFeat(Feat feat);
-		Feat GetFeat(string featId);
-		IEnumerable<Feat> GetFeats();
-		void UpdateFeat(Feat feat);
-		void DeleteFeat(string featId);
+		void AddFeat(Feat newFeat);
+		void DeleteFeat(Feat feat);
+		void EditFeat(Feat updatedFeat);
+		IEnumerable<Feat> GetAllFeats();
+		Feat? GetFeatById(ObjectId id);
 	}
 }

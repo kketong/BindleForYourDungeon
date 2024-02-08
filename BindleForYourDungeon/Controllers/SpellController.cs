@@ -1,5 +1,4 @@
-﻿using AutoMapper;
-using BindleForYourDungeon.Models.DnD5e;
+﻿using BindleForYourDungeon.Models;
 using BindleForYourDungeon.Models.SpellTypes;
 using BindleForYourDungeon.Repositories;
 using Microsoft.AspNetCore.Mvc;
@@ -10,77 +9,52 @@ namespace BindleForYourDungeon.Controllers
 	[Route("spells")]
 	public class SpellController(
 		ILogger<SpellController> logger,
-		ISpellRepository spellRepository,
-		IMapper mapper) : ControllerBase
+		ISpellRepository spellRepository) : ControllerBase
 	{
 		private readonly ILogger<SpellController> _logger = logger;
 		private readonly ISpellRepository spellRepository = spellRepository ?? throw new ArgumentNullException(nameof(spellRepository));
-		private readonly IMapper mapper = mapper;
 
 		[HttpGet]
-		public IQueryable<Spell> GetSpells()
+		public IEnumerable<Spell> GetSpells()
 		{
-			var spells = spellRepository.GetSpells().OrderBy(spell => spell.Name);
+			var spells = spellRepository.GetAllSpells();
 
 			return spells;
 		}
 
 		[HttpGet("{spellId}")]
-		public async Task<Spell> GetSpell(string spellId)
+		public IEnumerable<Spell> GetSpell(string spellId)
 		{
-			var spell = await spellRepository.GetSpellAsync(spellId);
-
-			return spell;
-		}
-
-		[HttpGet("search/{searchTerm}")]
-		public async Task<IQueryable<Spell>> SearchSpells(string searchTerm)
-		{
-			var spells = await spellRepository.SearchSpellsAsync(searchTerm);
+			var spells = spellRepository.GetAllSpells();
 
 			return spells;
 		}
 
-		[HttpPut]
-		public async Task<IActionResult> PutSpellAsync(Spell spell)
+		[HttpPost]
+		public IActionResult AddSpell(Spell spell)
 		{
-			if (spell.Id != null)
-			{
-				var existingSpell = await spellRepository.GetSpellAsync(spell.Id);
-				if (existingSpell != null)
-				{
-					await spellRepository.UpdateSpellAsync(spell);
+			spellRepository.AddSpell(spell);
 
-					return Ok(existingSpell);
-				}
-
-				return BadRequest("SpellId not found. If you meant to create a spell, please remove SpellId from your request.");
-			}
-			await spellRepository.CreateSpellAsync(spell);
-
-			return Created(string.Empty, spell);
+			return Created(Url.Content("~/") + spell.Id, spell);
 		}
 
-
-		[HttpPut("dnd5e")]
-		public async Task<IActionResult> PutDnD5eSpellsAsync(DnD5eSpell[] spells)
+		[HttpPatch()]
+		public IActionResult EditSpell(Spell spell)
 		{
-			var mappedSpells = new List<Spell>();
-			foreach (var spell in spells)
-			{
-				var mappedSpell = mapper.Map<DnD5eSpell, Spell>(spell);
-				mappedSpells.Add(mappedSpell);
-			}
+			spellRepository.EditSpell(spell);
 
-			await spellRepository.PutSpellsAsync(mappedSpells);
-
-			return Created(string.Empty, mappedSpells);
+			return Ok(spell);
 		}
 
-		[HttpDelete]
-		public async Task<IActionResult> DeleteAsync(Guid spellId)
+		[HttpDelete()]
+		public IActionResult DeleteAsync(Spell spell)
 		{
-			await spellRepository.DeleteSpellAsync(spellId);
+			if (spell.Id == default)
+			{
+				return BadRequest("Delete spell failed: invalid ID.");
+			}
+
+			spellRepository.DeleteSpell(spell);
 
 			return NoContent();
 		}

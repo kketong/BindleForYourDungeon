@@ -1,56 +1,75 @@
-﻿using BindleForYourDungeon.Models;
-using MongoFramework;
+﻿using BindleForYourDungeon.Controllers;
+using BindleForYourDungeon.DTOs;
+using BindleForYourDungeon.Models;
+using Microsoft.EntityFrameworkCore;
+using MongoDB.Bson;
 
 namespace BindleForYourDungeon.Repositories
 {
-	public class CharacterRepository(IMongoDbContext context) : ICharacterRepository
+    public class CharacterRepository(
+		ApplicationContext context,
+		ILogger<CharacterRepository> logger) : ICharacterRepository
 	{
+		private readonly ApplicationContext _context = context ?? throw new ArgumentNullException(nameof(context));
+		private readonly ILogger _logger = logger;
 
-		private readonly ApplicationContext _context = (ApplicationContext) context ?? throw new ArgumentNullException(nameof(context));
-
-		public async Task CreateCharacterAsync(Character character)
+		public void AddCharacter(Character newCharacter)
 		{
-			context.
-			_context.Characters.Add(character);
+			_context.Characters.Add(newCharacter);
 
-			await _context.SaveChangesAsync();
+			_context.ChangeTracker.DetectChanges();
+			_logger.LogInformation(_context.ChangeTracker.DebugView.LongView);
+
+			_context.SaveChanges();
 		}
 
-		public async Task<Character> GetCharacterAsync(Guid characterId)
+		public void DeleteCharacter(Character character)
 		{
-			var character = await _context.Characters.FindAsync(characterId);
+			var characterToDelete = _context.Characters.FirstOrDefault(f => f.Id == character.Id);
 
-			return character;
+			if (characterToDelete != null)
+			{
+				_context.Characters.Remove(characterToDelete);
+
+				_context.ChangeTracker.DetectChanges();
+				_logger.LogInformation(_context.ChangeTracker.DebugView.LongView);
+
+				_context.SaveChanges();
+			}
+			else
+			{
+				throw new ArgumentException("The character to delete cannot be found.");
+			}
 		}
 
-		public Task<IQueryable<Character>> SearchCharactersAsync(string searchTerm)
+		public void EditCharacter(Character updatedCharacter)
 		{
-			var characters = _context.Characters.Where(characters =>
-			characters.Name.Contains(searchTerm) ||
-			characters.Description.Contains(searchTerm));
+			var bookingToUpdate = _context.Characters.FirstOrDefault(f => f.Id == updatedCharacter.Id);
 
-			return (Task<IQueryable<Character>>)characters;
+
+			if (bookingToUpdate != null)
+			{
+				_context.Characters.Update(bookingToUpdate);
+
+				_context.ChangeTracker.DetectChanges();
+				_context.SaveChanges();
+
+				_logger.LogInformation(_context.ChangeTracker.DebugView.LongView);
+			}
+			else
+			{
+				throw new ArgumentException("Character to be updated cannot be found");
+			}
 		}
 
-		public IQueryable<Character> GetCharacters()
+		public IEnumerable<Character> GetAllCharacters()
 		{
-			var character = _context.Characters;
-
-			return character;
+			return _context.Characters.OrderBy(f => f.Name).AsNoTracking().AsEnumerable();
 		}
 
-		public async Task PatchCharacter(Character character, CancellationToken cancellationToken)
+		public Character? GetCharacterById(ObjectId id)
 		{
-			_context.Characters.Update(character);
-
-			await _context.SaveChangesAsync(cancellationToken);
-		}
-
-		public async Task DeleteCharacterAsync(Character character)
-		{
-			_context.Characters.Remove(character);
-			
-			await _context.SaveChangesAsync();
+			return _context.Characters.AsNoTracking().FirstOrDefault(c => c.Id == id);
 		}
 	}
 }

@@ -1,15 +1,15 @@
 ﻿using BindleForYourDungeon.Models.SpellTypes;
+using MongoDB.Bson;
 
 namespace BindleForYourDungeon.Repositories
 {
 	public interface ISpellRepository
 	{
-		Task CreateSpellAsync(Spell spell);
-		Task DeleteSpellAsync(Guid spellId);
-		Task<Spell> GetSpellAsync(string spellId);
-		Task PutSpellsAsync(IEnumerable<Spell> spells);
-		IQueryable<Spell> GetSpells();
-		Task UpdateSpellAsync(Spell spell);
-		Task<IQueryable<Spell>> SearchSpellsAsync(string searchTerm);
+		void AddSpell(Spell newSpell);
+		void DeleteSpell(Spell spell);
+		void EditSpell(Spell updatedSpell);
+		IEnumerable<Spell> GetAllSpells();
+		Spell? GetSpellById(ObjectId id);
+		IEnumerable<Spell> GetSpellsById(ObjectId[] ids);
 	}
 }

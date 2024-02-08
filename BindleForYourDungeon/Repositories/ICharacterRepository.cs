@@ -1,14 +1,15 @@
-﻿using BindleForYourDungeon.Models;
+﻿using BindleForYourDungeon.DTOs;
+using BindleForYourDungeon.Models;
+using MongoDB.Bson;
 
 namespace BindleForYourDungeon.Repositories
 {
-	public interface ICharacterRepository
+    public interface ICharacterRepository
 	{
-		Task CreateCharacterAsync(Character character);
-		Task DeleteCharacterAsync(Character character);
-		Task<Character> GetCharacterAsync(Guid characterId);
-		IQueryable<Character> GetCharacters();
-		Task PatchCharacter(Character character, CancellationToken cancellationToken);
-		Task<IQueryable<Character>> SearchCharactersAsync(string searchTerm);
+		void AddCharacter(Character newCharacter);
+		void DeleteCharacter(Character character);
+		void EditCharacter(Character updatedCharacter);
+		IEnumerable<Character> GetAllCharacters();
+		Character? GetCharacterById(ObjectId id);
 	}
 }

@@ -1,66 +1,78 @@
 ﻿using BindleForYourDungeon.Models.SpellTypes;
-using MongoFramework.Linq;
+using Microsoft.EntityFrameworkCore;
+using MongoDB.Bson;
 
 namespace BindleForYourDungeon.Repositories
 {
-	public class SpellRepository(ApplicationContext context) : ISpellRepository
+	public class SpellRepository(
+		ApplicationContext context,
+		ILogger<SpellRepository> logger) : ISpellRepository
 	{
 		private readonly ApplicationContext _context = context ?? throw new ArgumentNullException(nameof(context));
+		private readonly ILogger _logger = logger;
 
-		public async Task CreateSpellAsync(Spell spell)
+		public void AddSpell(Spell newSpell)
 		{
-			_context.Spells.Add(spell);
+			_context.Spells.Add(newSpell);
 
-			await _context.SaveChangesAsync();
+			_context.ChangeTracker.DetectChanges();
+			_logger.LogInformation(_context.ChangeTracker.DebugView.LongView);
+
+			_context.SaveChanges();
 		}
 
-		public async Task PutSpellsAsync(IEnumerable<Spell> spells)
+		public void DeleteSpell(Spell spell)
 		{
-			var existingIds = _context.Spells.WhereIdMatches(spells.Select(x => x.Id)).Select(x=> x.Id).ToList();
-			var spellsToUpdate = spells.Where(x => existingIds.Contains(x.Id));
-			var spellsToAdd = spells.Except(spellsToUpdate);
+			var spellToDelete = _context.Spells.FirstOrDefault(f => f.Id == spell.Id);
 
-			_context.Spells.UpdateRange(spellsToUpdate);
-			_context.Spells.AddRange(spellsToAdd);
+			if (spellToDelete != null)
+			{
+				_context.Spells.Remove(spellToDelete);
 
-			await _context.SaveChangesAsync();
+				_context.ChangeTracker.DetectChanges();
+				_logger.LogInformation(_context.ChangeTracker.DebugView.LongView);
+
+				_context.SaveChanges();
+			}
+			else
+			{
+				throw new ArgumentException("The spell to delete cannot be found.");
+			}
 		}
 
-		public async Task<Spell> GetSpellAsync(string spellId)
+		public void EditSpell(Spell updatedSpell)
 		{
-			var spell = await _context.Spells.FindAsync(spellId);
+			var bookingToUpdate = _context.Spells.FirstOrDefault(f => f.Id == updatedSpell.Id);
 
-			return spell;
+
+			if (bookingToUpdate != null)
+			{
+				_context.Spells.Update(bookingToUpdate);
+
+				_context.ChangeTracker.DetectChanges();
+				_context.SaveChanges();
+
+				_logger.LogInformation(_context.ChangeTracker.DebugView.LongView);
+			}
+			else
+			{
+				throw new ArgumentException("Spell to be updated cannot be found");
+			}
 		}
 
-		public Task<IQueryable<Spell>> SearchSpellsAsync(string searchTerm)
+		public IEnumerable<Spell> GetAllSpells()
 		{
-			var spell = _context.Spells.Where(spell =>
-				spell.Name.Contains(searchTerm) ||
-							 spell.Desc.Contains(searchTerm));
-
-			return (Task<IQueryable<Spell>>) spell;
+			return _context.Spells.OrderBy(f => f.Name).AsNoTracking().AsEnumerable<Spell>();
 		}
 
-		public IQueryable<Spell> GetSpells()
+		public Spell? GetSpellById(ObjectId id)
 		{
-			var spells = _context.Spells;
-
-			return spells;
+			return _context.Spells.AsNoTracking().FirstOrDefault(s => s.Id == id);
 		}
 
-		public async Task UpdateSpellAsync(Spell spell)
+		public IEnumerable<Spell> GetSpellsById(ObjectId[] ids)
 		{
-			_context.Spells.Update(spell);
-
-			await _context.SaveChangesAsync();
-		}
-
-		public async Task DeleteSpellAsync(Guid spellId)
-		{
-			_context.Spells.RemoveById(spellId);
-
-			await _context.SaveChangesAsync();
+			return _context.Spells.AsNoTracking().Where(s => s.Equals(ids));
 		}
 	}
 }

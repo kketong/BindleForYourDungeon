@@ -1,15 +1,16 @@
 ﻿using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 using MongoDB.Bson.Serialization.IdGenerators;
+using MongoDB.EntityFrameworkCore;
 using System.Text.Json.Serialization;
 
 namespace BindleForYourDungeon.Models
 {
+	[Collection("feats")]
 	public class Feat
 	{
-		[BsonId]
-		[BsonRepresentation(BsonType.ObjectId)]
-		public string? Id { get; set; }
+		[BsonId(IdGenerator = typeof(CombGuidGenerator))]
+		public ObjectId Id { get; set; }
 
 		[JsonPropertyName("name")]
 		public string Name { get; set; }

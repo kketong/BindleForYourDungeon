@@ -1,8 +1,10 @@
-﻿using BindleForYourDungeon.Models;
+﻿using AutoMapper;
+using BindleForYourDungeon.DTOs;
+using BindleForYourDungeon.Models;
 using BindleForYourDungeon.Repositories;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.IdentityModel.Tokens;
-using System.Threading;
+using MongoDB.Bson;
+using System.Collections.Generic;
 
 namespace BindleForYourDungeon.Controllers
 {
@@ -10,116 +12,72 @@ namespace BindleForYourDungeon.Controllers
 	[Route("characters")]
 	public class CharacterController(
 		ILogger<CharacterController> logger,
-		ICharacterRepository characterRepository) : ControllerBase
+		ICharacterRepository characterRepository,
+		ISpellRepository spellRepository,
+		IFeatRepository featRepository,
+		IMapper mapper) : ControllerBase
 	{
 		private readonly ILogger<CharacterController> _logger = logger;
-		private readonly ICharacterRepository characterRepository = characterRepository ?? throw new ArgumentNullException(nameof(characterRepository));
+		private readonly ICharacterRepository _characterRepository = characterRepository ?? throw new ArgumentNullException(nameof(characterRepository));
+		private readonly ISpellRepository _spellRepository = spellRepository;
+		private readonly IFeatRepository _featRepository = featRepository;
+		private readonly IMapper _mapper = mapper;
 
 		[HttpGet]
-		public IQueryable<Character> GetCharacters()
+		public ActionResult<IEnumerable<CharacterDTO>> GetCharacters()
 		{
-			var characters = characterRepository.GetCharacters();
+			var characters = _characterRepository.GetAllCharacters();
+			var characterDTOList = (IEnumerable<CharacterDTO>)_mapper.Map(
+				characters,
+				typeof(IEnumerable<Character>),
+				typeof(IEnumerable<CharacterDTO>)
+				);
 
-			return characters;
+			return Ok(characterDTOList);
 		}
 
 		[HttpGet("{characterId}")]
-		public async Task<Character> GetCharacter(Guid characterId)
+		public ActionResult<CharacterDTO> GetCharacter(string characterId)
 		{
-			var character = await characterRepository.GetCharacterAsync(characterId);
+			if (!ObjectId.TryParse(characterId, out var parsedId))
+			{
+				return BadRequest($"{characterId} is not a valid id.");
+			}
+			var character = _characterRepository.GetCharacterById(parsedId);
+			var characterDTO = (CharacterDTO)_mapper.Map(
+				character,
+				typeof(Character),
+				typeof(CharacterDTO)
+				);
 
-			return character;
-		}
-
-		[HttpGet("search/{searchTerm}")]
-		public async Task<IQueryable<Character>> SearchCharacters(string searchTerm)
-		{
-			var characters = await characterRepository.SearchCharactersAsync(searchTerm);
-
-			return characters;
+			return Ok(characterDTO);
 		}
 
 		[HttpPost]
-		public async Task<IActionResult> CreateAsync(Character character)
+		public IActionResult AddCharacter(Character character)
 		{
-			await characterRepository.CreateCharacterAsync(character);
+			_characterRepository.AddCharacter(character);
+
 			return Created(Url.Content("~/") + character.Id, character);
 		}
 
-		[HttpPost("{characterId}/addspell")]
-		public async Task<IActionResult> AddSpell(Guid characterId, [FromBody]string spellId, CancellationToken cancellationToken)
+		[HttpPatch()]
+		public IActionResult EditCharacter(Character character)
 		{
-			var character = await characterRepository.GetCharacterAsync(characterId);
-			if (character == null)
-			{
-				return NotFound();
-			}
-			else
-			{
-				if (!character.LearntSpells.IsNullOrEmpty())
-				{
-					if (character.LearntSpells.Contains(spellId))
-					{
-						return BadRequest($"{spellId} already learnt.");
-					}
-					character.LearntSpells.Add(spellId);
-				}
-                else
-                {
-					character.LearntSpells = [spellId];
-				}
-			}
-			await characterRepository.PatchCharacter(character, cancellationToken);
+			_characterRepository.EditCharacter(character);
 
 			return Ok(character);
 		}
 
-		[HttpPost("{characterId}/removespell")]
-		public async Task<IActionResult> RemoveSpell(Guid characterId, [FromBody] string spellId, CancellationToken cancellationToken)
+		[HttpDelete()]
+		public IActionResult DeleteAsync(Character character)
 		{
-			var character = await characterRepository.GetCharacterAsync(characterId);
-			if (character == null)
+			if (character.Id == default)
 			{
-				return NotFound(characterId);
-			}
-			else
-			{
-				if (!character.LearntSpells.IsNullOrEmpty())
-				{
-					if (!character.LearntSpells.Contains(spellId))
-					{
-						return BadRequest($"Target character has not learnt the spell.");
-					}
-					character.LearntSpells.Remove(spellId);
-				}
-				else
-				{
-					return BadRequest($"Target character has no learnt spells.");
-				}
-			}
-			await characterRepository.PatchCharacter(character, cancellationToken);
-
-			return Ok(character);
-		}
-
-		[HttpPatch("{characterId}")]
-		public async Task<IActionResult> PatchCharacterAsync(Character character, CancellationToken cancellationToken)
-		{
-			await characterRepository.PatchCharacter(character, cancellationToken);
-
-			return Ok(character);
-		}
-
-		[HttpDelete("{characterId}")]
-		public async Task<IActionResult> DeleteAsync(Guid characterId)
-		{
-			var characterToDelete = await characterRepository.GetCharacterAsync(characterId);
-			if (characterToDelete == null)
-			{
-				return NotFound($"character with id {characterId} not found");
+				return BadRequest("Delete character failed: invalid ID.");
 			}
 
-			await characterRepository.DeleteCharacterAsync(characterToDelete);
+			_characterRepository.DeleteCharacter(character);
 
 			return NoContent();
 		}
