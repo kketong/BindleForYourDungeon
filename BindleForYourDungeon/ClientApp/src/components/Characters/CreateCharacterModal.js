@@ -30,11 +30,17 @@ export default function CreateCharacterModal({ show, handleClose, props }) {
 	function handleClassChange(event) {
 		const { id, checked } = event.target;
 		if (checked === true) {
-			character.CharacterClass.push(id);
+			setCharacter({
+				...character,
+				characterClass: [...character.CharacterClass, id]
+			});
 		} else {
 			const indexToRemove = character.CharacterClass.indexOf(id);
 			if (indexToRemove !== -1) {
-				character.CharacterClass.splice(indexToRemove, 1);
+				setCharacter({
+					...character,
+					characterClass: character.CharacterClass.splice(indexToRemove, 1)
+				});
 			}
 		}
 	}

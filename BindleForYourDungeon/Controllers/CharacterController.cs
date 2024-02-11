@@ -4,7 +4,6 @@ using BindleForYourDungeon.Models;
 using BindleForYourDungeon.Repositories;
 using Microsoft.AspNetCore.Mvc;
 using MongoDB.Bson;
-using System.Collections.Generic;
 
 namespace BindleForYourDungeon.Controllers
 {
@@ -57,6 +56,124 @@ namespace BindleForYourDungeon.Controllers
 		public IActionResult AddCharacter(Character character)
 		{
 			_characterRepository.AddCharacter(character);
+
+			return Created(Url.Content("~/") + character.Id, character);
+		}
+
+		[HttpPost("{characterId}/addspell")]
+		public IActionResult AddSpellToCharacter(string characterId, [FromBody]string spellId)
+		{
+			if (!ObjectId.TryParse(characterId, out var parsedCharacterId)) {
+				return BadRequest($"{characterId} is not a valid character id.");
+			}
+			
+			if (!ObjectId.TryParse(spellId, out var parsedSpellId))
+			{
+				return BadRequest($"'{spellId}' is not a valid spell id.");
+			}
+
+			if (_spellRepository.GetSpellById(parsedSpellId) == null)
+			{
+				return BadRequest($"spell id '{spellId}' not found.");
+			}
+
+			var character = _characterRepository.GetCharacterById(parsedCharacterId);
+			if (character.LearntSpells.Contains(parsedSpellId))
+			{
+				return BadRequest($"Spell already learnt.");
+			}
+			character.LearntSpells = character.LearntSpells?.Append(parsedSpellId).ToArray();
+			_characterRepository.EditCharacter(character);
+
+			return Created(Url.Content("~/") + character.Id, character);
+		}
+
+		[HttpPost("{characterId}/addfeat")]
+		public IActionResult AddFeatToCharacter(string characterId, [FromBody]string featId)
+		{
+			if (!ObjectId.TryParse(characterId, out var parsedCharacterId)) {
+				return BadRequest($"{characterId} is not a valid character id.");
+			}
+			
+			if (!ObjectId.TryParse(featId, out var parsedFeatId))
+			{
+				return BadRequest($"'{featId}' is not a valid feat id.");
+			}
+
+			if (_featRepository.GetFeatById(parsedFeatId) == null)
+			{
+				return BadRequest($"feat id '{featId}' not found.");
+			}
+
+			var character = _characterRepository.GetCharacterById(parsedCharacterId);
+			if (character.Feats.Contains(parsedFeatId))
+			{
+				return BadRequest($"Feat already learnt.");
+			}
+			character.Feats = character.Feats?.Append(parsedFeatId).ToArray();
+			_characterRepository.EditCharacter(character);
+
+			return Created(Url.Content("~/") + character.Id, character);
+		}
+
+
+		[HttpPost("{characterId}/removespell")]
+		public IActionResult RemoveSpellFromCharacter(string characterId, [FromBody]string spellId)
+		{
+			if (!ObjectId.TryParse(characterId, out var parsedCharacterId))
+			{
+				return BadRequest($"{characterId} is not a valid character id.");
+			}
+
+			if (!ObjectId.TryParse(spellId, out var parsedSpellId))
+			{
+				return BadRequest($"'{spellId}' is not a valid spell id.");
+			}
+
+			if (_spellRepository.GetSpellById(parsedSpellId) == null)
+			{
+				return BadRequest($"spell id '{spellId}' not found.");
+			}
+
+			var character = _characterRepository.GetCharacterById(parsedCharacterId);
+			if (!character.LearntSpells.Contains(parsedSpellId))
+			{
+				return BadRequest($"Spell not learnt.");
+			}
+
+			character.LearntSpells = character.LearntSpells?.Except([parsedSpellId]).ToArray();
+			_characterRepository.EditCharacter(character);
+
+			return Created(Url.Content("~/") + character.Id, character);
+		}
+
+
+		[HttpPost("{characterId}/removefeat")]
+		public IActionResult RemoveFeatFromCharacter(string characterId, [FromBody]string featId)
+		{
+			if (!ObjectId.TryParse(characterId, out var parsedCharacterId))
+			{
+				return BadRequest($"{characterId} is not a valid character id.");
+			}
+
+			if (!ObjectId.TryParse(featId, out var parsedFeatId))
+			{
+				return BadRequest($"'{featId}' is not a valid feat id.");
+			}
+
+			if (_featRepository.GetFeatById(parsedFeatId) == null)
+			{
+				return BadRequest($"feat id '{featId}' not found.");
+			}
+
+			var character = _characterRepository.GetCharacterById(parsedCharacterId);
+			if (!character.Feats.Contains(parsedFeatId))
+			{
+				return BadRequest($"Feat not learnt.");
+			}
+
+			character.Feats = character.Feats?.Except([parsedFeatId]).ToArray();
+			_characterRepository.EditCharacter(character);
 
 			return Created(Url.Content("~/") + character.Id, character);
 		}

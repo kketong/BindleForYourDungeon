@@ -1,5 +1,4 @@
 ﻿using BindleForYourDungeon.Models;
-using BindleForYourDungeon.Models.SpellTypes;
 
 namespace BindleForYourDungeon.DTOs
 {

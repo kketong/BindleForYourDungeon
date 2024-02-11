@@ -62,6 +62,8 @@ namespace BindleForYourDungeon.Models.DnD5e
 		[JsonPropertyName("area_of_effect")]
 		public AreaOfEffect? AreaOfEffect { get; set; }
 
+		[JsonPropertyName("heal_at_slot_level")]
+		public IDictionary<string, string>? HealAtSlotLevel { get; set; }
 	}
 
 	public class DnD5eDamage
@@ -70,10 +72,10 @@ namespace BindleForYourDungeon.Models.DnD5e
 		public DnD5eDamageType? DamageType { get; set; }
 
 		[JsonPropertyName("damage_at_slot_level")]
-		public Dictionary<string, string>? DamageAtSlotLevel { get; set; }
+		public IDictionary<string, string>? DamageAtSlotLevel { get; set; }
 
 		[JsonPropertyName("damage_at_character_level")]
-		public Dictionary<string, string>? DamageAtCharacterLevel { get; set; }
+		public IDictionary<string, string>? DamageAtCharacterLevel { get; set; }
 	}
 
 	public class DnD5eDamageType

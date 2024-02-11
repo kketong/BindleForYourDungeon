@@ -8,7 +8,8 @@ import SearchSpellList from './SearchSpellList';
 export function Spellbook({
 	character,
 	spells,
-	setSpells
+	addLearntSpell,
+	removeLearntSpell
 }) {
 	const [showSearchSpellModal, setShowSearchSpellModal] = useState(false);
 	function toggleSpellSearchModal() {
@@ -22,10 +23,9 @@ export function Spellbook({
 				character={character}
 				spells={spells}
 				pageSize={7}
-				showAddSpellButton={false}
 				showRemoveSpellButton={true}
 				showClassBadges={false}
-				setSpells={setSpells}
+				removeLearntSpell={removeLearntSpell}
 			/>
 			{showSearchSpellModal &&
 				<SearchSpellModal
@@ -33,7 +33,7 @@ export function Spellbook({
 					show={showSearchSpellModal}
 					onHide={toggleSpellSearchModal}
 					size='lg'
-					setSpells={setSpells}
+					addLearntSpell={addLearntSpell}
 				/>
 			}
 		</>

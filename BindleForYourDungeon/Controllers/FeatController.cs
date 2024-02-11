@@ -1,6 +1,10 @@
-﻿using BindleForYourDungeon.Models;
+﻿
+using AutoMapper;
+using BindleForYourDungeon.DTOs;
+using BindleForYourDungeon.Models;
 using BindleForYourDungeon.Repositories;
 using Microsoft.AspNetCore.Mvc;
+using MongoDB.Bson;
 
 namespace BindleForYourDungeon.Controllers
 {
@@ -8,25 +12,56 @@ namespace BindleForYourDungeon.Controllers
 	[Route("feats")]
 	public class FeatController(
 		ILogger<FeatController> logger,
-		IFeatRepository featRepository) : ControllerBase
+		IFeatRepository featRepository,
+		IMapper mapper) : ControllerBase
 	{
 		private readonly ILogger<FeatController> _logger = logger;
 		private readonly IFeatRepository featRepository = featRepository ?? throw new ArgumentNullException(nameof(featRepository));
+		private readonly IMapper _mapper = mapper;
 
 		[HttpGet]
-		public IEnumerable<Feat> GetFeats()
+		public ActionResult<IEnumerable<FeatDTO>> GetFeats()
 		{
 			var feats = featRepository.GetAllFeats();
-
-			return feats;
+			var featsDTO = _mapper.Map<IEnumerable<FeatDTO>>(feats);
+			return Ok(featsDTO);
 		}
 
 		[HttpGet("{featId}")]
-		public IEnumerable<Feat> GetFeat(string featId)
+		public ActionResult<FeatDTO> GetFeat(string featId)
 		{
-			var feats = featRepository.GetAllFeats();
+			if (!ObjectId.TryParse(featId, out var parsedId))
+			{
+				var msg = $"{featId} is not a valid id.";
+				_logger.LogWarning(msg);
+				return BadRequest(msg);
+			}
+			var feat = featRepository.GetFeatById(parsedId);
+			var featDTO = _mapper.Map<FeatDTO>(feat);
 
-			return feats;
+			return Ok(featDTO);
+		}
+
+		[HttpGet("getfilteredfeats")]
+		public ActionResult<IEnumerable<FeatDTO>> GetFilteredFeats(List<string> featIds)
+		{
+			var objectIds = new List<ObjectId>();
+			var invalidIds = new List<string>();
+			foreach (var featId in featIds)
+			{
+				if (ObjectId.TryParse(featId, out var parsedId))
+				{
+					objectIds.Add(parsedId);
+				}
+				else
+				{
+					invalidIds.Add(featId);
+				}
+			}
+			var feats = featRepository.GetFeatsById(objectIds);
+			var featsDTO = _mapper.Map<IEnumerable<FeatDTO>>(feats);
+
+			return Ok(featsDTO);
 		}
 
 		[HttpPost]

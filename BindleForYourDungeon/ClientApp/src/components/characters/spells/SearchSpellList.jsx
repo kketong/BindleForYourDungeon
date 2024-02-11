@@ -1,6 +1,6 @@
 ﻿import React, {
 	useState,
-	useEffect
+	useMemo
 } from 'react';
 
 import Accordion from 'react-bootstrap/Accordion';
@@ -22,12 +22,12 @@ export const SearchSpellList = ({
 	character,
 	spells,
 	pageSize,
-	showAddSpellButton,
-	showRemoveSpellButton,
-	showClassBadges,
-	setSpells
+	showAddSpellButton = false,
+	showRemoveSpellButton = false,
+	showClassBadges = false,
+	addLearntSpell,
+	removeLearntSpell
 }) => {
-	const [filteredSpells, setFilteredSpells] = useState([]);
 	const [currentPage, setCurrentPage] = useState(1);
 	const [classFilter, setClassFilter] = useState('');
 	const [subclassFilter, setSubclassFilter] = useState('');
@@ -36,11 +36,7 @@ export const SearchSpellList = ({
 	const [maxLevelFilter, setMaxLevelFilter] = useState(0);
 	const [minLevelFilter, setMinLevelFilter] = useState(0);
 
-	useEffect(() => {
-		setFilteredSpells(spells);
-	}, [spells]);
-
-	useEffect(() => {
+	const filteredSpells = useMemo(() => {
 		let spellsToFilter = spells;
 		if (nameFilter.length !== 0) {
 			spellsToFilter = spellsToFilter.filter(spell => spell.name.toLowerCase().includes(nameFilter));
@@ -60,8 +56,8 @@ export const SearchSpellList = ({
 		if (minLevelFilter > 0) {
 			spellsToFilter = spellsToFilter.filter(spell => spell.level >= minLevelFilter);
 		}
-		setFilteredSpells(spellsToFilter);
 		setCurrentPage(1);
+		return spellsToFilter;
 	}, [
 		spells,
 		classFilter,
@@ -70,7 +66,7 @@ export const SearchSpellList = ({
 		nameFilter,
 		maxLevelFilter,
 		minLevelFilter
-	])
+	]);
 
 	function handleSchoolFilterChange(event) {
 		setSchoolFilter(event.target.value);
@@ -93,8 +89,7 @@ export const SearchSpellList = ({
 
 	return (
 		<>
-			<Form as={Container} >
-				{/*<Stack direction="horizontal" gap={3}>*/}
+			<Form as={Container}>
 				<Row>
 					<Col>
 						<Form.Group className="mb-3" controlId="search-spell-select-class">
@@ -172,8 +167,8 @@ export const SearchSpellList = ({
 			</Form>
 			<Accordion>
 				{filteredSpells
-					.slice(((currentPage - 1) * pageSize), currentPage * pageSize)
-					.map((spell) => (
+					.slice((currentPage - 1) * pageSize, currentPage * pageSize)
+					.map(spell =>
 						<SpellAccordionItem
 							key={`search-spell-list-spell-${spell.id}`}
 							character={character}
@@ -181,9 +176,10 @@ export const SearchSpellList = ({
 							showAddSpellButton={showAddSpellButton}
 							showRemoveSpellButton={showRemoveSpellButton}
 							showClassBadges={showClassBadges}
-							setSpells={setSpells}
+							addLearntSpell={addLearntSpell}
+							removeLearntSpell={removeLearntSpell}
 						/>
-					))
+					)
 				}
 			</Accordion>
 			<Pagination

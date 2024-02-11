@@ -9,7 +9,7 @@ namespace BindleForYourDungeon.Repositories
 		void DeleteSpell(Spell spell);
 		void EditSpell(Spell updatedSpell);
 		IEnumerable<Spell> GetAllSpells();
-		Spell? GetSpellById(ObjectId id);
-		IEnumerable<Spell> GetSpellsById(ObjectId[] ids);
+		Spell GetSpellById(ObjectId id);
+		IEnumerable<Spell> GetSpellsById(IEnumerable<ObjectId> ids);
 	}
 }

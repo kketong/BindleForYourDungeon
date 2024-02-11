@@ -38,22 +38,41 @@ export async function deleteCharacter(characterId) {
 }
 
 export async function addCharacterSpell(characterId, spellId) {
-  const response = await fetch(`characters/${characterId}/addspell`, {
-    method: "POST",
-    headers: {
-      Accept: "application/json",
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(spellId),
-  }).then(async function (response) {
-	  if (!response.ok) {
-		  const body = await response.text();
-		  throw new Error(`${response.status}: ${body}`);
-	  } else
-		  return response;
-  });
+    const response = await fetch(`characters/${characterId}/addspell`, {
+        method: "POST",
+        headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify(spellId),
+    }).then(async function (response) {
+        if (!response.ok) {
+            const body = await response.text();
+            throw new Error(`${response.status}: ${body}`);
+        } else
+            return response;
+    });
 
-  return await response.json();
+    return await response.json();
+}
+
+export async function addCharacterFeat(characterId, featId) {
+    const response = await fetch(`characters/${characterId}/addFeat`, {
+        method: "POST",
+        headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify(featId),
+    }).then(async function (response) {
+        if (!response.ok) {
+            const body = await response.text();
+            throw new Error(`${response.status}: ${body}`);
+        } else
+            return response;
+    });
+
+    return await response.json();
 }
 
 export async function removeCharacterSpell(characterId, spellId) {
@@ -77,14 +96,14 @@ export async function removeCharacterSpell(characterId, spellId) {
 //#endregion
 
 //#region Spells
-export async function putDnd5eSpells(spells) {
+export async function PostDnD5ESpell(spell) {
   const response = await fetch("spells/dnd5e", {
-    method: "PUT",
+    method: "POST",
     headers: {
       Accept: "application/json",
       "Content-Type": "application/json",
     },
-    body: JSON.stringify(spells),
+    body: JSON.stringify(spell),
   });
   if (!response.ok) throw new Error(response.status);
 
@@ -105,9 +124,9 @@ export async function getSpell(spellId) {
 //#endregion
 //#region Feats
 
-export async function putFeat(feat) {
+export async function postFeat(feat) {
   const response = await fetch("feats", {
-    method: "PUT",
+    method: "POST",
     headers: {
       Accept: "application/json",
       "Content-Type": "application/json",
@@ -117,5 +136,17 @@ export async function putFeat(feat) {
   if (!response.ok) throw new Error(response.status);
 
   return response.json();
+}
+
+export async function getFeats() {
+  const response = await fetch("feats");
+
+  return await response.json();
+}
+
+export async function getFeat(featId) {
+  const response = await fetch(`feats/${featId}`);
+
+  return await response.json();
 }
 //#endregion

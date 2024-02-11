@@ -42,12 +42,12 @@ namespace BindleForYourDungeon.Repositories
 
 		public void EditSpell(Spell updatedSpell)
 		{
-			var bookingToUpdate = _context.Spells.FirstOrDefault(f => f.Id == updatedSpell.Id);
+			var spellToUpdate = _context.Spells.FirstOrDefault(f => f.Id == updatedSpell.Id);
 
 
-			if (bookingToUpdate != null)
+			if (spellToUpdate != null)
 			{
-				_context.Spells.Update(bookingToUpdate);
+				_context.Spells.Update(spellToUpdate).CurrentValues.SetValues(updatedSpell);
 
 				_context.ChangeTracker.DetectChanges();
 				_context.SaveChanges();
@@ -65,14 +65,8 @@ namespace BindleForYourDungeon.Repositories
 			return _context.Spells.OrderBy(f => f.Name).AsNoTracking().AsEnumerable<Spell>();
 		}
 
-		public Spell? GetSpellById(ObjectId id)
-		{
-			return _context.Spells.AsNoTracking().FirstOrDefault(s => s.Id == id);
-		}
+		public Spell GetSpellById(ObjectId id) => _context.Spells.AsNoTracking().First(s => s.Id == id);
 
-		public IEnumerable<Spell> GetSpellsById(ObjectId[] ids)
-		{
-			return _context.Spells.AsNoTracking().Where(s => s.Equals(ids));
-		}
+		public IEnumerable<Spell> GetSpellsById(IEnumerable<ObjectId> ids) => _context.Spells.AsNoTracking().Where(s => ids.Contains(s.Id));
 	}
 }

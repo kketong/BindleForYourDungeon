@@ -42,12 +42,12 @@ namespace BindleForYourDungeon.Repositories
 
 		public void EditFeat(Feat updatedFeat)
 		{
-			var bookingToUpdate = _context.Feats.FirstOrDefault(f => f.Id == updatedFeat.Id);
+			var featToUpdate = _context.Feats.FirstOrDefault(f => f.Id == updatedFeat.Id);
 
 
-			if (bookingToUpdate != null)
+			if (featToUpdate != null)
 			{
-				_context.Feats.Update(bookingToUpdate);
+				_context.Feats.Update(featToUpdate).CurrentValues.SetValues(updatedFeat);
 
 				_context.ChangeTracker.DetectChanges();
 				_context.SaveChanges();
@@ -60,14 +60,10 @@ namespace BindleForYourDungeon.Repositories
 			}
 		}
 
-		public IEnumerable<Feat> GetAllFeats()
-		{
-			return _context.Feats.OrderBy(f => f.Name).AsNoTracking().AsEnumerable<Feat>();
-		}
+		public IEnumerable<Feat> GetAllFeats() => _context.Feats.OrderBy(f => f.Name).AsNoTracking().AsEnumerable();
 
-		public Feat? GetFeatById(ObjectId id)
-		{
-			return _context.Feats.AsNoTracking().FirstOrDefault(f => f.Id == id);
-		}
+		public Feat GetFeatById(ObjectId id) => _context.Feats.AsNoTracking().First(f => f.Id == id);
+
+		public IEnumerable<Feat> GetFeatsById(IEnumerable<ObjectId> ids) => _context.Feats.AsNoTracking().Where(s => ids.Contains(s.Id));
 	}
 }

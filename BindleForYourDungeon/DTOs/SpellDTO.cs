@@ -1,15 +1,8 @@
-﻿using MongoDB.Bson.Serialization.Attributes;
-using MongoDB.Bson;
-using MongoDB.EntityFrameworkCore;
-using MongoDB.Bson.Serialization.IdGenerators;
-
-namespace BindleForYourDungeon.Models.SpellTypes
+﻿namespace BindleForYourDungeon.DTOs
 {
-	[Collection("spells")]
-	public class Spell
+	public class SpellDTO
 	{
-		[BsonId(IdGenerator = typeof(CombGuidGenerator))]
-		public ObjectId Id { get; set; } = ObjectId.GenerateNewId();
+		public string Id { get; set; }
 		public required string Name { get; set; }
 		public required string[] Desc { get; set; }
 		public string[]? HigherLevel { get; set; }
@@ -22,19 +15,15 @@ namespace BindleForYourDungeon.Models.SpellTypes
 		public string? CastingTime { get; set; }
 		public int Level { get; set; }
 		public string? AttackType { get; set; }
-
 		public string? DamageType { get; set; }
-
 		public string? DamageAtSlotLevel { get; set; }
-
 		public string? DamageAtCharacterLevel { get; set; }
 		public string? HealAtSlotLevel { get; set; }
-		
 		public string? School { get; set; }
 		public string[]? Classes { get; set; }
 		public string[]? Subclasses { get; set; }
 		public string? AreaOfEffectType { get; set; }
 		public string? AreaOfEffectSize { get; set; }
-		
+
 	}
 }

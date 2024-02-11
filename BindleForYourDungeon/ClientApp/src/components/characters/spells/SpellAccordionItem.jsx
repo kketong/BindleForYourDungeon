@@ -22,7 +22,8 @@ export default function SpellAccordionItem({
 	showAddSpellButton = false,
 	showRemoveSpellButton = false,
 	showClassBadges = false,
-	setSpells
+	addLearntSpell,
+	removeLearntSpell
 }) {
 	const showToast = useToastContext();
 	const [showDescription, setShowDescription] = React.useState(false);
@@ -30,7 +31,7 @@ export default function SpellAccordionItem({
 	async function addSpell() {
 		await addCharacterSpell(character.id, spell.id)
 			.then(() => {
-				setSpells(prev => [...prev, spell]);
+				addLearntSpell(spell);
 				showToast({
 					variant: 'success',
 					header: `Add spell '${spell.name}' to ${character.name}`,
@@ -49,7 +50,7 @@ export default function SpellAccordionItem({
 	async function removeSpell() {
 		await removeCharacterSpell(character.id, spell.id)
 			.then(() => {
-				setSpells(prev => prev.filter(s => s.id !== spell.id));
+				removeLearntSpell(spell);
 				showToast({
 					variant: 'success',
 					header: `Remove spell '${spell.name}' from ${character.name}`,
@@ -97,7 +98,7 @@ export default function SpellAccordionItem({
 				<Stack gap={3}>
 					<ListGroup horizontal='xl'>
 						<ListGroup.Item>Casting Time: {spell.castingTime}</ListGroup.Item>
-						<ListGroup.Item>Range: {spell.range}{spell.areaOfEffect && `, with a ${spell.areaOfEffect.size}-foot ${spell.areaOfEffect.type} area of effect`}</ListGroup.Item>
+						<ListGroup.Item>Range: {spell.range}{spell.areaOfEffectSize && `, affecting a ${spell.areaOfEffectSize}-foot ${spell.areaOfEffectType} area`}</ListGroup.Item>
 						<ListGroup.Item>Components: {spell.components}</ListGroup.Item>
 						<ListGroup.Item>Duration: {spell.concentration && 'Concentration, '} {spell.duration}</ListGroup.Item>
 						{spell.attackType && <ListGroup.Item>Attack type: {spell.attackType}</ListGroup.Item>}

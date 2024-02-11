@@ -10,6 +10,6 @@ namespace BindleForYourDungeon.Repositories
 		void DeleteCharacter(Character character);
 		void EditCharacter(Character updatedCharacter);
 		IEnumerable<Character> GetAllCharacters();
-		Character? GetCharacterById(ObjectId id);
+		Character GetCharacterById(ObjectId id);
 	}
 }

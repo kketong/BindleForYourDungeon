@@ -22,7 +22,7 @@ namespace BindleForYourDungeon.Models
 		public string? Prerequisite { get; set; }
 
 		[JsonPropertyName("effects_desc")]
-		public List<string> EffectsDesc { get; set; }
+		public string[] EffectsDesc { get; set; }
 
 	}
 }
