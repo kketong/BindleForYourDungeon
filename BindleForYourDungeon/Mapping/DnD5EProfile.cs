@@ -1,10 +1,10 @@
 ﻿using AutoMapper;
+using BindleForYourDungeon.Models;
 using BindleForYourDungeon.Models.DnD5e;
-using BindleForYourDungeon.Models.SpellTypes;
 
 namespace BindleForYourDungeon.Mapping
 {
-	public class DnD5eProfile : Profile
+    public class DnD5eProfile : Profile
 	{
 		public DnD5eProfile()
 		{
@@ -25,14 +25,6 @@ namespace BindleForYourDungeon.Mapping
 				.ForMember(dest => dest.AreaOfEffectSize, opt => opt.MapFrom(src => src.AreaOfEffect.Size))
 				.ForMember(dest => dest.AreaOfEffectType, opt => opt.PreCondition(src => src.AreaOfEffect != null))
 				.ForMember(dest => dest.AreaOfEffectType, opt => opt.MapFrom(src => src.AreaOfEffect.Type));
-
-			CreateMap<DnD5eDamage, Damage>()
-				.ForMember(dest => dest.DamageType, opt => opt.PreCondition(src => src.DamageType != null))
-				.ForMember(dest => dest.DamageType, opt => opt.MapFrom(src => src.DamageType.Name))				
-				.ForMember(x => x.DamageAtCharacterLevel, opts => opts.PreCondition((src) => src.DamageAtCharacterLevel != null))
-				.ForMember(x => x.DamageAtCharacterLevel, opts => opts.AllowNull())
-				.ForMember(x => x.DamageAtSlotLevel, opts => opts.PreCondition((src) => src.DamageAtSlotLevel != null))
-				.ForMember(x => x.DamageAtSlotLevel, opts => opts.AllowNull());
 		}
 	}
 }

@@ -1,13 +1,13 @@
 using AutoMapper;
 using BindleForYourDungeon.Mapping;
+using BindleForYourDungeon.Models;
 using BindleForYourDungeon.Models.DnD5e;
-using BindleForYourDungeon.Models.SpellTypes;
 using System.Text.Json;
 using System.Text.Json.Nodes;
 
 namespace Tests
 {
-	public class Tests
+    public class Tests
 	{
 		DnD5eSpell AreaOfEffectSpell;
 		const string AreaOfEffectFilePath = "./TestData/DnD5E/AreaOfEffectSpell.json";
@@ -55,12 +55,8 @@ namespace Tests
 		{
 			var result = Mapper.Map<Spell>(AreaOfEffectSpell);
 
-			Assert.That(result.AreaOfEffect, Is.Not.Null);
-			Assert.Multiple(() =>
-			{
-				Assert.That(result.AreaOfEffect.Type, Is.EqualTo("cube"));
-				Assert.That(result.AreaOfEffect.Size, Is.EqualTo(20));
-			});
+			Assert.That(result.AreaOfEffectType, Is.EqualTo("cube"));
+			Assert.That(result.AreaOfEffectSize, Is.EqualTo("20"));
 		}
 
 		[Test]

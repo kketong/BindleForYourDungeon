@@ -1,5 +1,4 @@
 ﻿using System.Text.Json.Serialization;
-using BindleForYourDungeon.Models.SpellTypes;
 
 namespace BindleForYourDungeon.Models.DnD5e
 {
@@ -124,4 +123,14 @@ namespace BindleForYourDungeon.Models.DnD5e
 		//[JsonPropertyName("url")]
 		//public string Url { get; set; }
 	}
+
+	public class AreaOfEffect
+	{
+		[JsonPropertyName("type")]
+		public required string Type { get; set; }
+
+		[JsonPropertyName("size")]
+		public int Size { get; set; }
+	}
+
 }

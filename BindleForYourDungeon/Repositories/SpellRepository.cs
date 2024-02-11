@@ -1,10 +1,10 @@
-﻿using BindleForYourDungeon.Models.SpellTypes;
+﻿using BindleForYourDungeon.Models;
 using Microsoft.EntityFrameworkCore;
 using MongoDB.Bson;
 
 namespace BindleForYourDungeon.Repositories
 {
-	public class SpellRepository(
+    public class SpellRepository(
 		ApplicationContext context,
 		ILogger<SpellRepository> logger) : ISpellRepository
 	{

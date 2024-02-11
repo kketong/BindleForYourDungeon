@@ -1,9 +1,9 @@
-﻿using BindleForYourDungeon.Models.SpellTypes;
+﻿using BindleForYourDungeon.Models;
 using MongoDB.Bson;
 
 namespace BindleForYourDungeon.Repositories
 {
-	public interface ISpellRepository
+    public interface ISpellRepository
 	{
 		void AddSpell(Spell newSpell);
 		void DeleteSpell(Spell spell);

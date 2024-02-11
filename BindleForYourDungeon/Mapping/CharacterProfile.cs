@@ -1,12 +1,11 @@
 ﻿using AutoMapper;
 using BindleForYourDungeon.DTOs;
 using BindleForYourDungeon.Models;
-using BindleForYourDungeon.Models.SpellTypes;
 using MongoDB.Bson;
 
 namespace BindleForYourDungeon.Mapping
 {
-	public class CharacterProfile : Profile
+    public class CharacterProfile : Profile
 	{
 		public CharacterProfile()
 		{

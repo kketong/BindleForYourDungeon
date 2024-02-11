@@ -2,14 +2,13 @@
 using BindleForYourDungeon.DTOs;
 using BindleForYourDungeon.Models;
 using BindleForYourDungeon.Models.DnD5e;
-using BindleForYourDungeon.Models.SpellTypes;
 using BindleForYourDungeon.Repositories;
 using Microsoft.AspNetCore.Mvc;
 using MongoDB.Bson;
 
 namespace BindleForYourDungeon.Controllers
 {
-	[ApiController]
+    [ApiController]
 	[Route("spells")]
 	public class SpellController(
 		ILogger<SpellController> logger,

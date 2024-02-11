@@ -1,6 +1,5 @@
 ﻿using BindleForYourDungeon.DTOs;
 using BindleForYourDungeon.Models;
-using BindleForYourDungeon.Models.SpellTypes;
 using Microsoft.EntityFrameworkCore;
 
 public class ApplicationContext(DbContextOptions options) : DbContext(options)
