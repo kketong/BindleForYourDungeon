@@ -26,11 +26,7 @@ namespace BindleForYourDungeon.Controllers
 		public ActionResult<IEnumerable<CharacterDTO>> GetCharacters()
 		{
 			var characters = _characterRepository.GetAllCharacters();
-			var characterDTOList = (IEnumerable<CharacterDTO>)_mapper.Map(
-				characters,
-				typeof(IEnumerable<Character>),
-				typeof(IEnumerable<CharacterDTO>)
-				);
+			var characterDTOList = _mapper.Map<IEnumerable<CharacterDTO>>(characters);
 
 			return Ok(characterDTOList);
 		}

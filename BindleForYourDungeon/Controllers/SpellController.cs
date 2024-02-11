@@ -23,11 +23,7 @@ namespace BindleForYourDungeon.Controllers
 		public ActionResult<IEnumerable<SpellDTO>> GetSpells()
 		{
 			var spells = spellRepository.GetAllSpells();
-			var spellsDTO = _mapper.Map(
-				spells,
-				typeof(IEnumerable<Spell>),
-				typeof(IEnumerable<SpellDTO>)
-				) as IEnumerable<SpellDTO>;
+			var spellsDTO = _mapper.Map<IEnumerable<SpellDTO>>(spells);
 			return Ok(spellsDTO);
 		}
 
