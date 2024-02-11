@@ -1,24 +1,25 @@
-﻿using BindleForYourDungeon.Models;
-using MongoFramework;
+﻿using BindleForYourDungeon.DTOs;
+using BindleForYourDungeon.Models;
+using Microsoft.EntityFrameworkCore;
 
-namespace BindleForYourDungeon
+public class ApplicationContext(DbContextOptions options) : DbContext(options)
 {
-	public class ApplicationContext(IMongoDbConnection connection) : MongoDbContext(connection)
+	public DbSet<Character> Characters { get; init; }
+	public DbSet<Spell> Spells { get; init; }
+	public DbSet<Feat> Feats { get; init; }
+	public DbSet<Item> Items { get; init; }
+
+	//public static ApplicationContext Create(IMongoDatabase database) =>
+	//	new(new DbContextOptionsBuilder<ApplicationContext>()
+	//		.UseMongoDB(database.Client, database.DatabaseNamespace.DatabaseName)
+	//		.Options);
+
+	protected override void OnModelCreating(ModelBuilder modelBuilder)
 	{
-		public MongoDbSet<Character> Characters { get; set; }
-		public MongoDbSet<Item> Items { get; set; }
-
-		protected override void OnConfigureMapping(MappingBuilder mappingBuilder)
-		{
-			// To map property names, use the following snippet:
-			//  mappingBuilder.Entity<Character>()
-			//	.HasProperty(m => m.Name, b => b.HasElementName("MappedName"))
-			//  .ToCollection("Characters");
-			// Then add "[Column("MappedName")]" attribute to the model property.
-
-			mappingBuilder.Entity<Character>()
-				.HasProperty(m => m.CharacterId, b => b.HasElementName("Id"))
-				.ToCollection("Characters");
-		}
+		base.OnModelCreating(modelBuilder);
+		modelBuilder.Entity<Character>();
+		modelBuilder.Entity<Spell>();
+		modelBuilder.Entity<Feat>();
+		modelBuilder.Entity<Item>();
 	}
 }

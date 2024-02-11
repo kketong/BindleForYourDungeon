@@ -24,6 +24,21 @@ export const magicSchools = [
 	'Transmutation'
 ];
 
+export const characterSubclasses = [
+	'berserker',
+	'champion',
+	'devotion',
+	'draconic',
+	'evocation',
+	'fiend',
+	'hunter',
+	'land',
+	'life',
+	'lore',
+	'openHand',
+	'thief'
+]
+
 
 export default {
 	characterClasses,

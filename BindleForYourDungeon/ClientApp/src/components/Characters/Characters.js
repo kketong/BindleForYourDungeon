@@ -1,37 +1,58 @@
-import React, { useState } from 'react';
+import React, {
+	useState,
+	useCallback,
+} from 'react';
+import Button from 'react-bootstrap/Button';
+import Table from 'react-bootstrap/Table';
+
 import {
-	Button,
-	Table
-} from 'react-bootstrap';
-import { useLoaderData } from 'react-router-dom';
+	useLoaderData,
+} from 'react-router-dom';
+
 import CreateCharacterModal from './CreateCharacterModal';
 import CharacterDropdownButton from './CharacterDropdownButton';
+import { getCharacters } from '../../apis/api'
+import { DeleteCharacterConfirmModal } from './DeleteCharacterConfirmModal';
 
 export async function loader() {
-	const response = await fetch('character');
-	const data = await response.json();
-
-	return { characters: data };
+	const data = await getCharacters();
+	return { loaderData: data };
 }
 
 export default function Characters() {
-	const { characters } = useLoaderData();
+	const { loaderData } = useLoaderData();
+	const [characters, setCharacters] = useState(loaderData);
 	const [showCreateCharacter, setShowCreateCharacter] = useState(false);
+	const [characterToDelete, setCharacterToDelete] = useState('');
+	const [showDeleteCharacterModal, setShowDeleteCharacterModal] = useState(false);
 
 	function handleClick() {
 		setShowCreateCharacter(true);
 	}
+
+	const handleDeleteCharacter = useCallback((character) => {
+		setCharacterToDelete(character);
+		setShowDeleteCharacterModal(true);
+	}, [setCharacterToDelete, setShowDeleteCharacterModal])
+
+	function closeDeleteCharacterConfirmModal() {
+		setShowDeleteCharacterModal(false);
+	}
+
+	function handleCloseCreateCharacterModal() {
+		setShowCreateCharacter(false);
+	}
+
 	return (
-		<div>
+		<>
 			<Button variant="primary" onClick={handleClick}>
 				Create new character
 			</Button>
 			{showCreateCharacter &&
 				<CreateCharacterModal
 					show={showCreateCharacter}
-					onHide={() => setShowCreateCharacter(false)} />
+					handleClose={handleCloseCreateCharacterModal} />
 			}
-
 			<h1 id="tableLabel">Characters</h1>
 			<Table className="table table-striped" aria-labelledby="tableLabel">
 				<thead>
@@ -40,17 +61,18 @@ export default function Characters() {
 						<th>Class</th>
 						<th>Level</th>
 						<th>Description</th>
+						<th>Party</th>
 						<th>Inventory weight</th>
-						<th></th>
 					</tr>
 				</thead>
 				<tbody>
 					{characters.map(character =>
-						<tr key={character.characterId}>
+						<tr key={character.id}>
 							<td>{character.name}</td>
 							<td>{character.characterClass}</td>
 							<td>{character.level}</td>
 							<td>{character.description}</td>
+							<td>todo</td>
 							{character.inventory !== null ?
 								<td>{character.inventory}</td> :
 								<td>TODO</td>
@@ -59,12 +81,18 @@ export default function Characters() {
 								<CharacterDropdownButton
 									direction="down"
 									character={character}
+									deleteCharacterClicked={handleDeleteCharacter}
 								/>
 							</td>
 						</tr>
 					)}
 				</tbody>
 			</Table>
-		</div>
+			<DeleteCharacterConfirmModal characterName={characterToDelete.name}
+				characterId={characterToDelete.id}
+				show={showDeleteCharacterModal}
+				handleClose={closeDeleteCharacterConfirmModal}
+			/>
+		</>
 	);
 }

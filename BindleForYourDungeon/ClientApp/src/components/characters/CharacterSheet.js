@@ -1,63 +1,92 @@
-﻿import React, { useState } from 'react';
-import {
-	Button,
-	Card,
-	Accordion,
-	Form
-} from 'react-bootstrap';
-import { useLoaderData } from 'react-router-dom';
-import SearchSpellModal from './spells/SearchSpellModal';
-export async function loader({ params }) {
-	const characterId = params.characterId;
-	const response = await fetch(`character/${characterId}`);
-	const character = await response.json();
+﻿import React from "react";
+import Accordion from "react-bootstrap/Accordion";
+import Button from "react-bootstrap/Button";
+import Col from "react-bootstrap/Col";
+import Container from "react-bootstrap/Container";
+import Form from "react-bootstrap/Form";
+import ListGroup from "react-bootstrap/ListGroup";
+import InputGroup from "react-bootstrap/InputGroup";
+import Row from "react-bootstrap/Row";
+import Stack from "react-bootstrap/Stack";
+import Tab from "react-bootstrap/Tab";
+import { useLoaderData } from "react-router-dom";
+import { Spellbook } from "./spells/Spellbook";
+import { getCharacter, getSpell, getFeat } from "../../apis/api";
+import { CharacterDetails } from "./details/CharacterDetails";
 
-	return { character };
+export async function loader({ params }) {
+	const spellsData = [];
+	const featsData = [];
+	let characterData = {};
+
+	await getCharacter(params.characterId).then(async (characterPayload) => {
+		characterData = characterPayload;
+		for (const spellId of await characterPayload.learntSpells) {
+			await getSpell(spellId).then((spellPayload) => {
+				spellsData.push(spellPayload);
+			});
+		}
+		for (const featId of await characterPayload.feats) {
+			await getFeat(featId).then((featPayload) => {
+				featsData.push(featPayload);
+			});
+		}
+	});
+
+	return { characterData, spellsData, featsData };
 }
 
 export default function CharacterSheet() {
-	const { character } = useLoaderData();
+	const { characterData, spellsData, featsData } = useLoaderData();
+	const [character, setCharacter] = React.useState(characterData);
+	const [learntSpells, setLearntSpells] = React.useState(spellsData);
+	const [feats, setFeats] = React.useState(featsData);
 
-	const [showSearchSpellModal, setShowSearchSpellModal] = useState(false);
+	function addLearntSpell(spell) {
+		setLearntSpells(prev => [...prev, spell]);
+	}
 
-	return <>
-		<Card>
-			<img
-				alt="Card"
-				src="https://picsum.photos/300/200"
-			/>
-			<Card.Body>
-				<Card.Title tag="h5">
-					{character.name}
-				</Card.Title>
-				<Accordion>
-					<Accordion.Item>
-						<Accordion.Header >Character Info</Accordion.Header>
-						<Accordion.Body tag='Form' >
-							<Form.Group className="mb-3" controlId="description">
-							<Form.Label>Description</Form.Label>
-								<Form.Control type="text" placeholder={character.description}></Form.Control>
-							</Form.Group>
-						</Accordion.Body>
-					</Accordion.Item>
-					<Accordion.Item>
-						<Accordion.Header >Spellbook</Accordion.Header>
-						<Accordion.Body>
-							<Button onClick={() => setShowSearchSpellModal(true)}>Add Spells</Button>
-							{showSearchSpellModal &&
-								<SearchSpellModal
-									show={showSearchSpellModal}
-									onHide={() => setShowSearchSpellModal(false)} />}
-						</Accordion.Body>
-					</Accordion.Item>
-					<Accordion.Item>
-						<Accordion.Header>Inventory</Accordion.Header>
-						<Accordion.Body>
+	function removeLearntSpell(spell) {
+		setLearntSpells(prev => prev.filter(s => s.id !== spell.id));
+	}
 
-						</Accordion.Body>
-					</Accordion.Item>
-				</Accordion>
-			</Card.Body>
-		</Card>
-	</>;
-};
+	function addFeat(feat) {
+		setFeats(prev => [...prev, feat]);
+	}
+
+	return (
+		<>
+			<h1>
+				{character.name} - Level {character.level} {character.characterClass}
+			</h1>
+			<Accordion defaultActiveKey="character-info">
+				<Accordion.Item eventKey="character-info">
+					<Accordion.Header>Character Info</Accordion.Header>
+					<Accordion.Body>
+						<CharacterDetails
+							character={character}
+							setCharacter={setCharacter}
+							characterFeats={feats}
+							addFeat={addFeat}
+						/>
+					</Accordion.Body>
+				</Accordion.Item>
+				<Accordion.Item eventKey="spellbook">
+					<Accordion.Header>Spellbook</Accordion.Header>
+					<Accordion.Body>
+						<Spellbook
+							character={character}
+							spells={learntSpells}
+							addLearntSpell={addLearntSpell}
+							removeLearntSpell={removeLearntSpell}
+						/>
+					</Accordion.Body>
+				</Accordion.Item>
+				<Accordion.Item eventKey="inventory">
+					<Accordion.Header>Inventory</Accordion.Header>
+					<Accordion.Body></Accordion.Body>
+				</Accordion.Item>
+			</Accordion>
+		</>
+	);
+}

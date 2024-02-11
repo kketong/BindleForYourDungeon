@@ -1,14 +1,22 @@
-﻿import NavMenu from './components/NavMenu';
+﻿import React from 'react';
+
+import Container from 'react-bootstrap/Container';
+
+import NavMenu from './components/NavMenu';
 import { Outlet, } from 'react-router-dom';
-import { Container } from 'react-bootstrap';
+
+import ToastContextWrapper from './contexts/ToastContext';
 
 export default function Layout() {
+
 	return (
-		<div>
+		<>
 			<NavMenu />
 			<Container>
-				<Outlet />
+				<ToastContextWrapper>
+						<Outlet />
+			</ToastContextWrapper>
 			</Container>
-		</div>
+		</>
 	);
 }
