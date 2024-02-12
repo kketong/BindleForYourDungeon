@@ -1,10 +1,9 @@
 ﻿using BindleForYourDungeon.Models;
 using Microsoft.EntityFrameworkCore;
-using MongoDB.Bson;
 
 namespace BindleForYourDungeon.Repositories
 {
-    public class SpellRepository(
+	public class SpellRepository(
 		ApplicationContext context,
 		ILogger<SpellRepository> logger) : ISpellRepository
 	{
@@ -65,8 +64,8 @@ namespace BindleForYourDungeon.Repositories
 			return _context.Spells.OrderBy(f => f.Name).AsNoTracking().AsEnumerable<Spell>();
 		}
 
-		public Spell GetSpellById(ObjectId id) => _context.Spells.AsNoTracking().First(s => s.Id == id);
+		public Spell GetSpellById(Guid id) => _context.Spells.AsNoTracking().First(s => s.Id == id);
 
-		public IEnumerable<Spell> GetSpellsById(IEnumerable<ObjectId> ids) => _context.Spells.AsNoTracking().Where(s => ids.Contains(s.Id));
+		public IEnumerable<Spell> GetSpellsById(IEnumerable<Guid> ids) => _context.Spells.AsNoTracking().Where(s => ids.Contains((Guid)s.Id));
 	}
 }

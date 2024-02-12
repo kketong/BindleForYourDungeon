@@ -4,7 +4,6 @@ using BindleForYourDungeon.DTOs;
 using BindleForYourDungeon.Models;
 using BindleForYourDungeon.Repositories;
 using Microsoft.AspNetCore.Mvc;
-using MongoDB.Bson;
 
 namespace BindleForYourDungeon.Controllers
 {
@@ -24,41 +23,23 @@ namespace BindleForYourDungeon.Controllers
 		{
 			var feats = featRepository.GetAllFeats();
 			var featsDTO = _mapper.Map<IEnumerable<FeatDTO>>(feats);
+
 			return Ok(featsDTO);
 		}
 
 		[HttpGet("{featId}")]
-		public ActionResult<FeatDTO> GetFeat(string featId)
+		public ActionResult<FeatDTO> GetFeat(Guid featId)
 		{
-			if (!ObjectId.TryParse(featId, out var parsedId))
-			{
-				var msg = $"{featId} is not a valid id.";
-				_logger.LogWarning(msg);
-				return BadRequest(msg);
-			}
-			var feat = featRepository.GetFeatById(parsedId);
+			var feat = featRepository.GetFeatById(featId);
 			var featDTO = _mapper.Map<FeatDTO>(feat);
 
 			return Ok(featDTO);
 		}
 
 		[HttpGet("getfilteredfeats")]
-		public ActionResult<IEnumerable<FeatDTO>> GetFilteredFeats(List<string> featIds)
+		public ActionResult<IEnumerable<FeatDTO>> GetFilteredFeats(List<Guid> featIds)
 		{
-			var objectIds = new List<ObjectId>();
-			var invalidIds = new List<string>();
-			foreach (var featId in featIds)
-			{
-				if (ObjectId.TryParse(featId, out var parsedId))
-				{
-					objectIds.Add(parsedId);
-				}
-				else
-				{
-					invalidIds.Add(featId);
-				}
-			}
-			var feats = featRepository.GetFeatsById(objectIds);
+			var feats = featRepository.GetFeatsById(featIds);
 			var featsDTO = _mapper.Map<IEnumerable<FeatDTO>>(feats);
 
 			return Ok(featsDTO);

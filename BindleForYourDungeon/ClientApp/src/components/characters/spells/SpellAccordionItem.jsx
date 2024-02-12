@@ -86,12 +86,12 @@ export default function SpellAccordionItem({
 				</Stack>
 				<Stack direction="horizontal" gap={1}>
 					{showClassBadges && spell.classes.map(characterClass =>
-						<span className="badge rounded-pill text-bg-secondary">
+						<span key={`${spell.name}-badge-class-${characterClass}`} className="badge rounded-pill text-bg-secondary">
 							{characterClass}
 						</span>
 					)}
 					{spell.ritual &&
-						<span className="badge rounded-pill text-bg-secondary">Ritual</span>}
+						<span key={`badge-ritual`} className="badge rounded-pill text-bg-secondary">Ritual</span>}
 				</Stack>
 			</Accordion.Header>
 			<Accordion.Body>
@@ -125,40 +125,34 @@ export default function SpellAccordionItem({
 								</Row>
 							</Tab>
 							<Tab eventKey="damage" title="Damage">
-								{spell.damage?.damageAtSlotLevel &&
+								{spell.damageAtSlotLevel &&
 									<Table>
 										<thead>
 											<tr>
 												<th>Slot Level</th>
-												<th>Damage ({spell.damage.damageType})</th>
+												<th>Damage ({spell.damageType})</th>
 											</tr>
 										</thead>
 										<tbody>
-											{spell.damage.damageAtSlotLevel &&
-												Object.keys(spell.damage.damageAtSlotLevel).map((key, index) => (
-													<tr>
-														<th>{key}</th>
-														<th>{spell.damage.damageAtSlotLevel[key]}</th>
-													</tr>
-												))
+											{spell.damageAtSlotLevel
 											}
 										</tbody>
 									</Table>
 								}
-								{spell.damage?.damageAtCharacterLevel &&
+								{spell.damageAtCharacterLevel &&
 									<Table>
 										<thead>
 											<tr>
 												<th>Slot Level</th>
-												<th>Damage ({spell.damage.damageType})</th>
+												<th>Damage ({spell.damageType})</th>
 											</tr>
 										</thead>
 										<tbody>
-											{spell.damage.damageAtCharacterLevel &&
-												Object.keys(spell.damage.damageAtCharacterLevel).map((key, index) => (
+											{spell.damageAtCharacterLevel &&
+												Object.keys(spell.damageAtCharacterLevel).map((key, index) => (
 													<tr>
 														<th>{key}</th>
-														<th>{spell.damage.damageAtCharacterLevel[key]}</th>
+														<th>{spell.damageAtCharacterLevel[key]}</th>
 													</tr>
 												))
 											}

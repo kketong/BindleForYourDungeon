@@ -3,7 +3,6 @@ using BindleForYourDungeon.DTOs;
 using BindleForYourDungeon.Models;
 using BindleForYourDungeon.Repositories;
 using Microsoft.AspNetCore.Mvc;
-using MongoDB.Bson;
 
 namespace BindleForYourDungeon.Controllers
 {
@@ -32,13 +31,9 @@ namespace BindleForYourDungeon.Controllers
 		}
 
 		[HttpGet("{characterId}")]
-		public ActionResult<CharacterDTO> GetCharacter(string characterId)
+		public ActionResult<CharacterDTO> GetCharacter(Guid characterId)
 		{
-			if (!ObjectId.TryParse(characterId, out var parsedId))
-			{
-				return BadRequest($"{characterId} is not a valid id.");
-			}
-			var character = _characterRepository.GetCharacterById(parsedId);
+			var character = _characterRepository.GetCharacterById(characterId);
 			var characterDTO = (CharacterDTO)_mapper.Map(
 				character,
 				typeof(Character),
@@ -57,56 +52,30 @@ namespace BindleForYourDungeon.Controllers
 		}
 
 		[HttpPost("{characterId}/addspell")]
-		public IActionResult AddSpellToCharacter(string characterId, [FromBody]string spellId)
+		public IActionResult AddSpellToCharacter(Guid characterId, [FromBody] Guid spellId)
 		{
-			if (!ObjectId.TryParse(characterId, out var parsedCharacterId)) {
-				return BadRequest($"{characterId} is not a valid character id.");
-			}
-			
-			if (!ObjectId.TryParse(spellId, out var parsedSpellId))
-			{
-				return BadRequest($"'{spellId}' is not a valid spell id.");
-			}
-
-			if (_spellRepository.GetSpellById(parsedSpellId) == null)
-			{
-				return BadRequest($"spell id '{spellId}' not found.");
-			}
-
-			var character = _characterRepository.GetCharacterById(parsedCharacterId);
-			if (character.LearntSpells.Contains(parsedSpellId))
+			var character = _characterRepository.GetCharacterById(characterId);
+			if (character.LearntSpells.Contains(spellId))
 			{
 				return BadRequest($"Spell already learnt.");
 			}
-			character.LearntSpells = character.LearntSpells?.Append(parsedSpellId).ToArray();
+
+			character.LearntSpells = character.LearntSpells.Append(spellId).ToArray();
 			_characterRepository.EditCharacter(character);
 
 			return Created(Url.Content("~/") + character.Id, character);
 		}
 
 		[HttpPost("{characterId}/addfeat")]
-		public IActionResult AddFeatToCharacter(string characterId, [FromBody]string featId)
+		public IActionResult AddFeatToCharacter(Guid characterId, [FromBody] Guid featId)
 		{
-			if (!ObjectId.TryParse(characterId, out var parsedCharacterId)) {
-				return BadRequest($"{characterId} is not a valid character id.");
-			}
-			
-			if (!ObjectId.TryParse(featId, out var parsedFeatId))
-			{
-				return BadRequest($"'{featId}' is not a valid feat id.");
-			}
 
-			if (_featRepository.GetFeatById(parsedFeatId) == null)
-			{
-				return BadRequest($"feat id '{featId}' not found.");
-			}
-
-			var character = _characterRepository.GetCharacterById(parsedCharacterId);
-			if (character.Feats.Contains(parsedFeatId))
+			var character = _characterRepository.GetCharacterById(characterId);
+			if (character.Feats.Contains(featId))
 			{
 				return BadRequest($"Feat already learnt.");
 			}
-			character.Feats = character.Feats?.Append(parsedFeatId).ToArray();
+			character.Feats = character.Feats.Append(featId).ToArray();
 			_characterRepository.EditCharacter(character);
 
 			return Created(Url.Content("~/") + character.Id, character);
@@ -114,30 +83,15 @@ namespace BindleForYourDungeon.Controllers
 
 
 		[HttpPost("{characterId}/removespell")]
-		public IActionResult RemoveSpellFromCharacter(string characterId, [FromBody]string spellId)
+		public IActionResult RemoveSpellFromCharacter(Guid characterId, [FromBody] Guid spellId)
 		{
-			if (!ObjectId.TryParse(characterId, out var parsedCharacterId))
-			{
-				return BadRequest($"{characterId} is not a valid character id.");
-			}
-
-			if (!ObjectId.TryParse(spellId, out var parsedSpellId))
-			{
-				return BadRequest($"'{spellId}' is not a valid spell id.");
-			}
-
-			if (_spellRepository.GetSpellById(parsedSpellId) == null)
-			{
-				return BadRequest($"spell id '{spellId}' not found.");
-			}
-
-			var character = _characterRepository.GetCharacterById(parsedCharacterId);
-			if (!character.LearntSpells.Contains(parsedSpellId))
+			var character = _characterRepository.GetCharacterById(characterId);
+			if (!character.LearntSpells.Contains(spellId))
 			{
 				return BadRequest($"Spell not learnt.");
 			}
 
-			character.LearntSpells = character.LearntSpells?.Except([parsedSpellId]).ToArray();
+			character.LearntSpells = character.LearntSpells?.Except([spellId]).ToArray();
 			_characterRepository.EditCharacter(character);
 
 			return Created(Url.Content("~/") + character.Id, character);
@@ -145,30 +99,11 @@ namespace BindleForYourDungeon.Controllers
 
 
 		[HttpPost("{characterId}/removefeat")]
-		public IActionResult RemoveFeatFromCharacter(string characterId, [FromBody]string featId)
+		public IActionResult RemoveFeatFromCharacter(Guid characterId, [FromBody] Guid featId)
 		{
-			if (!ObjectId.TryParse(characterId, out var parsedCharacterId))
-			{
-				return BadRequest($"{characterId} is not a valid character id.");
-			}
+			var character = _characterRepository.GetCharacterById(characterId);
 
-			if (!ObjectId.TryParse(featId, out var parsedFeatId))
-			{
-				return BadRequest($"'{featId}' is not a valid feat id.");
-			}
-
-			if (_featRepository.GetFeatById(parsedFeatId) == null)
-			{
-				return BadRequest($"feat id '{featId}' not found.");
-			}
-
-			var character = _characterRepository.GetCharacterById(parsedCharacterId);
-			if (!character.Feats.Contains(parsedFeatId))
-			{
-				return BadRequest($"Feat not learnt.");
-			}
-
-			character.Feats = character.Feats?.Except([parsedFeatId]).ToArray();
+			character.Feats = character.Feats?.Except([featId]).ToArray();
 			_characterRepository.EditCharacter(character);
 
 			return Created(Url.Content("~/") + character.Id, character);

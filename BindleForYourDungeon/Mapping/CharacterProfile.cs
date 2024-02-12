@@ -5,7 +5,7 @@ using MongoDB.Bson;
 
 namespace BindleForYourDungeon.Mapping
 {
-    public class CharacterProfile : Profile
+	public class CharacterProfile : Profile
 	{
 		public CharacterProfile()
 		{
@@ -15,6 +15,7 @@ namespace BindleForYourDungeon.Mapping
 			CreateMap<List<ObjectId>, List<string>>().ConvertUsing(o => o.Select(os => os.ToString()).ToList());
 			CreateMap<List<string>, List<ObjectId>>().ConvertUsing(o => o.Select(ObjectId.Parse).ToList());
 			CreateMap<ObjectId, string>().ConvertUsing(o => o.ToString());
+			CreateMap<string, ObjectId>().ConvertUsing(o => ObjectId.Parse(o));
 		}
 	}
 }

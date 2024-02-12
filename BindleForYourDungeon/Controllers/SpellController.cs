@@ -4,11 +4,10 @@ using BindleForYourDungeon.Models;
 using BindleForYourDungeon.Models.DnD5e;
 using BindleForYourDungeon.Repositories;
 using Microsoft.AspNetCore.Mvc;
-using MongoDB.Bson;
 
 namespace BindleForYourDungeon.Controllers
 {
-    [ApiController]
+	[ApiController]
 	[Route("spells")]
 	public class SpellController(
 		ILogger<SpellController> logger,
@@ -28,15 +27,9 @@ namespace BindleForYourDungeon.Controllers
 		}
 
 		[HttpGet("{spellId}")]
-		public ActionResult<SpellDTO> GetSpell(string spellId)
+		public ActionResult<SpellDTO> GetSpell(Guid spellId)
 		{
-			if (!ObjectId.TryParse(spellId, out var parsedId))
-			{
-				var msg = $"{spellId} is not a valid id.";
-				_logger.LogWarning(msg);
-				return BadRequest(msg);
-			}
-			var spell = spellRepository.GetSpellById(parsedId);
+			var spell = spellRepository.GetSpellById(spellId);
 			var spellsDTO = _mapper.Map(
 				spell,
 				typeof(Spell),
@@ -47,22 +40,9 @@ namespace BindleForYourDungeon.Controllers
 		}
 
 		[HttpGet("getfilteredspells")]
-		public ActionResult<IEnumerable<SpellDTO>> GetFilteredSpells(List<string> spellIds)
+		public ActionResult<IEnumerable<SpellDTO>> GetFilteredSpells(List<Guid> spellIds)
 		{
-			var objectIds = new List<ObjectId>();
-			var invalidIds = new List<string>();
-			foreach (var spellId in spellIds)
-			{
-				if (ObjectId.TryParse(spellId, out var parsedId))
-				{
-					objectIds.Add(parsedId);
-				}
-				else
-				{
-					invalidIds.Add(spellId);
-				}
-			}
-			var spells = spellRepository.GetSpellsById(objectIds);
+			var spells = spellRepository.GetSpellsById(spellIds);
 			var spellsDTO = _mapper.Map(
 				spells,
 				typeof(IEnumerable<Spell>),

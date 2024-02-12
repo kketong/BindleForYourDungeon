@@ -1,6 +1,5 @@
 ﻿using BindleForYourDungeon.Models;
 using Microsoft.EntityFrameworkCore;
-using MongoDB.Bson;
 
 namespace BindleForYourDungeon.Repositories
 {
@@ -50,7 +49,7 @@ namespace BindleForYourDungeon.Repositories
 				_context.Feats.Update(featToUpdate).CurrentValues.SetValues(updatedFeat);
 
 				_context.ChangeTracker.DetectChanges();
-				_context.SaveChanges();
+				_context.SaveChangesAsync();
 
 				_logger.LogInformation(_context.ChangeTracker.DebugView.LongView);
 			}
@@ -62,8 +61,8 @@ namespace BindleForYourDungeon.Repositories
 
 		public IEnumerable<Feat> GetAllFeats() => _context.Feats.OrderBy(f => f.Name).AsNoTracking().AsEnumerable();
 
-		public Feat GetFeatById(ObjectId id) => _context.Feats.AsNoTracking().First(f => f.Id == id);
+		public Feat GetFeatById(Guid id) => _context.Feats.AsNoTracking().First(f => f.Id == id);
 
-		public IEnumerable<Feat> GetFeatsById(IEnumerable<ObjectId> ids) => _context.Feats.AsNoTracking().Where(s => ids.Contains(s.Id));
+		public IEnumerable<Feat> GetFeatsById(IEnumerable<Guid> ids) => _context.Feats.AsNoTracking().Where(s => ids.Contains((Guid)s.Id));
 	}
 }

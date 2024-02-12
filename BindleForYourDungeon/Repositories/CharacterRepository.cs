@@ -1,6 +1,5 @@
 ﻿using BindleForYourDungeon.Models;
 using Microsoft.EntityFrameworkCore;
-using MongoDB.Bson;
 
 namespace BindleForYourDungeon.Repositories
 {
@@ -42,13 +41,13 @@ namespace BindleForYourDungeon.Repositories
 
 		public void EditCharacter(Character updatedCharacter)
 		{
-			var characterToUpdate = _context.Characters.FirstOrDefault(f => f.Id == updatedCharacter.Id);
-
+			var characterToUpdate = GetCharacterById((Guid)updatedCharacter.Id);
 
 			if (characterToUpdate != null)
 			{
 				_context.Characters.Update(characterToUpdate).CurrentValues.SetValues(updatedCharacter);
-
+				// SetValues does not detect and update child entities.
+				characterToUpdate.AbilityScore = updatedCharacter.AbilityScore;
 				_context.ChangeTracker.DetectChanges();
 				_context.SaveChanges();
 
@@ -62,6 +61,6 @@ namespace BindleForYourDungeon.Repositories
 
 		public IEnumerable<Character> GetAllCharacters() => _context.Characters.OrderBy(f => f.Name).AsNoTracking().AsEnumerable();
 
-		public Character GetCharacterById(ObjectId id) => _context.Characters.AsNoTracking().First(c => c.Id == id);
+		public Character GetCharacterById(Guid id) => _context.Characters.AsNoTracking().First(c => Equals(c.Id, id));
 	}
 }

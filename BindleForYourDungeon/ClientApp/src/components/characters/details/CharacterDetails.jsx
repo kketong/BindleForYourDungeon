@@ -1,14 +1,11 @@
-﻿import { useState } from "react";
-
-import Button from "react-bootstrap/Button";
-import Col from "react-bootstrap/Col";
+﻿import Col from "react-bootstrap/Col";
 import Container from "react-bootstrap/Container";
 import Form from "react-bootstrap/Form";
 import InputGroup from "react-bootstrap/InputGroup";
 import Row from "react-bootstrap/Row";
 
 import FeatsTab from "../feats/FeatsTab";
-import FormTextInput from "../../FormTextInput";
+import InputGroupForm from "../../common/InputGroupForm";
 
 export function CharacterDetails({
 	character,
@@ -16,32 +13,43 @@ export function CharacterDetails({
 	characterFeats,
 	setCharacter,
 }) {
-	const [changes, setChanges] = useState([]);
 
 	function handleChanged(e) {
 		const propertyName = e.target.id;
-		const value = e.target.value;
-		const indexOf = changes.findIndex(
-			(change) => change.propertyName === propertyName
-		);
-		if (indexOf >= 0) {
-			changes[indexOf] = { propertyName: propertyName, value: value };
-			setChanges(changes);
-		} else {
-			setChanges((prev) => [...prev, { propertyName: propertyName, value: value }]);
-		}
+		setCharacter({ ...character, [propertyName]: e.target.value });
+	}
+
+	function handleInspiredChanged(e) {
+		const value = e.target.checked;
+		setCharacter({ ...character, inspired: value });
+	}
+
+	function handleAbilityScoreChanged(e) {
+		const propertyName = e.target.id;
+		setCharacter({
+			...character,
+			abilityScore: {
+				...character.abilityScore,
+				[propertyName]: e.target.value
+			}
+		});
 	}
 
 	return (
 		<>
-			<Container as="form" id="character-details-form">
+			<Container as="form" fluid id="character-details-form">
 				<Row>
 					<Col>
-						<FormTextInput
+						<InputGroupForm
 							propertyName="Name"
 							placeholderVal={character.name}
 							handleChanged={handleChanged}
 						/>
+					</Col>
+					<Col>
+						Multiclass???
+						<Form.Select>
+						</Form.Select>						
 					</Col>
 					<Col sm={3}>
 						<InputGroup>
@@ -49,9 +57,10 @@ export function CharacterDetails({
 							<Form.Control
 								type="text"
 								className="wd-1"
-								placeholder={character.hitPoints}
-								id="hitPoints"
+								placeholder={character.currentHitPoints}
+								id="currentHitPoints"
 								onChange={handleChanged}
+								type="number"
 							/>
 							<InputGroup.Text>Max</InputGroup.Text>
 							<Form.Control
@@ -59,28 +68,83 @@ export function CharacterDetails({
 								placeholder={character.maxHitPoints}
 								id="maxHitPoints"
 								onChange={handleChanged}
+								type="number"
 							/>
 						</InputGroup>
 					</Col>
 					<Col sm={2}>
-						<FormTextInput
+						<InputGroupForm
 							propertyName="Race"
 							placeholderVal={character.race}
 							handleChanged={handleChanged}
 						/>
 					</Col>
 					<Col sm={2}>
-						<FormTextInput
+						<InputGroupForm
 							propertyName="Level"
 							placeholderVal={character.level}
 							handleChanged={handleChanged}
+							type="number"
 						/>
 					</Col>
 					<Col sm={2}>
-						<FormTextInput
-							propertyName="Exp"
+						<InputGroupForm
+							propertyName="Experience"
+							label="Exp"
 							placeholderVal={character.experience}
 							handleChanged={handleChanged}
+							type="number"
+						/>
+					</Col>
+				</Row>
+				Ability Score
+				<Row>
+					<Col>
+						<InputGroupForm
+							propertyName="Strength"
+							placeholderVal={character.abilityScore.strength}
+							handleChanged={handleAbilityScoreChanged}
+							type="number"
+						/>
+					</Col>
+					<Col>
+						<InputGroupForm
+							propertyName="Dexterity"
+							placeholderVal={character.abilityScore.dexterity}
+							handleChanged={handleAbilityScoreChanged}
+							type="number"
+						/>
+					</Col>
+					<Col>
+						<InputGroupForm
+							propertyName="Constitution"
+							placeholderVal={character.abilityScore.constitution}
+							handleChanged={handleAbilityScoreChanged}
+							type="number"
+						/>
+					</Col>
+					<Col>
+						<InputGroupForm
+							propertyName="Wisdom"
+							placeholderVal={character.abilityScore.wisdom}
+							handleChanged={handleAbilityScoreChanged}
+							type="number"
+						/>
+					</Col>
+					<Col>
+						<InputGroupForm
+							propertyName="Intelligence"
+							placeholderVal={character.abilityScore.intelligence}
+							handleChanged={handleAbilityScoreChanged}
+							type="number"
+						/>
+					</Col>
+					<Col>
+						<InputGroupForm
+							propertyName="Charisma"
+							placeholderVal={character.abilityScore.charisma}
+							handleChanged={handleAbilityScoreChanged}
+							type="number"
 						/>
 					</Col>
 				</Row>
@@ -90,9 +154,9 @@ export function CharacterDetails({
 						<Form.Control
 							id="description"
 							as="textarea"
-							placeholder={character.description}
 							rows={5}
 							onChange={handleChanged}
+							value={character.description}
 						/>
 					</Col>
 					<Col>
@@ -105,85 +169,15 @@ export function CharacterDetails({
 					</Col>
 				</Row>
 				<Row>
-					<Col>
-						<InputGroup id="input-group-ability-score-strength">
-							<InputGroup.Text>Strength</InputGroup.Text>
-							<Form.Control
-								type="text"
-								id="strength"
-								placeholder={character.abilityScore.strength}
-								onChange={handleChanged}
-							/>
-						</InputGroup>
-					</Col>
-					<Col>
-						<InputGroup id="input-group-ability-score-strength">
-							<InputGroup.Text>Dexterity</InputGroup.Text>
-							<Form.Control
-								type="text"
-								id="dexterity"
-								placeholder={character.abilityScore.dexterity}
-								onChange={handleChanged}
-							/>
-						</InputGroup>
-					</Col>
-					<Col>
-						<InputGroup id="input-group-ability-score-strength">
-							<InputGroup.Text>Constitution</InputGroup.Text>
-							<Form.Control
-								type="text"
-								id="constitution"
-								placeholder={character.abilityScore.constitution}
-								onChange={handleChanged}
-							/>
-						</InputGroup>
-					</Col>
-					<Col>
-						<InputGroup id="input-group-ability-score-strength">
-							<InputGroup.Text>Wisdom</InputGroup.Text>
-							<Form.Control
-								type="text"
-								id="wisdom"
-								placeholder={character.abilityScore.wisdom}
-								onChange={handleChanged}
-							/>
-						</InputGroup>
-					</Col>
-					<Col>
-						<InputGroup id="input-group-ability-score-strength">
-							<InputGroup.Text>Intelligence</InputGroup.Text>
-							<Form.Control
-								type="text"
-								id="intelligence"
-								placeholder={character.abilityScore.intelligence}
-								onChange={handleChanged}
-							/>
-						</InputGroup>
-					</Col>
-					<Col>
-						<InputGroup id="input-group-ability-score-strength">
-							<InputGroup.Text>Charisma</InputGroup.Text>
-							<Form.Control
-								type="text"
-								id="charisma"
-								placeholder={character.abilityScore.charisma}
-								onChange={handleChanged}
-							/>
-						</InputGroup>
-					</Col>
-				</Row>
-				<Row>
 					<Col sm={1}>
-						<Form.Check
+						<Form.Switch
 							id="inspired"
-							type="switch"
 							label="Inspired"
-							onChange={handleChanged}
+							onChange={handleInspiredChanged}
 						/>
 					</Col>
 
 				</Row>
-				<Button disabled>Save changes</Button>
 			</Container>
 		</>
 	);

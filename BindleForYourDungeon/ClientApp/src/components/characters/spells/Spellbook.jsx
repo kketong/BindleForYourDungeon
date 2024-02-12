@@ -20,6 +20,7 @@ export function Spellbook({
 		<>
 			<Button onClick={toggleSpellSearchModal}>Add Spells</Button>
 			<SearchSpellList
+				key='spellbook-learnt-spells'
 				character={character}
 				spells={spells}
 				pageSize={7}

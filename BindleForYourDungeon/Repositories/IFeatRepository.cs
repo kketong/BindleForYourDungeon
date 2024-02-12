@@ -1,5 +1,4 @@
 ﻿using BindleForYourDungeon.Models;
-using MongoDB.Bson;
 
 namespace BindleForYourDungeon.Repositories
 {
@@ -9,7 +8,7 @@ namespace BindleForYourDungeon.Repositories
 		void DeleteFeat(Feat feat);
 		void EditFeat(Feat updatedFeat);
 		IEnumerable<Feat> GetAllFeats();
-		Feat GetFeatById(ObjectId id);
-		IEnumerable<Feat> GetFeatsById(IEnumerable<ObjectId> ids);
+		Feat GetFeatById(Guid id);
+		IEnumerable<Feat> GetFeatsById(IEnumerable<Guid> ids);
 	}
 }

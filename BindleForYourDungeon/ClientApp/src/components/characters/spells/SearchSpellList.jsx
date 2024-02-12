@@ -95,9 +95,9 @@ export const SearchSpellList = ({
 						<Form.Group className="mb-3" controlId="search-spell-select-class">
 							<FloatingLabel controlId="search-spell-select-class-label" label="Filter by class">
 								<Form.Select onChange={handleClassFilterChange}>
-									<option value="">None</option>
+									<option key='class-filter-option-none' value="">None</option>
 									{characterClasses.map((characterClass) =>
-										<option value={characterClass}>{characterClass}</option>
+										<option key={`characterClass-filter-option-${characterClass}`} value={characterClass}>{characterClass}</option>
 									)}
 								</Form.Select>
 							</FloatingLabel>
@@ -107,9 +107,9 @@ export const SearchSpellList = ({
 						<Form.Group className="mb-3" controlId="search-spell-select-subclass">
 							<FloatingLabel controlId="search-spell-select-subclass-label" label="Filter by subclass">
 								<Form.Select onChange={handleSubclassFilterChange}>
-									<option value="">None</option>
+									<option key='subclass-filter-option-none' value="">None</option>
 									{characterSubclasses.map((subclass) =>
-										<option value={subclass}>{subclass}</option>
+										<option key={`subclass-filter-option-${subclass}`} value={subclass}>{subclass}</option>
 									)}
 								</Form.Select>
 							</FloatingLabel>
@@ -119,9 +119,9 @@ export const SearchSpellList = ({
 						<Form.Group className="mb-3" controlId="search-spell-select-school">
 							<FloatingLabel controlId="search-spell-select-school-label" label="Filter by school">
 								<Form.Select onChange={handleSchoolFilterChange}>
-									<option value="">None</option>
+									<option key='school-filter-option-none' value="">None</option>
 									{magicSchools.map((school) =>
-										<option value={school}>{school}</option>
+										<option key={`school-filter-option-${school}`} value={school}>{school}</option>
 									)}
 								</Form.Select>
 							</FloatingLabel>
@@ -131,9 +131,10 @@ export const SearchSpellList = ({
 						<Form.Group className="mb-3" controlId="search-spell-select-min-level">
 							<FloatingLabel controlId="search-spell-select-min-level-label" label="Minimum level">
 								<Form.Select onChange={handleMinLevelFilterChange}>
-									{[0, 1, 2, 3, 4, 5, 6, 7, 8, 9].map((level) =>
-										<option value={level}>{level}</option>)
-									}
+									<option key='min-level-filter-option-none' value={0}>None</option>
+									{[1, 2, 3, 4, 5, 6, 7, 8, 9].map((level) =>
+										<option key={`min-level-filter-option-${level}`} value={level}>{level}</option>
+									)}
 								</Form.Select>
 							</FloatingLabel>
 						</Form.Group>
@@ -142,9 +143,10 @@ export const SearchSpellList = ({
 						<Form.Group className="mb-3" controlId="search-spell-select-max-level">
 							<FloatingLabel controlId="search-spell-select-max-level-label" label="Maximum level">
 								<Form.Select onChange={handleMaxLevelFilterChange}>
-									{[0, 1, 2, 3, 4, 5, 6, 7, 8, 9].map((level) =>
-										<option value={level}>{level}</option>)
-									}
+									<option key='max-level-filter-option-none' value={0}>None</option>
+									{[1, 2, 3, 4, 5, 6, 7, 8, 9].map((level) =>
+										<option key={`max-level-filter-option-${level}`} value={level}>{level}</option>
+									)}
 								</Form.Select>
 							</FloatingLabel>
 						</Form.Group>
@@ -152,8 +154,6 @@ export const SearchSpellList = ({
 				</Row>
 				<Form.Group className="mb-3" controlId="searchSpellForm.SearchField">
 					<FloatingLabel
-						controlId="searchFloating
-						"
 						label="Search by spell name, e.g. Acid Arrow"
 						className="mb-3"
 					>
