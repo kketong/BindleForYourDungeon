@@ -9,12 +9,12 @@ import { getFeats } from "../../../apis/api";
 import { FeatAccordionItem } from "../feats/FeatAccordionItem";
 import Pagination from '../../Pagination';
 
-export const AddFeatsModal = ({
+function AddFeatsModal({
 	character,
 	addFeat,
 	handleClose,
 	...props
-}) => {
+}) {
 	const [feats, setFeats] = useState([]);
 	const pageSize = 7;
 	const [currentPage, setCurrentPage] = useState(1);
@@ -36,6 +36,7 @@ export const AddFeatsModal = ({
 						{feats.slice((currentPage - 1) * pageSize, currentPage * pageSize)
 							.map(feat => 
 								<FeatAccordionItem
+									key={feat.id}
 									character={character}
 									feat={feat}
 									addFeat={addFeat}

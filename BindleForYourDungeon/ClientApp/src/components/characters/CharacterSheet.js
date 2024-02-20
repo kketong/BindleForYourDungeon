@@ -1,18 +1,11 @@
 ﻿import React from "react";
 import Accordion from "react-bootstrap/Accordion";
 import Button from "react-bootstrap/Button";
-import Col from "react-bootstrap/Col";
-import Container from "react-bootstrap/Container";
-import Form from "react-bootstrap/Form";
-import ListGroup from "react-bootstrap/ListGroup";
-import InputGroup from "react-bootstrap/InputGroup";
-import Row from "react-bootstrap/Row";
-import Stack from "react-bootstrap/Stack";
-import Tab from "react-bootstrap/Tab";
 import { useLoaderData } from "react-router-dom";
 import { Spellbook } from "./spells/Spellbook";
-import { getCharacter, getSpell, getFeat } from "../../apis/api";
+import { getCharacter, getSpell, getFeat, patchCharacter } from "../../apis/api";
 import { CharacterDetails } from "./details/CharacterDetails";
+import { useToastContext } from "../../contexts/ToastContext";
 
 export async function loader({ params }) {
 	const spellsData = [];
@@ -41,7 +34,8 @@ export default function CharacterSheet() {
 	const [character, setCharacter] = React.useState(characterData);
 	const [learntSpells, setLearntSpells] = React.useState(spellsData);
 	const [feats, setFeats] = React.useState(featsData);
-
+	const showToast = useToastContext();
+	
 	function addLearntSpell(spell) {
 		setLearntSpells(prev => [...prev, spell]);
 	}
@@ -54,16 +48,35 @@ export default function CharacterSheet() {
 		setFeats(prev => [...prev, feat]);
 	}
 
+	async function saveCharacter() {
+		const header = `Update ${character.name}`;
+		await patchCharacter(character)
+			.then(showToast({
+				variant: 'success',
+				header: header,
+				message: 'Request successful'
+			}))
+			.catch((error) => {
+				showToast({
+					variant: 'danger',
+					header: header + " failed",
+					message: error.message
+				});
+			});;
+	}
+
 	return (
 		<>
 			<h1>
 				{character.name} - Level {character.level} {character.characterClass}
+				<Button disabled={characterData === character} onClick={saveCharacter}>Save changes</Button>
 			</h1>
-			<Accordion defaultActiveKey="character-info">
+			<Accordion defaultActiveKey="character-info" alwaysOpen>
 				<Accordion.Item eventKey="character-info">
 					<Accordion.Header>Character Info</Accordion.Header>
 					<Accordion.Body>
 						<CharacterDetails
+							key={feats}
 							character={character}
 							setCharacter={setCharacter}
 							characterFeats={feats}
@@ -74,7 +87,7 @@ export default function CharacterSheet() {
 				<Accordion.Item eventKey="spellbook">
 					<Accordion.Header>Spellbook</Accordion.Header>
 					<Accordion.Body>
-						<Spellbook
+						<Spellbook							
 							character={character}
 							spells={learntSpells}
 							addLearntSpell={addLearntSpell}

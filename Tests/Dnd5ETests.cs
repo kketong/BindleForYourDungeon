@@ -3,11 +3,10 @@ using BindleForYourDungeon.Mapping;
 using BindleForYourDungeon.Models;
 using BindleForYourDungeon.Models.DnD5e;
 using System.Text.Json;
-using System.Text.Json.Nodes;
 
 namespace Tests
 {
-    public class Tests
+	public class Tests
 	{
 		DnD5eSpell AreaOfEffectSpell;
 		const string AreaOfEffectFilePath = "./TestData/DnD5E/AreaOfEffectSpell.json";

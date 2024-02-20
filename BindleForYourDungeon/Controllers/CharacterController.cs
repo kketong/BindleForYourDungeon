@@ -1,9 +1,7 @@
 ﻿using AutoMapper;
-using BindleForYourDungeon.DTOs;
 using BindleForYourDungeon.Models;
 using BindleForYourDungeon.Repositories;
 using Microsoft.AspNetCore.Mvc;
-using MongoDB.Bson;
 
 namespace BindleForYourDungeon.Controllers
 {
@@ -23,174 +21,104 @@ namespace BindleForYourDungeon.Controllers
 		private readonly IMapper _mapper = mapper;
 
 		[HttpGet]
-		public ActionResult<IEnumerable<CharacterDTO>> GetCharacters()
+		public async Task<ActionResult<IList<Character>>> GetCharacters()
 		{
-			var characters = _characterRepository.GetAllCharacters();
-			var characterDTOList = _mapper.Map<IEnumerable<CharacterDTO>>(characters);
+			var characters = await _characterRepository.GetAllCharactersAsync();
 
-			return Ok(characterDTOList);
+			return Ok(characters);
 		}
 
 		[HttpGet("{characterId}")]
-		public ActionResult<CharacterDTO> GetCharacter(string characterId)
+		public async Task<ActionResult<Character>> GetCharacter(Guid characterId)
 		{
-			if (!ObjectId.TryParse(characterId, out var parsedId))
-			{
-				return BadRequest($"{characterId} is not a valid id.");
-			}
-			var character = _characterRepository.GetCharacterById(parsedId);
-			var characterDTO = (CharacterDTO)_mapper.Map(
-				character,
-				typeof(Character),
-				typeof(CharacterDTO)
-				);
+			var character = await _characterRepository.GetCharacterByIdAsync(characterId);
 
-			return Ok(characterDTO);
+			return Ok(character);
 		}
 
 		[HttpPost]
-		public IActionResult AddCharacter(Character character)
+		public async Task<ActionResult> AddCharacter(Character character)
 		{
-			_characterRepository.AddCharacter(character);
+			await _characterRepository.AddCharacterAsync(character);
 
 			return Created(Url.Content("~/") + character.Id, character);
 		}
 
 		[HttpPost("{characterId}/addspell")]
-		public IActionResult AddSpellToCharacter(string characterId, [FromBody]string spellId)
+		public async Task<ActionResult> AddSpellToCharacter(Guid characterId, [FromBody] Guid spellId)
 		{
-			if (!ObjectId.TryParse(characterId, out var parsedCharacterId)) {
-				return BadRequest($"{characterId} is not a valid character id.");
-			}
-			
-			if (!ObjectId.TryParse(spellId, out var parsedSpellId))
-			{
-				return BadRequest($"'{spellId}' is not a valid spell id.");
-			}
-
-			if (_spellRepository.GetSpellById(parsedSpellId) == null)
-			{
-				return BadRequest($"spell id '{spellId}' not found.");
-			}
-
-			var character = _characterRepository.GetCharacterById(parsedCharacterId);
-			if (character.LearntSpells.Contains(parsedSpellId))
+			var character = await _characterRepository.GetCharacterByIdAsync(characterId);
+			if (character.LearntSpells.Contains(spellId))
 			{
 				return BadRequest($"Spell already learnt.");
 			}
-			character.LearntSpells = character.LearntSpells?.Append(parsedSpellId).ToArray();
-			_characterRepository.EditCharacter(character);
 
-			return Created(Url.Content("~/") + character.Id, character);
-		}
-
-		[HttpPost("{characterId}/addfeat")]
-		public IActionResult AddFeatToCharacter(string characterId, [FromBody]string featId)
-		{
-			if (!ObjectId.TryParse(characterId, out var parsedCharacterId)) {
-				return BadRequest($"{characterId} is not a valid character id.");
-			}
-			
-			if (!ObjectId.TryParse(featId, out var parsedFeatId))
-			{
-				return BadRequest($"'{featId}' is not a valid feat id.");
-			}
-
-			if (_featRepository.GetFeatById(parsedFeatId) == null)
-			{
-				return BadRequest($"feat id '{featId}' not found.");
-			}
-
-			var character = _characterRepository.GetCharacterById(parsedCharacterId);
-			if (character.Feats.Contains(parsedFeatId))
-			{
-				return BadRequest($"Feat already learnt.");
-			}
-			character.Feats = character.Feats?.Append(parsedFeatId).ToArray();
-			_characterRepository.EditCharacter(character);
-
-			return Created(Url.Content("~/") + character.Id, character);
-		}
-
-
-		[HttpPost("{characterId}/removespell")]
-		public IActionResult RemoveSpellFromCharacter(string characterId, [FromBody]string spellId)
-		{
-			if (!ObjectId.TryParse(characterId, out var parsedCharacterId))
-			{
-				return BadRequest($"{characterId} is not a valid character id.");
-			}
-
-			if (!ObjectId.TryParse(spellId, out var parsedSpellId))
-			{
-				return BadRequest($"'{spellId}' is not a valid spell id.");
-			}
-
-			if (_spellRepository.GetSpellById(parsedSpellId) == null)
-			{
-				return BadRequest($"spell id '{spellId}' not found.");
-			}
-
-			var character = _characterRepository.GetCharacterById(parsedCharacterId);
-			if (!character.LearntSpells.Contains(parsedSpellId))
-			{
-				return BadRequest($"Spell not learnt.");
-			}
-
-			character.LearntSpells = character.LearntSpells?.Except([parsedSpellId]).ToArray();
-			_characterRepository.EditCharacter(character);
-
-			return Created(Url.Content("~/") + character.Id, character);
-		}
-
-
-		[HttpPost("{characterId}/removefeat")]
-		public IActionResult RemoveFeatFromCharacter(string characterId, [FromBody]string featId)
-		{
-			if (!ObjectId.TryParse(characterId, out var parsedCharacterId))
-			{
-				return BadRequest($"{characterId} is not a valid character id.");
-			}
-
-			if (!ObjectId.TryParse(featId, out var parsedFeatId))
-			{
-				return BadRequest($"'{featId}' is not a valid feat id.");
-			}
-
-			if (_featRepository.GetFeatById(parsedFeatId) == null)
-			{
-				return BadRequest($"feat id '{featId}' not found.");
-			}
-
-			var character = _characterRepository.GetCharacterById(parsedCharacterId);
-			if (!character.Feats.Contains(parsedFeatId))
-			{
-				return BadRequest($"Feat not learnt.");
-			}
-
-			character.Feats = character.Feats?.Except([parsedFeatId]).ToArray();
-			_characterRepository.EditCharacter(character);
-
-			return Created(Url.Content("~/") + character.Id, character);
-		}
-
-		[HttpPatch()]
-		public IActionResult EditCharacter(Character character)
-		{
-			_characterRepository.EditCharacter(character);
+			character.LearntSpells = [.. character.LearntSpells, spellId];
+			await _characterRepository.EditCharacterAsync(character);
 
 			return Ok(character);
 		}
 
-		[HttpDelete()]
-		public IActionResult DeleteAsync(Character character)
+		[HttpPost("{characterId}/addfeat")]
+		public async Task<ActionResult> AddFeatToCharacter(Guid characterId, [FromBody] Guid featId)
 		{
-			if (character.Id == default)
+
+			var character = await _characterRepository.GetCharacterByIdAsync(characterId);
+			if (character.Feats.Contains(featId))
 			{
-				return BadRequest("Delete character failed: invalid ID.");
+				return BadRequest($"Feat already learnt.");
+			}
+			character.Feats = [.. character.Feats, featId];
+			await _characterRepository.EditCharacterAsync(character);
+
+			return Ok(character);
+		}
+
+
+		[HttpPost("{characterId}/removespell")]
+		public async Task<IActionResult> RemoveSpellFromCharacter(Guid characterId, [FromBody] Guid spellId)
+		{
+			var character = await _characterRepository.GetCharacterByIdAsync(characterId);
+			if (!character.LearntSpells.Contains(spellId))
+			{
+				return BadRequest($"Character has not learnt this spell.");
 			}
 
-			_characterRepository.DeleteCharacter(character);
+			character.LearntSpells = character.LearntSpells.Except([spellId]).ToArray();
+			await _characterRepository.EditCharacterAsync(character);
+
+			return Ok(character);
+		}
+
+
+		[HttpPost("{characterId}/removefeat")]
+		public async Task<IActionResult> RemoveFeatFromCharacter(Guid characterId, [FromBody] Guid featId)
+		{
+			var character = await _characterRepository.GetCharacterByIdAsync(characterId);
+
+			if (!character.Feats.Contains(featId))
+			{
+				return BadRequest("Character does not have this feat.");
+			}
+
+			character.Feats = character.Feats.Except([featId]).ToArray();
+			await _characterRepository.EditCharacterAsync(character);
+
+			return Ok(character);
+		}
+
+		[HttpPatch()]
+		public async Task<IActionResult> EditCharacter(Character character)
+		{
+			await _characterRepository.EditCharacterAsync(character);
+
+			return Ok(character);
+		}
+
+		[HttpDelete("{characterId}")]
+		public async Task<IActionResult> DeleteAsync(Guid characterId)
+		{
+			await _characterRepository.DeleteCharacterAsync(characterId);
 
 			return NoContent();
 		}

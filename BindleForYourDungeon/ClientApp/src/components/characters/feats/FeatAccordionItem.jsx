@@ -30,7 +30,8 @@ export function FeatAccordionItem({ character, feat, addFeat, ...props }) {
 
 	return (
 		<Accordion.Item
-			eventKey={`accordion-item-feat-${feat.id}`}
+			key={`accordion-item-feat-${feat.id}` }
+			eventKey={`event-key-feat-${feat.id}`}
 			{...props}
 		>
 			<Accordion.Header>{feat.name}</Accordion.Header>

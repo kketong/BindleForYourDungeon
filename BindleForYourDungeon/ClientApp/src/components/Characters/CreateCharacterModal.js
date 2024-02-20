@@ -8,7 +8,6 @@ import Modal from 'react-bootstrap/Modal';
 import Row from 'react-bootstrap/Row';
 import Spinner from 'react-bootstrap/Spinner';
 
-import { redirect } from 'react-router-dom';
 import { characterClasses } from '../../Constants';
 import { postCharacter } from '../../apis/api';
 
@@ -48,16 +47,15 @@ export default function CreateCharacterModal({ show, handleClose, props }) {
 	async function handleSubmit() {
 		setLoading(true);
 		setRequestFailed(false);
-		const response = postCharacter(character)
+		postCharacter(character)
 			.then(() => {
-				setLoading(false);
+				window.location.reload();
 			})
 			.catch((error) => {
 				setLoading(false);
 				setRequestFailed(true);
 				console.log(error);
 			});
-		return redirect('/Characters', response);
 	}
 
 	return (

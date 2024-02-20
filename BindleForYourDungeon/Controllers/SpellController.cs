@@ -1,14 +1,12 @@
 ﻿using AutoMapper;
-using BindleForYourDungeon.DTOs;
 using BindleForYourDungeon.Models;
 using BindleForYourDungeon.Models.DnD5e;
 using BindleForYourDungeon.Repositories;
 using Microsoft.AspNetCore.Mvc;
-using MongoDB.Bson;
 
 namespace BindleForYourDungeon.Controllers
 {
-    [ApiController]
+	[ApiController]
 	[Route("spells")]
 	public class SpellController(
 		ILogger<SpellController> logger,
@@ -20,93 +18,58 @@ namespace BindleForYourDungeon.Controllers
 		private readonly ISpellRepository spellRepository = spellRepository ?? throw new ArgumentNullException(nameof(spellRepository));
 
 		[HttpGet]
-		public ActionResult<IEnumerable<SpellDTO>> GetSpells()
+		public async Task<ActionResult<IList<Spell>>> GetSpells()
 		{
-			var spells = spellRepository.GetAllSpells();
-			var spellsDTO = _mapper.Map<IEnumerable<SpellDTO>>(spells);
-			return Ok(spellsDTO);
+			var spells = await spellRepository.GetAllSpellsAsync();
+
+			return Ok(spells);
 		}
 
 		[HttpGet("{spellId}")]
-		public ActionResult<SpellDTO> GetSpell(string spellId)
+		public async Task<ActionResult<Spell>> GetSpell(Guid spellId)
 		{
-			if (!ObjectId.TryParse(spellId, out var parsedId))
-			{
-				var msg = $"{spellId} is not a valid id.";
-				_logger.LogWarning(msg);
-				return BadRequest(msg);
-			}
-			var spell = spellRepository.GetSpellById(parsedId);
-			var spellsDTO = _mapper.Map(
-				spell,
-				typeof(Spell),
-				typeof(SpellDTO)
-				) as SpellDTO;
+			var spell = await spellRepository.GetSpellByIdAsync(spellId);
 
-			return Ok(spellsDTO);
-		}
-
-		[HttpGet("getfilteredspells")]
-		public ActionResult<IEnumerable<SpellDTO>> GetFilteredSpells(List<string> spellIds)
-		{
-			var objectIds = new List<ObjectId>();
-			var invalidIds = new List<string>();
-			foreach (var spellId in spellIds)
-			{
-				if (ObjectId.TryParse(spellId, out var parsedId))
-				{
-					objectIds.Add(parsedId);
-				}
-				else
-				{
-					invalidIds.Add(spellId);
-				}
-			}
-			var spells = spellRepository.GetSpellsById(objectIds);
-			var spellsDTO = _mapper.Map(
-				spells,
-				typeof(IEnumerable<Spell>),
-				typeof(IEnumerable<SpellDTO>)
-				) as IEnumerable<SpellDTO>;
-
-			return Ok(spellsDTO);
+			return Ok(spell);
 		}
 
 		[HttpPost]
-		public IActionResult AddSpell(Spell spell)
+		public async Task<ActionResult> AddSpell(Spell spell)
 		{
-			spellRepository.AddSpell(spell);
+			await spellRepository.AddSpellAsync(spell).ConfigureAwait(false);
 
 			return Created(Url.Content("~/") + spell.Id, spell);
 		}
 
 		[HttpPost("dnd5e")]
-		public IActionResult AddDnd5ESpell(DnD5eSpell dnd5ESpell)
+		public async Task<ActionResult> AddDnd5ESpell(DnD5eSpell dnd5ESpell)
 		{
 			var mappedSpell = _mapper.Map<Spell>(dnd5ESpell);
-			spellRepository.AddSpell(mappedSpell);
+			await spellRepository.AddSpellAsync(mappedSpell).ConfigureAwait(false);
 
-			return Created(Url.Content("~/") + mappedSpell.Id, dnd5ESpell);
+			return Created(Url.Content("~/") + mappedSpell.Id, mappedSpell);
 		}
 
-
-		[HttpPatch()]
-		public IActionResult EditSpell(Spell spell)
+		[HttpPatch]
+		public async Task<ActionResult<Spell>> EditSpell(Spell spell)
 		{
-			spellRepository.EditSpell(spell);
+			await spellRepository.EditSpellAsync(spell);
 
 			return Ok(spell);
 		}
 
-		[HttpDelete()]
-		public IActionResult DeleteSpell(Spell spell)
+		[HttpDelete]
+		public async Task<ActionResult> DeleteSpell(Spell spell)
 		{
 			if (spell.Id == default)
 			{
-				return BadRequest("Delete dnd5ESpell failed: invalid ID.");
+				var errorMessage = "Delete dnd5ESpell failed: invalid ID.";
+				_logger.LogWarning(errorMessage);
+
+				return BadRequest(errorMessage);
 			}
 
-			spellRepository.DeleteSpell(spell);
+			await spellRepository.DeleteSpellAsync(spell);
 
 			return NoContent();
 		}

@@ -17,6 +17,19 @@ export async function postCharacter(character) {
     else return response.json();
   });
 }
+export async function patchCharacter(character) {
+    await fetch("characters", {
+        method: "PATCH",
+        headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify(character),
+    }).then(function (response) {
+        if (!response.ok) throw new Error(response.status);
+        else return response.json();
+    });
+}
 
 export async function getCharacter(characterId) {
   const response = await fetch(`characters/${characterId}`);

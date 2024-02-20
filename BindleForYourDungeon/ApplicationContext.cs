@@ -1,5 +1,4 @@
-﻿using BindleForYourDungeon.DTOs;
-using BindleForYourDungeon.Models;
+﻿using BindleForYourDungeon.Models;
 using Microsoft.EntityFrameworkCore;
 
 public class ApplicationContext(DbContextOptions options) : DbContext(options)
