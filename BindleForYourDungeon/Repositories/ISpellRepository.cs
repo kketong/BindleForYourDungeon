@@ -4,11 +4,11 @@ namespace BindleForYourDungeon.Repositories
 {
 	public interface ISpellRepository
 	{
-		void AddSpell(Spell newSpell);
-		void DeleteSpell(Spell spell);
-		void EditSpell(Spell updatedSpell);
-		IEnumerable<Spell> GetAllSpells();
-		Spell GetSpellById(Guid id);
-		IEnumerable<Spell> GetSpellsById(IEnumerable<Guid> ids);
+		Task AddSpellAsync(Spell newSpell);
+		Task DeleteSpellAsync(Spell spell);
+		Task EditSpellAsync(Spell updatedSpell);
+		Task<IList<Spell>> GetAllSpellsAsync();
+		Task<Spell> GetSpellByIdAsync(Guid id);
+		Task<IList<Spell>> GetSpellsByIdAsync(IEnumerable<Guid> ids);
 	}
 }

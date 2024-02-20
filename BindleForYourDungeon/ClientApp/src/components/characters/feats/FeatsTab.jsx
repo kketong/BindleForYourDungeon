@@ -1,24 +1,19 @@
 ﻿import { useState } from "react";
-import { createPortal } from "react-dom";
 
 import Button from "react-bootstrap/Button";
 import Col from "react-bootstrap/Col";
-import Container from "react-bootstrap/Container";
-import Form from "react-bootstrap/Form";
 import ListGroup from "react-bootstrap/ListGroup";
-import InputGroup from "react-bootstrap/InputGroup";
 import Row from "react-bootstrap/Row";
 import Tab from "react-bootstrap/Tab";
 
 import AddFeatsModal from "../feats/AddFeatsModal";
 
-export const FeatsTab = ({
+function FeatsTab({
 	character,
 	characterFeats,
 	addFeat
-}) => {
+}) {
 	const [showFeatsModal, setShowFeatsModal] = useState(false);
-	const [feats, setFeats] = useState(characterFeats);
 	const [selectedFeat, setSelectedFeat] = useState(null);
 	function toggleShowFeatsModal() {
 		setShowFeatsModal(!showFeatsModal);
@@ -27,7 +22,7 @@ export const FeatsTab = ({
 	function selectFeat(e) {
 		e.preventDefault();
 		const featId = e.target.value;
-		const matchedFeat = feats.find((element) => element.id === featId);
+		const matchedFeat = characterFeats.find((element) => element.id === featId);
 
 		setSelectedFeat(matchedFeat);
 	}
@@ -39,8 +34,8 @@ export const FeatsTab = ({
 					className="overflow-y-auto"
 					style={{ maxHeight: "200px" }}>
 					<ListGroup variant="flush">
-						{feats.length > 0 &&
-							feats.map((feat) => (
+						{characterFeats.length > 0 &&
+							characterFeats.map((feat) => (
 								<ListGroup.Item id={`toggle-show-${feat.id}`} action onClick={selectFeat} value={feat.id}>
 									{feat.name}
 								</ListGroup.Item>
@@ -57,8 +52,7 @@ export const FeatsTab = ({
 				<Col sm={8}
 					className="overflow-y-auto"
 					style={{ maxHeight: "200px" }}>
-					<Tab.Content
-					>
+					<Tab.Content>
 						{selectedFeat &&
 							<>
 								<Row>

@@ -10,17 +10,17 @@ namespace BindleForYourDungeon.Repositories
 		private readonly ApplicationContext _context = context ?? throw new ArgumentNullException(nameof(context));
 		private readonly ILogger _logger = logger;
 
-		public void AddSpell(Spell newSpell)
+		public async Task AddSpellAsync(Spell newSpell)
 		{
 			_context.Spells.Add(newSpell);
 
 			_context.ChangeTracker.DetectChanges();
 			_logger.LogInformation(_context.ChangeTracker.DebugView.LongView);
 
-			_context.SaveChanges();
+			await _context.SaveChangesAsync();
 		}
 
-		public void DeleteSpell(Spell spell)
+		public async Task DeleteSpellAsync(Spell spell)
 		{
 			var spellToDelete = _context.Spells.FirstOrDefault(f => f.Id == spell.Id);
 
@@ -31,7 +31,7 @@ namespace BindleForYourDungeon.Repositories
 				_context.ChangeTracker.DetectChanges();
 				_logger.LogInformation(_context.ChangeTracker.DebugView.LongView);
 
-				_context.SaveChanges();
+				await _context.SaveChangesAsync();
 			}
 			else
 			{
@@ -39,7 +39,7 @@ namespace BindleForYourDungeon.Repositories
 			}
 		}
 
-		public void EditSpell(Spell updatedSpell)
+		public async Task EditSpellAsync(Spell updatedSpell)
 		{
 			var spellToUpdate = _context.Spells.FirstOrDefault(f => f.Id == updatedSpell.Id);
 
@@ -49,7 +49,7 @@ namespace BindleForYourDungeon.Repositories
 				_context.Spells.Update(spellToUpdate).CurrentValues.SetValues(updatedSpell);
 
 				_context.ChangeTracker.DetectChanges();
-				_context.SaveChanges();
+				await _context.SaveChangesAsync();
 
 				_logger.LogInformation(_context.ChangeTracker.DebugView.LongView);
 			}
@@ -59,13 +59,10 @@ namespace BindleForYourDungeon.Repositories
 			}
 		}
 
-		public IEnumerable<Spell> GetAllSpells()
-		{
-			return _context.Spells.OrderBy(f => f.Name).AsNoTracking().AsEnumerable<Spell>();
-		}
+		public async Task<IList<Spell>> GetAllSpellsAsync() => await _context.Spells.OrderBy(f => f.Name).AsNoTracking().ToListAsync();
 
-		public Spell GetSpellById(Guid id) => _context.Spells.AsNoTracking().First(s => s.Id == id);
+		public async Task<Spell> GetSpellByIdAsync(Guid id) => await _context.Spells.AsNoTracking().FirstAsync(s => Equals(s.Id, id));
 
-		public IEnumerable<Spell> GetSpellsById(IEnumerable<Guid> ids) => _context.Spells.AsNoTracking().Where(s => ids.Contains((Guid)s.Id));
+		public async Task<IList<Spell>> GetSpellsByIdAsync(IEnumerable<Guid> ids) => await _context.Spells.AsNoTracking().Where(s => ids.Contains((Guid)s.Id)).ToListAsync();
 	}
 }

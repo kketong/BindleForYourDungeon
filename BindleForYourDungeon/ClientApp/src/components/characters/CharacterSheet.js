@@ -69,13 +69,14 @@ export default function CharacterSheet() {
 		<>
 			<h1>
 				{character.name} - Level {character.level} {character.characterClass}
+				<Button disabled={characterData === character} onClick={saveCharacter}>Save changes</Button>
 			</h1>
-			<Button disabled={characterData === character} onClick={saveCharacter}>Save changes</Button>
-			<Accordion defaultActiveKey="character-info">
+			<Accordion defaultActiveKey="character-info" alwaysOpen>
 				<Accordion.Item eventKey="character-info">
 					<Accordion.Header>Character Info</Accordion.Header>
 					<Accordion.Body>
 						<CharacterDetails
+							key={feats}
 							character={character}
 							setCharacter={setCharacter}
 							characterFeats={feats}
@@ -86,7 +87,7 @@ export default function CharacterSheet() {
 				<Accordion.Item eventKey="spellbook">
 					<Accordion.Header>Spellbook</Accordion.Header>
 					<Accordion.Body>
-						<Spellbook
+						<Spellbook							
 							character={character}
 							spells={learntSpells}
 							addLearntSpell={addLearntSpell}

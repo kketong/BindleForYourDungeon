@@ -15,6 +15,7 @@ import {
 	addCharacterSpell,
 	removeCharacterSpell
 } from '../../../apis/api.jsx';
+import deserializeDice from '../../../helpers/diceHelper.jsx';
 
 export default function SpellAccordionItem({
 	character,
@@ -119,50 +120,77 @@ export default function SpellAccordionItem({
 						>
 							<Tab eventKey="description" title="Description">
 								<Row>
-									<p className='spell-desc'>{spell.desc.join(' ')}</p>
+									{spell.desc.map((value) =>
+										<p>{value}</p>
+									)}
+
 									{spell.higherLevel.length > 0 &&
 										<p className='spell-higher-level-desc'>Higher level casting: {spell.higherLevel.join(' ')}</p>}
 								</Row>
 							</Tab>
-							<Tab eventKey="damage" title="Damage">
-								{spell.damageAtSlotLevel &&
+							{spell.healAtSlotLevel &&
+								<Tab eventKey="heal" title="Healing Power">
 									<Table>
 										<thead>
 											<tr>
 												<th>Slot Level</th>
-												<th>Damage ({spell.damageType})</th>
+												<th>Healing power</th>
 											</tr>
 										</thead>
 										<tbody>
-											{spell.damageAtSlotLevel
-											}
-										</tbody>
-									</Table>
-								}
-								{spell.damageAtCharacterLevel &&
-									<Table>
-										<thead>
-											<tr>
-												<th>Slot Level</th>
-												<th>Damage ({spell.damageType})</th>
-											</tr>
-										</thead>
-										<tbody>
-											{spell.damageAtCharacterLevel &&
-												Object.keys(spell.damageAtCharacterLevel).map((key, index) => (
+											{deserializeDice(spell.healAtSlotLevel)
+												.map((levelDicePair) =>
 													<tr>
-														<th>{key}</th>
-														<th>{spell.damageAtCharacterLevel[key]}</th>
+														<th>{levelDicePair.level}</th>
+														<th>{levelDicePair.val}</th>
 													</tr>
-												))
-											}
+												)}
 										</tbody>
 									</Table>
-								}
-							</Tab>
-							<Tab eventKey="contact" title="Contact" disabled>
-								Tab content for Contact
-							</Tab>
+								</Tab>							
+							}
+							{(spell.damageAtSlotLevel || spell.damageAtCharacterLevel) &&
+								<Tab eventKey="damage" title="Damage">
+									{spell.damageAtSlotLevel &&
+										<Table>
+											<thead>
+												<tr>
+													<th>Slot Level</th>
+													<th>Damage ({spell.damageType})</th>
+												</tr>
+											</thead>
+											<tbody>
+												{deserializeDice(spell.damageAtSlotLevel)
+													.map((levelDicePair) =>
+														<tr>
+															<th>{levelDicePair.level}</th>
+															<th>{levelDicePair.val}</th>
+														</tr>
+													)}
+											</tbody>
+										</Table>
+									}
+									{spell.damageAtCharacterLevel &&
+										<Table>
+											<thead>
+												<tr>
+													<th>Character Level</th>
+													<th>Damage ({spell.damageType})</th>
+												</tr>
+											</thead>
+											<tbody>
+												{deserializeDice(spell.damageAtCharacterLevel)
+													.map((levelDicePair) =>
+														<tr>
+															<th>{levelDicePair.level}</th>
+															<th>{levelDicePair.val}</th>
+														</tr>
+													)}
+											</tbody>
+										</Table>
+									}
+								</Tab>
+							}
 						</Tabs>
 					}
 					{showAddSpellButton &&
@@ -185,6 +213,6 @@ export default function SpellAccordionItem({
 					}
 				</Stack>
 			</Accordion.Body>
-		</Accordion.Item>
+		</Accordion.Item >
 	);
 }

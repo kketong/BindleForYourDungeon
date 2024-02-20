@@ -10,19 +10,19 @@ namespace BindleForYourDungeon.Repositories
 		private readonly ApplicationContext _context = context ?? throw new ArgumentNullException(nameof(context));
 		private readonly ILogger _logger = logger;
 
-		public void AddCharacter(Character newCharacter)
+		public async Task AddCharacterAsync(Character newCharacter)
 		{
 			_context.Characters.Add(newCharacter);
 
 			_context.ChangeTracker.DetectChanges();
 			_logger.LogInformation(_context.ChangeTracker.DebugView.LongView);
 
-			_context.SaveChanges();
+			await _context.SaveChangesAsync();
 		}
 
-		public void DeleteCharacter(Character character)
+		public async Task DeleteCharacterAsync(Guid characterId)
 		{
-			var characterToDelete = _context.Characters.FirstOrDefault(f => f.Id == character.Id);
+			var characterToDelete = await _context.Characters.FirstOrDefaultAsync(f => Equals(f.Id, characterId));
 
 			if (characterToDelete != null)
 			{
@@ -31,7 +31,7 @@ namespace BindleForYourDungeon.Repositories
 				_context.ChangeTracker.DetectChanges();
 				_logger.LogInformation(_context.ChangeTracker.DebugView.LongView);
 
-				_context.SaveChanges();
+				await _context.SaveChangesAsync();
 			}
 			else
 			{
@@ -39,28 +39,32 @@ namespace BindleForYourDungeon.Repositories
 			}
 		}
 
-		public void EditCharacter(Character updatedCharacter)
+		public async Task EditCharacterAsync(Character updatedCharacter)
 		{
-			var characterToUpdate = GetCharacterById((Guid)updatedCharacter.Id);
+			if (updatedCharacter.Id == null)
+			{
+				throw new ArgumentException("Id cannot be null.");
+			}
 
+			var characterToUpdate = await _context.Characters.FindAsync(updatedCharacter.Id);
 			if (characterToUpdate != null)
 			{
 				_context.Characters.Update(characterToUpdate).CurrentValues.SetValues(updatedCharacter);
 				// SetValues does not detect and update child entities.
 				characterToUpdate.AbilityScore = updatedCharacter.AbilityScore;
 				_context.ChangeTracker.DetectChanges();
-				_context.SaveChanges();
+				await _context.SaveChangesAsync();
 
 				_logger.LogInformation(_context.ChangeTracker.DebugView.LongView);
 			}
 			else
 			{
-				throw new ArgumentException("Character to be updated cannot be found");
+				throw new ArgumentException("Character cannot be found.");
 			}
 		}
 
-		public IEnumerable<Character> GetAllCharacters() => _context.Characters.OrderBy(f => f.Name).AsNoTracking().AsEnumerable();
+		public async Task<IList<Character>> GetAllCharactersAsync() => await _context.Characters.OrderBy(f => f.Name).AsNoTracking().ToListAsync();
 
-		public Character GetCharacterById(Guid id) => _context.Characters.AsNoTracking().First(c => Equals(c.Id, id));
+		public async Task<Character> GetCharacterByIdAsync(Guid id) => await _context.Characters.AsNoTracking().FirstAsync(c => Equals(c.Id, id));
 	}
 }

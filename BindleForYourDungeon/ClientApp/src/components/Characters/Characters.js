@@ -11,8 +11,9 @@ import {
 
 import CreateCharacterModal from './CreateCharacterModal';
 import CharacterDropdownButton from './CharacterDropdownButton';
-import { getCharacters } from '../../apis/api'
+import { deleteCharacter, getCharacters } from '../../apis/api'
 import { DeleteCharacterConfirmModal } from './DeleteCharacterConfirmModal';
+import { useToastContext } from '../../contexts/ToastContext';
 
 export async function loader() {
 	const data = await getCharacters();
@@ -25,8 +26,9 @@ export default function Characters() {
 	const [showCreateCharacter, setShowCreateCharacter] = useState(false);
 	const [characterToDelete, setCharacterToDelete] = useState('');
 	const [showDeleteCharacterModal, setShowDeleteCharacterModal] = useState(false);
+	const showToast = useToastContext();
 
-	function handleClick() {
+	function handleCreateCharacterClicked() {
 		setShowCreateCharacter(true);
 	}
 
@@ -43,15 +45,37 @@ export default function Characters() {
 		setShowCreateCharacter(false);
 	}
 
+	async function handleConfirmDelete() {
+		const header = "Delete character";
+		closeDeleteCharacterConfirmModal();
+		await deleteCharacter(characterToDelete.id)
+			.then(() => {
+				setCharacters(characters.filter(c => c.id !== characterToDelete.id));
+				showToast({
+					variant: 'success',
+					header: header,
+					message: 'Request successful'
+				});
+			})
+			.catch((error) => {
+				showToast({
+					variant: 'danger',
+					header: header,
+					message: `Request failed: ${error.message}`
+				});
+			})
+	}
+
 	return (
 		<>
-			<Button variant="primary" onClick={handleClick}>
+			<Button variant="primary" onClick={handleCreateCharacterClicked}>
 				Create new character
 			</Button>
 			{showCreateCharacter &&
 				<CreateCharacterModal
-					show={showCreateCharacter}
-					handleClose={handleCloseCreateCharacterModal} />
+				show={showCreateCharacter}
+				handleClose={handleCloseCreateCharacterModal}
+				/>
 			}
 			<h1 id="tableLabel">Characters</h1>
 			<Table className="table table-striped" aria-labelledby="tableLabel">
@@ -92,6 +116,7 @@ export default function Characters() {
 				characterId={characterToDelete.id}
 				show={showDeleteCharacterModal}
 				handleClose={closeDeleteCharacterConfirmModal}
+				handleConfirm={handleConfirmDelete}
 			/>
 		</>
 	);

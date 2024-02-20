@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using BindleForYourDungeon.DTOs;
 using BindleForYourDungeon.Models;
 using BindleForYourDungeon.Repositories;
 using Microsoft.AspNetCore.Mvc;
@@ -22,110 +21,104 @@ namespace BindleForYourDungeon.Controllers
 		private readonly IMapper _mapper = mapper;
 
 		[HttpGet]
-		public ActionResult<IEnumerable<CharacterDTO>> GetCharacters()
+		public async Task<ActionResult<IList<Character>>> GetCharacters()
 		{
-			var characters = _characterRepository.GetAllCharacters();
-			var characterDTOList = _mapper.Map<IEnumerable<CharacterDTO>>(characters);
+			var characters = await _characterRepository.GetAllCharactersAsync();
 
-			return Ok(characterDTOList);
+			return Ok(characters);
 		}
 
 		[HttpGet("{characterId}")]
-		public ActionResult<CharacterDTO> GetCharacter(Guid characterId)
+		public async Task<ActionResult<Character>> GetCharacter(Guid characterId)
 		{
-			var character = _characterRepository.GetCharacterById(characterId);
-			var characterDTO = (CharacterDTO)_mapper.Map(
-				character,
-				typeof(Character),
-				typeof(CharacterDTO)
-				);
+			var character = await _characterRepository.GetCharacterByIdAsync(characterId);
 
-			return Ok(characterDTO);
+			return Ok(character);
 		}
 
 		[HttpPost]
-		public IActionResult AddCharacter(Character character)
+		public async Task<ActionResult> AddCharacter(Character character)
 		{
-			_characterRepository.AddCharacter(character);
+			await _characterRepository.AddCharacterAsync(character);
 
 			return Created(Url.Content("~/") + character.Id, character);
 		}
 
 		[HttpPost("{characterId}/addspell")]
-		public IActionResult AddSpellToCharacter(Guid characterId, [FromBody] Guid spellId)
+		public async Task<ActionResult> AddSpellToCharacter(Guid characterId, [FromBody] Guid spellId)
 		{
-			var character = _characterRepository.GetCharacterById(characterId);
+			var character = await _characterRepository.GetCharacterByIdAsync(characterId);
 			if (character.LearntSpells.Contains(spellId))
 			{
 				return BadRequest($"Spell already learnt.");
 			}
 
-			character.LearntSpells = character.LearntSpells.Append(spellId).ToArray();
-			_characterRepository.EditCharacter(character);
-
-			return Created(Url.Content("~/") + character.Id, character);
-		}
-
-		[HttpPost("{characterId}/addfeat")]
-		public IActionResult AddFeatToCharacter(Guid characterId, [FromBody] Guid featId)
-		{
-
-			var character = _characterRepository.GetCharacterById(characterId);
-			if (character.Feats.Contains(featId))
-			{
-				return BadRequest($"Feat already learnt.");
-			}
-			character.Feats = character.Feats.Append(featId).ToArray();
-			_characterRepository.EditCharacter(character);
-
-			return Created(Url.Content("~/") + character.Id, character);
-		}
-
-
-		[HttpPost("{characterId}/removespell")]
-		public IActionResult RemoveSpellFromCharacter(Guid characterId, [FromBody] Guid spellId)
-		{
-			var character = _characterRepository.GetCharacterById(characterId);
-			if (!character.LearntSpells.Contains(spellId))
-			{
-				return BadRequest($"Spell not learnt.");
-			}
-
-			character.LearntSpells = character.LearntSpells?.Except([spellId]).ToArray();
-			_characterRepository.EditCharacter(character);
-
-			return Created(Url.Content("~/") + character.Id, character);
-		}
-
-
-		[HttpPost("{characterId}/removefeat")]
-		public IActionResult RemoveFeatFromCharacter(Guid characterId, [FromBody] Guid featId)
-		{
-			var character = _characterRepository.GetCharacterById(characterId);
-
-			character.Feats = character.Feats?.Except([featId]).ToArray();
-			_characterRepository.EditCharacter(character);
-
-			return Created(Url.Content("~/") + character.Id, character);
-		}
-
-		[HttpPatch()]
-		public IActionResult EditCharacter(Character character)
-		{
-			_characterRepository.EditCharacter(character);
+			character.LearntSpells = [.. character.LearntSpells, spellId];
+			await _characterRepository.EditCharacterAsync(character);
 
 			return Ok(character);
 		}
 
-		[HttpDelete()]
-		public IActionResult DeleteAsync(Character character)
+		[HttpPost("{characterId}/addfeat")]
+		public async Task<ActionResult> AddFeatToCharacter(Guid characterId, [FromBody] Guid featId)
 		{
-			if (character.Id == default)
+
+			var character = await _characterRepository.GetCharacterByIdAsync(characterId);
+			if (character.Feats.Contains(featId))
 			{
-				return BadRequest("Delete character failed: invalid ID.");
+				return BadRequest($"Feat already learnt.");
+			}
+			character.Feats = [.. character.Feats, featId];
+			await _characterRepository.EditCharacterAsync(character);
+
+			return Ok(character);
+		}
+
+
+		[HttpPost("{characterId}/removespell")]
+		public async Task<IActionResult> RemoveSpellFromCharacter(Guid characterId, [FromBody] Guid spellId)
+		{
+			var character = await _characterRepository.GetCharacterByIdAsync(characterId);
+			if (!character.LearntSpells.Contains(spellId))
+			{
+				return BadRequest($"Character has not learnt this spell.");
 			}
 
-			_characterRepository.DeleteCharacter(character);
+			character.LearntSpells = character.LearntSpells.Except([spellId]).ToArray();
+			await _characterRepository.EditCharacterAsync(character);
+
+			return Ok(character);
+		}
+
+
+		[HttpPost("{characterId}/removefeat")]
+		public async Task<IActionResult> RemoveFeatFromCharacter(Guid characterId, [FromBody] Guid featId)
+		{
+			var character = await _characterRepository.GetCharacterByIdAsync(characterId);
+
+			if (!character.Feats.Contains(featId))
+			{
+				return BadRequest("Character does not have this feat.");
+			}
+
+			character.Feats = character.Feats.Except([featId]).ToArray();
+			await _characterRepository.EditCharacterAsync(character);
+
+			return Ok(character);
+		}
+
+		[HttpPatch()]
+		public async Task<IActionResult> EditCharacter(Character character)
+		{
+			await _characterRepository.EditCharacterAsync(character);
+
+			return Ok(character);
+		}
+
+		[HttpDelete("{characterId}")]
+		public async Task<IActionResult> DeleteAsync(Guid characterId)
+		{
+			await _characterRepository.DeleteCharacterAsync(characterId);
 
 			return NoContent();
 		}

@@ -10,19 +10,19 @@ namespace BindleForYourDungeon.Repositories
 		private readonly ApplicationContext _context = context ?? throw new ArgumentNullException(nameof(context));
 		private readonly ILogger _logger = logger;
 
-		public void AddFeat(Feat newFeat)
+		public async Task AddFeatAsync(Feat feat)
 		{
-			_context.Feats.Add(newFeat);
+			_context.Feats.Add(feat);
 
 			_context.ChangeTracker.DetectChanges();
 			_logger.LogInformation(_context.ChangeTracker.DebugView.LongView);
 
-			_context.SaveChanges();
+			await _context.SaveChangesAsync();
 		}
 
-		public void DeleteFeat(Feat feat)
+		public async Task DeleteFeatAsync(Feat feat)
 		{
-			var featToDelete = _context.Feats.FirstOrDefault(f => f.Id == feat.Id);
+			var featToDelete = await _context.Feats.FirstOrDefaultAsync(f => f.Id == feat.Id);
 
 			if (featToDelete != null)
 			{
@@ -31,7 +31,7 @@ namespace BindleForYourDungeon.Repositories
 				_context.ChangeTracker.DetectChanges();
 				_logger.LogInformation(_context.ChangeTracker.DebugView.LongView);
 
-				_context.SaveChanges();
+				await _context.SaveChangesAsync();
 			}
 			else
 			{
@@ -39,17 +39,16 @@ namespace BindleForYourDungeon.Repositories
 			}
 		}
 
-		public void EditFeat(Feat updatedFeat)
+		public async Task EditFeatAsync(Feat feat)
 		{
-			var featToUpdate = _context.Feats.FirstOrDefault(f => f.Id == updatedFeat.Id);
-
+			var featToUpdate = await _context.Feats.FirstOrDefaultAsync(f => f.Id == feat.Id);
 
 			if (featToUpdate != null)
 			{
-				_context.Feats.Update(featToUpdate).CurrentValues.SetValues(updatedFeat);
+				_context.Feats.Update(featToUpdate).CurrentValues.SetValues(feat);
 
 				_context.ChangeTracker.DetectChanges();
-				_context.SaveChangesAsync();
+				await _context.SaveChangesAsync();
 
 				_logger.LogInformation(_context.ChangeTracker.DebugView.LongView);
 			}
@@ -59,10 +58,10 @@ namespace BindleForYourDungeon.Repositories
 			}
 		}
 
-		public IEnumerable<Feat> GetAllFeats() => _context.Feats.OrderBy(f => f.Name).AsNoTracking().AsEnumerable();
+		public async Task<IList<Feat>> GetAllFeatsAsync() => await _context.Feats.OrderBy(f => f.Name).AsNoTracking().ToListAsync();
 
-		public Feat GetFeatById(Guid id) => _context.Feats.AsNoTracking().First(f => f.Id == id);
+		public async Task<Feat> GetFeatByIdAsync(Guid id) => await _context.Feats.AsNoTracking().FirstAsync(f => Equals(f.Id, id));
 
-		public IEnumerable<Feat> GetFeatsById(IEnumerable<Guid> ids) => _context.Feats.AsNoTracking().Where(s => ids.Contains((Guid)s.Id));
+		public async Task<IList<Feat>> GetFeatsByIdAsync(IEnumerable<Guid> ids) => await _context.Feats.AsNoTracking().Where(s => ids.Contains((Guid)s.Id)).ToListAsync();
 	}
 }

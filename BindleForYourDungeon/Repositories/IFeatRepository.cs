@@ -4,11 +4,11 @@ namespace BindleForYourDungeon.Repositories
 {
 	public interface IFeatRepository
 	{
-		void AddFeat(Feat newFeat);
-		void DeleteFeat(Feat feat);
-		void EditFeat(Feat updatedFeat);
-		IEnumerable<Feat> GetAllFeats();
-		Feat GetFeatById(Guid id);
-		IEnumerable<Feat> GetFeatsById(IEnumerable<Guid> ids);
+		Task AddFeatAsync(Feat feat);
+		Task DeleteFeatAsync(Feat feat);
+		Task EditFeatAsync(Feat feat);
+		Task<IList<Feat>> GetAllFeatsAsync();
+		Task<Feat> GetFeatByIdAsync(Guid id);
+		Task<IList<Feat>> GetFeatsByIdAsync(IEnumerable<Guid> ids);
 	}
 }

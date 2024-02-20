@@ -27,8 +27,7 @@ BsonClassMap.RegisterClassMap<Spell>();
 BsonClassMap.RegisterClassMap<Item>();
 
 // Mappers
-//builder.Services.AddAutoMapper(typeof(DnD5eProfile));
-builder.Services.AddAutoMapper(typeof(CharacterProfile), typeof(DnD5eProfile));
+builder.Services.AddAutoMapper(typeof(DnD5eProfile));
 
 // Swagger?
 builder.Services.AddEndpointsApiExplorer();
