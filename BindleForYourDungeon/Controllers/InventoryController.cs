@@ -1,43 +1,63 @@
-﻿using Microsoft.AspNetCore.Mvc;
-
-// For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+﻿using BindleForYourDungeon.Models.Items;
+using BindleForYourDungeon.Repositories;
+using Microsoft.AspNetCore.Mvc;
 
 namespace BindleForYourDungeon.Controllers
 {
-	[Route("api/[controller]")]
 	[ApiController]
-	public class InventoryController : ControllerBase
+	[Route("items")]
+	public class ItemController(
+		ILogger<ItemController> logger,
+		IItemRepository itemRepository) : ControllerBase
 	{
-		// GET: api/<InventoryController>
+		private readonly ILogger<ItemController> _logger = logger;
+		private readonly IItemRepository itemRepository = itemRepository ?? throw new ArgumentNullException(nameof(itemRepository));
+
 		[HttpGet]
-		public IEnumerable<string> Get()
+		public async Task<ActionResult<IList<Item>>> GetItems()
 		{
-			return new string[] { "value1", "value2" };
+			var items = await itemRepository.GetAllItemsAsync();
+
+			return Ok(items);
 		}
 
-		// GET api/<InventoryController>/5
-		[HttpGet("{id}")]
-		public string Get(int id)
+		[HttpGet("{itemId}")]
+		public async Task<ActionResult<Item>> GetItem(Guid itemId)
 		{
-			return "value";
+			var item = await itemRepository.GetItemByIdAsync(itemId);
+
+			return Ok(item);
 		}
 
-		// POST api/<InventoryController>
 		[HttpPost]
-		public void Post([FromBody] string value)
+		public async Task<ActionResult> AddItem(Item item)
 		{
+			await itemRepository.AddItemAsync(item);
+
+			return Created(Url.Content("~/") + item.Id, item);
 		}
 
-		// PUT api/<InventoryController>/5
-		[HttpPut("{id}")]
-		public void Put(int id, [FromBody] string value)
+		[HttpPatch()]
+		public async Task<ActionResult<Item>> EditItem(Item item)
 		{
+			await itemRepository.EditItemAsync(item);
+
+			return Ok(item);
 		}
 
-		// DELETE api/<InventoryController>/5
-		[HttpDelete("{id}")]
-		public void Delete(int id)
+		[HttpDelete()]
+		public async Task<ActionResult> DeleteAsync(Item item)
 		{
+			if (item.Id == default)
+			{
+				var errorMessage = "Delete item failed: invalid ID.";
+				_logger.LogWarning(errorMessage);
+				return BadRequest(errorMessage);
+			}
+
+			await itemRepository.DeleteItemAsync(item);
+
+			return NoContent();
 		}
 	}
 }

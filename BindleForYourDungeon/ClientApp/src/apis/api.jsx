@@ -163,3 +163,21 @@ export async function getFeat(featId) {
   return await response.json();
 }
 //#endregion
+
+//#region Items
+
+
+export async function postWeapon(weapon) {
+    const response = await fetch("items", {
+        method: "POST",
+        headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify(weapon),
+    });
+    if (!response.ok) throw new Error(response.status);
+
+    return response.json();
+}
+//#endregion

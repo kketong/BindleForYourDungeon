@@ -1,4 +1,4 @@
-﻿import React from 'react';
+﻿import React, { useState } from 'react';
 
 import Accordion from 'react-bootstrap/Accordion';
 import Button from 'react-bootstrap/Button';
@@ -27,7 +27,7 @@ export default function SpellAccordionItem({
 	removeLearntSpell
 }) {
 	const showToast = useToastContext();
-	const [showDescription, setShowDescription] = React.useState(false);
+	const [showDescription, setShowDescription] = useState(false);
 
 	async function addSpell() {
 		await addCharacterSpell(character.id, spell.id)

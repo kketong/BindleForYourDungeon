@@ -1,4 +1,4 @@
-﻿import React from "react";
+﻿import React, { useState } from "react";
 import Accordion from "react-bootstrap/Accordion";
 import Button from "react-bootstrap/Button";
 import { useLoaderData } from "react-router-dom";
@@ -6,6 +6,7 @@ import { Spellbook } from "./spells/Spellbook";
 import { getCharacter, getSpell, getFeat, patchCharacter } from "../../apis/api";
 import { CharacterDetails } from "./details/CharacterDetails";
 import { useToastContext } from "../../contexts/ToastContext";
+import { Inventory } from "../items/inventory";
 
 export async function loader({ params }) {
 	const spellsData = [];
@@ -31,9 +32,9 @@ export async function loader({ params }) {
 
 export default function CharacterSheet() {
 	const { characterData, spellsData, featsData } = useLoaderData();
-	const [character, setCharacter] = React.useState(characterData);
-	const [learntSpells, setLearntSpells] = React.useState(spellsData);
-	const [feats, setFeats] = React.useState(featsData);
+	const [character, setCharacter] = useState(characterData);
+	const [learntSpells, setLearntSpells] = useState(spellsData);
+	const [feats, setFeats] = useState(featsData);
 	const showToast = useToastContext();
 	
 	function addLearntSpell(spell) {
@@ -97,7 +98,9 @@ export default function CharacterSheet() {
 				</Accordion.Item>
 				<Accordion.Item eventKey="inventory">
 					<Accordion.Header>Inventory</Accordion.Header>
-					<Accordion.Body></Accordion.Body>
+					<Accordion.Body>
+						<Inventory/>
+					</Accordion.Body>
 				</Accordion.Item>
 			</Accordion>
 		</>

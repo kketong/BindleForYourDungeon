@@ -1,5 +1,6 @@
 using BindleForYourDungeon.Mapping;
 using BindleForYourDungeon.Models;
+using BindleForYourDungeon.Models.Items;
 using BindleForYourDungeon.MongoDB;
 using BindleForYourDungeon.Repositories;
 using Microsoft.EntityFrameworkCore;
@@ -21,10 +22,13 @@ builder.Services.AddDbContext<ApplicationContext>(options =>
 builder.Services.AddScoped<ICharacterRepository, CharacterRepository>();
 builder.Services.AddScoped<ISpellRepository, SpellRepository>();
 builder.Services.AddScoped<IFeatRepository, FeatRepository>();
+builder.Services.AddScoped<IItemRepository, ItemRepository>();
 BsonClassMap.RegisterClassMap<Feat>();
 BsonClassMap.RegisterClassMap<Character>();
 BsonClassMap.RegisterClassMap<Spell>();
+
 BsonClassMap.RegisterClassMap<Item>();
+
 
 // Mappers
 builder.Services.AddAutoMapper(typeof(DnD5eProfile));

@@ -1,11 +1,11 @@
-﻿import React from 'react';
+﻿import React, { useState } from 'react';
 import Toast from 'react-bootstrap/Toast';
 import ToastContainer from 'react-bootstrap/ToastContainer';
 
 export const ToastContext = React.createContext([]);
 
 export default function ToastContextWrapper({ children }) {
-	const [toasts, setToastData] = React.useState([]);
+	const [toasts, setToastData] = useState([]);
 
 	function pushToast(newToast) {
 		setToastData((prev) => [...prev, newToast]);
