@@ -47,10 +47,12 @@ function ItemSearch({ isExternalSearch, ...props }) {
                   case "armor": 
                       let armors = [];
                       items.map((armor) => {
-                          armors.push({armor.})
-                      }
+                          armors.push({ desc: armor.desc, name: armor.name, category: armor.equipment_category.name,  })
+                      });
+                      setItems(armors);
                       break;
                   default:
+                      setItems(items);
                       break;
               }
           });
@@ -76,9 +78,7 @@ function ItemSearch({ isExternalSearch, ...props }) {
         </FormSelect>
       </Form>
       <ul>
-        {visibleItems.map((item) => 
-          <li>{item.name}</li>
-        )}
+        {visibleItems.map((item) => <li>{item.name}</li> )}
       </ul>
     </>
   );
